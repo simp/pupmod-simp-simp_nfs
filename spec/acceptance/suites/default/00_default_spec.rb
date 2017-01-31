@@ -59,6 +59,11 @@ simp_options::stunnel : true
 simp_options::tcpwrappers : true
 simp_options::firewall : true
 simp_options::pki : true
+simp_options::pki::source : '/etc/pki/simp-testing/pki'
+simp_options::pki::private_key_source : "file://%{hiera('pki_dir')}/private/%{::fqdn}.pem"
+simp_options::pki::public_key_source : "file://%{hiera('pki_dir')}/public/%{::fqdn}.pub"
+simp_options::pki::cacerts_sources :
+  - "file://%{hiera('pki_dir')}/cacerts"
 
 simp_options::trusted_nets :
  - 'ALL'
@@ -86,12 +91,6 @@ sssd::domains:
 
 pam::wheel_group : 'administrators'
 
-pki::base : '/etc/pki/simp-testing/pki'
-pki::private_key_source : "file://%{hiera('pki_dir')}/private/%{::fqdn}.pem"
-pki::public_key_source : "file://%{hiera('pki_dir')}/public/%{::fqdn}.pub"
-pki::cacerts_sources :
-  - "file://%{hiera('pki_dir')}/cacerts"
-
 ssh::server::conf::permitrootlogin : true
 ssh::server::conf::authorizedkeysfile : ".ssh/authorized_keys"
 
@@ -107,13 +106,12 @@ ssh::server::conf::macs:
 simp::is_mail_server : false
 
 classes :
-  - "openldap::pam"
+  - "nsswitch"
   - "pam::access"
   - "pam::wheel"
   - "simp"
   - "simp::admin"
-  - "simp::nfs::home_client"
-  - "simplib::nsswitch"
+  - "simp_nfs::mount::home"
   - "ssh"
   - "tcpwrappers"
         EOM
@@ -125,9 +123,11 @@ nfs::is_server: true
 simp_nfs::export_home::create_home_dirs: true
           EOM
 
-          manifest << <<-EOM
-            include 'simp::nfs::export_home'
-            include 'simp::ldap_server'
+          manifest = <<-EOM
+            include 'simp_nfs::export::home'
+            include 'simp::server::ldap'
+
+            hiera_include('classes')
           EOM
         end
 

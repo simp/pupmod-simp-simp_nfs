@@ -29,7 +29,7 @@ pw = '<%= @bind_pw.gsub(/'/, "\\\\'") %>'
 tls = '<%= @tls %>'
 quiet = <%= @quiet %>
 syslog_facility = Syslog::<%= @syslog_facility %>
-syslog_priority = Syslog::<%= @syslog_priority %>
+syslog_severity = Syslog::<%= @syslog_severity %>
 tmout = 5
 
 begin
@@ -151,7 +151,7 @@ begin
   # and copy skel
   new_dirs.each do |dir|
     puts "Creating: #{dir}" unless quiet
-    Syslog.log(syslog_priority, "Creating: #{dir}")
+    Syslog.log(syslog_severity, "Creating: #{dir}")
     FileUtils.mkdir "#{export_dir}/#{dir}", :mode => 0700
     FileUtils.cp_r "#{skel_dir}/.", "#{export_dir}/#{dir}", :preserve => true
     FileUtils.chown_R "#{dir}", results[dir], "#{export_dir}/#{dir}"
@@ -166,7 +166,7 @@ begin
     # Actually move the directory
     to_be_archived.each do |dir|
       puts "Archiving: #{dir}" unless quiet
-      Syslog.log(syslog_priority, "Archiving: #{dir}")
+      Syslog.log(syslog_severity, "Archiving: #{dir}")
       FileUtils.mv "#{export_dir}/#{dir}", "#{export_dir}/ARCHIVED/#{dir}_#{Time.now.strftime('%Y_%m_%d_%H%M%S')}"
     end
   end

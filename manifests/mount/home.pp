@@ -54,8 +54,6 @@ class simp_nfs::mount::home (
   Boolean                            $at_boot     = true,
   Boolean                            $use_autofs  = true
 ) {
-  include '::nfs::client'
-
   if getvar('::nfs::client::is_server') {
     $_target = '127.0.0.1'
   }

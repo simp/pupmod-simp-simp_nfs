@@ -19,11 +19,17 @@ fixtures:
     iptables: https://github.com/simp/pupmod-simp-iptables
     logrotate: https://github.com/simp/pupmod-simp-logrotate
     nfs: https://github.com/simp/pupmod-simp-nfs
+    nsswitch: https://github.com/simp/puppet-nsswitch
     pam: https://github.com/simp/pupmod-simp-pam
     pki: https://github.com/simp/pupmod-simp-pki
+    simp: https://github.com/simp/pupmod-simp-simp
+    simp_openldap: https://github.com/simp/pupmod-simp-simp_openldap
     simplib: https://github.com/simp/pupmod-simp-simplib
+    sssd: https://github.com/simp/pupmod-simp-sssd
+    ssh: https://github.com/simp/pupmod-simp-ssh
     stdlib: https://github.com/simp/puppetlabs-stdlib
     stunnel: https://github.com/simp/pupmod-simp-stunnel
+    svckill: https://github.com/simp/pupmod-simp-svckill
     tcpwrappers: https://github.com/simp/pupmod-simp-tcpwrappers
   symlinks:
     simp_nfs: "#{source_dir}"

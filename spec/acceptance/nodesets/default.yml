@@ -11,6 +11,10 @@ HOSTS:
     hypervisor: vagrant
     vagrant_memsize: 2048
     yum_repos:
+      simp:
+        baseurl: https://packagecloud.io/simp-project/6_X_Alpha_Dependencies/el/7/$basearch
+        gpgkeys:
+          - https://raw.githubusercontent.com/NationalSecurityAgency/SIMP/master/GPGKEYS/RPM-GPG-KEY-SIMP
       epel:
         mirrorlist: 'https://mirrors.fedoraproject.org/metalink?repo=epel-7&arch=$basearch'
         gpgkeys:
@@ -25,6 +29,10 @@ HOSTS:
     box:        centos/7
     hypervisor: vagrant
     yum_repos:
+      simp:
+        baseurl: https://packagecloud.io/simp-project/6_X_Alpha_Dependencies/el/7/$basearch
+        gpgkeys:
+          - https://raw.githubusercontent.com/NationalSecurityAgency/SIMP/master/GPGKEYS/RPM-GPG-KEY-SIMP
       epel:
         mirrorlist: 'https://mirrors.fedoraproject.org/metalink?repo=epel-7&arch=$basearch'
         gpgkeys:
@@ -40,6 +48,10 @@ HOSTS:
     hypervisor: vagrant
     vagrant_memsize: 2048
     yum_repos:
+      simp:
+        baseurl: https://packagecloud.io/simp-project/6_X_Alpha_Dependencies/el/6/$basearch
+        gpgkeys:
+          - https://raw.githubusercontent.com/NationalSecurityAgency/SIMP/master/GPGKEYS/RPM-GPG-KEY-SIMP
       epel:
         mirrorlist: 'https://mirrors.fedoraproject.org/metalink?repo=epel-6&arch=$basearch'
         gpgkeys:
@@ -54,6 +66,10 @@ HOSTS:
     box:        centos/6
     hypervisor: vagrant
     yum_repos:
+      simp:
+        baseurl: https://packagecloud.io/simp-project/6_X_Alpha_Dependencies/el/6/$basearch
+        gpgkeys:
+          - https://raw.githubusercontent.com/NationalSecurityAgency/SIMP/master/GPGKEYS/RPM-GPG-KEY-SIMP
       epel:
         mirrorlist: 'https://mirrors.fedoraproject.org/metalink?repo=epel-6&arch=$basearch'
         gpgkeys:

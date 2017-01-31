@@ -33,6 +33,8 @@ class simp_nfs (
     }
   }
   else {
+    class { 'nfs': * => { 'is_client' => true } }
+
     if $home_dir_server {
       class { 'simp_nfs::mount::home':
         nfs_server => $home_dir_server
