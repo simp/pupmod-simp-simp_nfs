@@ -53,6 +53,8 @@ describe 'simp_nfs stock classes' do
         domains = domains.join(',')
         hieradata = <<-EOM
 ---
+# Turn this off because we don't have a remote server
+simp_options::rsync : false
 simp_options::ldap : true
 simp_options::sssd : true
 simp_options::stunnel : true
@@ -83,9 +85,6 @@ simp_options::ldap::master: 'ldap://#{server}'
 # suP3rP@ssw0r!
 simp_options::ldap::root_hash: "{SSHA}ZcqPNbcqQhDNF5jYTLGl+KAGcrHNW9oo"
 
-nfs::client::nfs_servers :
-  "#{server}"
-
 sssd::domains:
  - 'LDAP'
 
@@ -104,6 +103,8 @@ ssh::server::conf::macs:
 
 # For testing
 simp::is_mail_server : false
+
+simp_nfs::home_dir_server : #{server}
 
 classes :
   - "nsswitch"

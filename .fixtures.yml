@@ -11,6 +11,9 @@ fixtures:
     augeasproviders_sysctl:
       repo: https://github.com/simp/augeasproviders_sysctl
       branch: simp-master
+    augeasproviders_ssh:
+      repo: https://github.com/simp/augeasproviders_ssh
+      branch: simp-master
     autofs: https://github.com/simp/pupmod-simp-autofs
     concat: https://github.com/simp/puppetlabs-concat
     haveged:
@@ -22,13 +25,18 @@ fixtures:
     nsswitch: https://github.com/simp/puppet-nsswitch
     pam: https://github.com/simp/pupmod-simp-pam
     pki: https://github.com/simp/pupmod-simp-pki
+    postfix: https://github.com/simp/pupmod-simp-postfix
     simp: https://github.com/simp/pupmod-simp-simp
     simp_openldap: https://github.com/simp/pupmod-simp-simp_openldap
+    # Used by Postfix
+    simpcat: https://github.com/simp/pupmod-simp-simpcat
     simplib: https://github.com/simp/pupmod-simp-simplib
     sssd: https://github.com/simp/pupmod-simp-sssd
     ssh: https://github.com/simp/pupmod-simp-ssh
     stdlib: https://github.com/simp/puppetlabs-stdlib
     stunnel: https://github.com/simp/pupmod-simp-stunnel
+    sudo: https://github.com/simp/pupmod-simp-sudo
+    sudosh: https://github.com/simp/pupmod-simp-sudosh
     svckill: https://github.com/simp/pupmod-simp-svckill
     tcpwrappers: https://github.com/simp/pupmod-simp-tcpwrappers
   symlinks:
