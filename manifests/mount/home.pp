@@ -68,7 +68,7 @@ class simp_nfs::mount::home (
     }
   }
 
-  nfs::client::mount { $local_home:
+  nfs::client::mount { "wildcard-${local_home}":
     nfs_server         => $nfs_server,
     remote_path        => $remote_path,
     port               => $port,
