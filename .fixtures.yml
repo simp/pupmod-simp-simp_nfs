@@ -14,14 +14,14 @@ fixtures:
     augeasproviders_ssh:
       repo: https://github.com/simp/augeasproviders_ssh
       branch: master
-    #autofs: https://github.com/simp/pupmod-simp-autofs
+    autofs: https://github.com/simp/pupmod-simp-autofs
     concat: https://github.com/simp/puppetlabs-concat
     haveged:
       repo: https://github.com/simp/puppet-haveged
       branch: simp-master
     iptables: https://github.com/simp/pupmod-simp-iptables
     logrotate: https://github.com/simp/pupmod-simp-logrotate
-    #nfs: https://github.com/simp/pupmod-simp-nfs
+    nfs: https://github.com/simp/pupmod-simp-nfs
     nsswitch: https://github.com/simp/puppet-nsswitch
     oddjob: https://github.com/simp/pupmod-simp-oddjob
     pam: https://github.com/simp/pupmod-simp-pam
@@ -32,17 +32,13 @@ fixtures:
     # Used by Postfix
     simpcat: https://github.com/simp/pupmod-simp-simpcat
     simplib: https://github.com/simp/pupmod-simp-simplib
-    #sssd: https://github.com/simp/pupmod-simp-sssd
+    sssd: https://github.com/simp/pupmod-simp-sssd
     ssh: https://github.com/simp/pupmod-simp-ssh
     stdlib: https://github.com/simp/puppetlabs-stdlib
     stunnel: https://github.com/simp/pupmod-simp-stunnel
-    #sudo: https://github.com/simp/pupmod-simp-sudo
+    sudo: https://github.com/simp/pupmod-simp-sudo
     sudosh: https://github.com/simp/pupmod-simp-sudosh
     svckill: https://github.com/simp/pupmod-simp-svckill
     tcpwrappers: https://github.com/simp/pupmod-simp-tcpwrappers
   symlinks:
     simp_nfs: "#{source_dir}"
-    autofs: "#{source_dir}/../autofs"
-    nfs: "#{source_dir}/../nfs"
-    sudo: "#{source_dir}/../sudo"
-    sssd: "#{source_dir}/../sssd"
