@@ -38,42 +38,42 @@ HOSTS:
         gpgkeys:
           - https://getfedora.org/static/352C64E5.txt
 
-#  server6:
-#    roles:
-#      - simp_server
-#      - nfs_server
-#      - el6
-#    platform:   el-6-x86_64
-#    box:        centos/6
-#    hypervisor: vagrant
-#    vagrant_memsize: 2048
-#    yum_repos:
-#      simp:
-#        baseurl: https://packagecloud.io/simp-project/6_X_Alpha_Dependencies/el/6/$basearch
-#        gpgkeys:
-#          - https://raw.githubusercontent.com/NationalSecurityAgency/SIMP/master/GPGKEYS/RPM-GPG-KEY-SIMP
-#      epel:
-#        mirrorlist: 'https://mirrors.fedoraproject.org/metalink?repo=epel-6&arch=$basearch'
-#        gpgkeys:
-#          - https://getfedora.org/static/0608B895.txt
-#
-#  client6:
-#    roles:
-#      - client
-#      - agent
-#      - el6
-#    platform:   el-6-x86_64
-#    box:        centos/6
-#    hypervisor: vagrant
-#    yum_repos:
-#      simp:
-#        baseurl: https://packagecloud.io/simp-project/6_X_Alpha_Dependencies/el/6/$basearch
-#        gpgkeys:
-#          - https://raw.githubusercontent.com/NationalSecurityAgency/SIMP/master/GPGKEYS/RPM-GPG-KEY-SIMP
-#      epel:
-#        mirrorlist: 'https://mirrors.fedoraproject.org/metalink?repo=epel-6&arch=$basearch'
-#        gpgkeys:
-#          - https://getfedora.org/static/0608B895.txt
+  server6:
+    roles:
+      - simp_server
+      - nfs_server
+      - el6
+    platform:   el-6-x86_64
+    box:        centos/6
+    hypervisor: vagrant
+    vagrant_memsize: 2048
+    yum_repos:
+      simp:
+        baseurl: https://packagecloud.io/simp-project/6_X_Alpha_Dependencies/el/6/$basearch
+        gpgkeys:
+          - https://raw.githubusercontent.com/NationalSecurityAgency/SIMP/master/GPGKEYS/RPM-GPG-KEY-SIMP
+      epel:
+        mirrorlist: 'https://mirrors.fedoraproject.org/metalink?repo=epel-6&arch=$basearch'
+        gpgkeys:
+          - https://getfedora.org/static/0608B895.txt
+
+  client6:
+    roles:
+      - client
+      - agent
+      - el6
+    platform:   el-6-x86_64
+    box:        centos/6
+    hypervisor: vagrant
+    yum_repos:
+      simp:
+        baseurl: https://packagecloud.io/simp-project/6_X_Alpha_Dependencies/el/6/$basearch
+        gpgkeys:
+          - https://raw.githubusercontent.com/NationalSecurityAgency/SIMP/master/GPGKEYS/RPM-GPG-KEY-SIMP
+      epel:
+        mirrorlist: 'https://mirrors.fedoraproject.org/metalink?repo=epel-6&arch=$basearch'
+        gpgkeys:
+          - https://getfedora.org/static/0608B895.txt
 
 CONFIG:
   log_level: verbose

@@ -18,20 +18,20 @@ describe 'simp_nfs stock classes' do
     <<-EOM
 ---
 # Turn this off because we don't have a remote server
-simp_options::rsync : false
-simp_options::ldap : true
-simp_options::sssd : true
-simp_options::stunnel : true
-simp_options::tcpwrappers : true
-simp_options::firewall : true
-simp_options::pki : true
-simp_options::pki::source : '/etc/pki/simp-testing/pki'
-simp_options::pki::private_key_source : "file://%{hiera('pki_dir')}/private/%{::fqdn}.pem"
-simp_options::pki::public_key_source : "file://%{hiera('pki_dir')}/public/%{::fqdn}.pub"
-simp_options::pki::cacerts_sources :
+simp_options::rsync: false
+simp_options::ldap: true
+simp_options::sssd: true
+simp_options::stunnel: true
+simp_options::tcpwrappers: true
+simp_options::firewall: true
+simp_options::pki: true
+simp_options::pki::source: '/etc/pki/simp-testing/pki'
+simp_options::pki::private_key_source: "file://%{hiera('pki_dir')}/private/%{::fqdn}.pem"
+simp_options::pki::public_key_source: "file://%{hiera('pki_dir')}/public/%{::fqdn}.pub"
+simp_options::pki::cacerts_sources:
   - "file://%{hiera('pki_dir')}/cacerts"
 
-simp_options::trusted_nets :
+simp_options::trusted_nets:
  - 'ALL'
 
 simp_options::ldap::uri:
@@ -52,10 +52,23 @@ simp_options::ldap::root_hash: "{SSHA}ZcqPNbcqQhDNF5jYTLGl+KAGcrHNW9oo"
 sssd::domains:
  - 'LDAP'
 
-pam::wheel_group : 'administrators'
+pam::access::users:
+  defaults:
+    origins:
+      - ALL
+    permission: '+'
+  vagrant:
 
-ssh::server::conf::permitrootlogin : true
-ssh::server::conf::authorizedkeysfile : ".ssh/authorized_keys"
+sudo::user_specifications:
+  vagrant_all:
+    user_list: ['vagrant']
+    cmnd: ['ALL']
+    passwd: false
+
+pam::wheel_group: 'administrators'
+
+ssh::server::conf::permitrootlogin: true
+ssh::server::conf::authorizedkeysfile: ".ssh/authorized_keys"
 
 # Use fallback ciphers/macs to ensure ssh capability on any platform
 ssh::server::conf::ciphers:
@@ -66,11 +79,13 @@ ssh::server::conf::macs:
  - 'hmac-sha1'
 
 # For testing
-simp::is_mail_server : false
+simp::is_mail_server: false
 
-simp_nfs::home_dir_server : #{nfs_server}
+simp_nfs::home_dir_server: #{nfs_server}
 
-classes :
+nfs::client::stunnel::nfs_server: "#{nfs_server}"
+
+classes:
   - "pam::access"
   - "pam::wheel"
   - "simp"
