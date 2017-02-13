@@ -5,17 +5,42 @@ test_name 'SIMP NFS profile'
 describe 'simp_nfs stock classes' do
   servers = hosts_with_role( hosts, 'nfs_server' )
   clients = hosts_with_role( hosts, 'client' )
-  let(:el7_server) { fact_on(only_host_with_role(servers, 'el7'), 'fqdn') }
-  let(:el6_server) { fact_on(only_host_with_role(servers, 'el6'), 'fqdn') }
+  el7_server = fact_on(only_host_with_role(servers, 'el7'), 'fqdn')
+  el6_server = fact_on(only_host_with_role(servers, 'el6'), 'fqdn')
 
-  let(:manifest) {
-    <<-EOM
-      hiera_include("classes")
-    EOM
-  }
+  context 'with exported home directories' do
+    hosts.each do |node|
 
-  let(:hieradata) {
-    <<-EOM
+      # Determine who your nfs server is
+      os = fact_on(node, 'operatingsystem')
+      if os == 'CentOS'
+        os_release = fact_on(node, 'operatingsystemmajrelease')
+        if os_release == '6'
+          server = el6_server
+        elsif os_release == '7'
+          server = el7_server
+        else
+          STDERR.puts "#{os_release} not a supported OS release"
+          next
+        end
+      else
+        STDERR.puts "OS #{os} not supported"
+        next
+      end
+      nfs_server = server
+
+      # Determine what your domain is, in dn form
+      _domains = fact_on(node, 'domain').split('.')
+      _domains.map! { |d|
+        "dc=#{d}"
+      }
+      domains = _domains.join(',')
+
+      manifest = <<-EOM
+hiera_include("classes")
+EOM
+
+      hieradata = <<-EOM
 ---
 # Turn this off because we don't have a remote server
 simp_options::rsync: false
@@ -94,40 +119,9 @@ classes:
   - "simp::nsswitch"
   - "ssh"
   - "tcpwrappers"
-      EOM
-  }
+EOM
 
-  let(:nfs_server) {
-    os = fact_on(current_node, 'operatingsystem')
-    if os == 'CentOS'
-      os_release = fact_on(current_node, 'operatingsystemmajrelease')
-      if os_release == '6'
-        server = el6_server
-      elsif os_release == '7'
-        server = el7_server
-      else
-        STDERR.puts "#{os_release} not a supported OS release"
-        next
-      end
-    else
-      STDERR.puts "OS #{os} not supported"
-      next
-    end
-
-    server
-  }
-
-  let(:domains) {
-    _domains = fact_on(current_node, 'domain').split('.')
-    _domains.map! { |d|
-      "dc=#{d}"
-    }
-
-    _domains.join(',')
-  }
-
-  let(:test_user_ldif){
-    <<-EOM
+      test_user_ldif = <<-EOM
 dn: cn=test.user,ou=Group,#{domains}
 objectClass: posixGroup
 objectClass: top
@@ -158,33 +152,28 @@ homeDirectory: /home/test.user
 #suP3rP@ssw0r!
 userPassword: {SSHA}r2GaizHFWY8pcHpIClU0ye7vsO4uHv/y
 pwdReset: TRUE
-    EOM
-  }
+EOM
 
-  let(:test_group_ldif){
-    <<-EOM
+      test_group_ldif = <<-EOM
 dn: cn=administrators,ou=Group,#{domains}
 changetype: modify
 add: memberUid
 memberUid: test.user
-    EOM
-  }
-
-  context 'with exported home directories' do
-    hosts.each do |node|
-      let(:current_node) { node }
+EOM
 
       if servers.include?(node)
         it 'should install nfs, openldap, and create test.user' do
           # Construct server hieradata; export home directories.
           server_hieradata = hieradata + <<-EOM
+
 nfs::is_server: true
 simp_nfs::export_home::create_home_dirs: true
           EOM
 
           server_manifest = manifest + <<-EOM
-            include 'simp_nfs::export::home'
-            include 'simp::server::ldap'
+
+include 'simp_nfs::export::home'
+include 'simp::server::ldap'
           EOM
 
           # Apply
