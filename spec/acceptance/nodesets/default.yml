@@ -49,7 +49,7 @@ HOSTS:
     vagrant_memsize: 2048
     yum_repos:
       simp:
-        baseurl: https://packagecloud.io/simp-project/6_X_Alpha_Dependencies/el/6/$basearch
+        baseurl: https://packagecloud.io/simp-project/4_X_Dependencies/el/6/$basearch
         gpgkeys:
           - https://raw.githubusercontent.com/NationalSecurityAgency/SIMP/master/GPGKEYS/RPM-GPG-KEY-SIMP
       epel:
@@ -67,7 +67,7 @@ HOSTS:
     hypervisor: vagrant
     yum_repos:
       simp:
-        baseurl: https://packagecloud.io/simp-project/6_X_Alpha_Dependencies/el/6/$basearch
+        baseurl: https://packagecloud.io/simp-project/4_X_Dependencies/el/6/$basearch
         gpgkeys:
           - https://raw.githubusercontent.com/NationalSecurityAgency/SIMP/master/GPGKEYS/RPM-GPG-KEY-SIMP
       epel:
