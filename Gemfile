@@ -12,6 +12,7 @@ group :test do
   gem 'rspec-puppet'
   gem 'hiera-puppet-helper'
   gem 'puppetlabs_spec_helper'
+  gem 'puppet-strings'
   gem 'metadata-json-lint'
   gem 'puppet-lint-empty_string-check',   :require => false
   gem 'puppet-lint-trailing_comma-check', :require => false
@@ -24,7 +25,6 @@ group :development do
   gem 'travis-lint'
   gem 'travish'
   gem 'puppet-blacksmith'
-  gem 'puppet-strings'
   gem 'guard-rake'
   gem 'pry'
   gem 'pry-doc'
