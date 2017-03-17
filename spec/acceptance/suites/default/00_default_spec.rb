@@ -172,7 +172,6 @@ memberUid: test.user
           on(node, "ldapmodify -D cn=LDAPAdmin,ou=People,#{domains} -H ldap://#{nfs_server} -w suP3rP@ssw0r! -x -Z -f /root/group_ldif.ldif")
 
           # Ensure the cache is built, don't wait for enum timeout
-          require 'pry';binding.pry
           on(node, 'service sssd restart')
 
           user_info = on(node, 'id test.user', :acceptable_exit_codes => [0])
