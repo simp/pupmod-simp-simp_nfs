@@ -79,4 +79,6 @@ CONFIG:
   log_level: verbose
   type:      aio
   vagrant_memsize: 256
+  synced_folder: disabled
   # vb_gui: true
+
