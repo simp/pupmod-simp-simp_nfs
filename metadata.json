@@ -8,7 +8,8 @@
   "project_page": "https://github.com/simp/pupmod-simp-simp_nfs",
   "issues_url": "https://simp-project.atlassian.net",
   "tags": [
-    "simp"
+    "simp",
+    "nfs"
   ],
   "dependencies": [
     {
@@ -43,11 +44,7 @@
   "requirements": [
     {
       "name": "puppet",
-      "version_requirement": "4.x"
-    },
-    {
-      "name": "pe",
-      "version_requirement": ">= 2016.2.0"
+      "version_requirement": ">= 4.6.0 < 5.0.0"
     }
   ],
   "data_provider": "hiera"
