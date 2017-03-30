@@ -1,35 +1,50 @@
 ---
 fixtures:
   repositories:
+    aide: https://github.com/simp/pupmod-simp-aide
+    at: https://github.com/simp/pupmod-simp-at
     auditd: https://github.com/simp/pupmod-simp-auditd
-    augeasproviders_core:
-      repo: https://github.com/simp/augeasproviders_core
-      branch: master
-    augeasproviders_grub:
-      repo: https://github.com/simp/augeasproviders_grub
-      branch: master
-    augeasproviders_sysctl:
-      repo: https://github.com/simp/augeasproviders_sysctl
-      branch: master
-    augeasproviders_ssh:
-      repo: https://github.com/simp/augeasproviders_ssh
-      branch: master
+    augeasproviders_core: https://github.com/simp/augeasproviders_core
+    augeasproviders_grub: https://github.com/simp/augeasproviders_grub
+    augeasproviders_puppet: https://github.com/simp/augeasproviders_puppet
+    augeasproviders_sysctl: https://github.com/simp/augeasproviders_sysctl
+    augeasproviders_ssh: https://github.com/simp/augeasproviders_ssh
     autofs: https://github.com/simp/pupmod-simp-autofs
     concat: https://github.com/simp/puppetlabs-concat
+    chkrootkit: https://github.com/simp/pupmod-simp-chkrootkit
+    clamav: https://github.com/simp/pupmod-simp-clamav
+    cron: https://github.com/simp/pupmod-simp-cron
+    dhcp: https://github.com/simp/pupmod-simp-dhcp
     haveged:
       repo: https://github.com/simp/puppet-haveged
       branch: simp-master
+    freeradius: https://github.com/simp/pupmod-simp-freeradius
     iptables: https://github.com/simp/pupmod-simp-iptables
+    inifile: https://github.com/simp/puppetlabs-inifile
+    incron: https://github.com/simp/pupmod-simp-incron
+    issue: https://github.com/simp/pupmod-simp-issue
+    kmod: https://github.com/simp/puppet-kmod
+    krb5: https://github.com/simp/pupmod-simp-krb5
     logrotate: https://github.com/simp/pupmod-simp-logrotate
+    named: https://github.com/simp/pupmod-simp-named
     nfs: https://github.com/simp/pupmod-simp-nfs
     nsswitch: https://github.com/simp/puppet-nsswitch
+    ntpd: https://github.com/simp/pupmod-simp-ntpd
     oddjob: https://github.com/simp/pupmod-simp-oddjob
     pam: https://github.com/simp/pupmod-simp-pam
     pki: https://github.com/simp/pupmod-simp-pki
     postfix: https://github.com/simp/pupmod-simp-postfix
+    pupmod: https://github.com/simp/pupmod-simp-pupmod
+    puppetdb: https://github.com/simp/puppetlabs-puppetdb
+    postgresql: https://github.com/simp/puppetlabs-postgresql
+    resolv: https://github.com/simp/pupmod-simp-resolv
+    rsync: https://github.com/simp/pupmod-simp-rsync
+    rsyslog: https://github.com/simp/pupmod-simp-rsyslog
+    selinux: https://github.com/simp/pupmod-simp-selinux
     simp: https://github.com/simp/pupmod-simp-simp
     simp_openldap: https://github.com/simp/pupmod-simp-simp_openldap
-    # Used by Postfix
+    simp_options: https://github.com/simp/pupmod-simp-simp_options
+    simp_rsyslog: https://github.com/simp/pupmod-simp-simp_rsyslog
     simpcat: https://github.com/simp/pupmod-simp-simpcat
     simplib: https://github.com/simp/pupmod-simp-simplib
     sssd: https://github.com/simp/pupmod-simp-sssd
@@ -38,7 +53,14 @@ fixtures:
     stunnel: https://github.com/simp/pupmod-simp-stunnel
     sudo: https://github.com/simp/pupmod-simp-sudo
     sudosh: https://github.com/simp/pupmod-simp-sudosh
+    swap: https://github.com/simp/pupmod-simp-swap
     svckill: https://github.com/simp/pupmod-simp-svckill
+    timezone:
+      repo: https://github.com/simp/puppet-timezone
+      branch: simp-master
     tcpwrappers: https://github.com/simp/pupmod-simp-tcpwrappers
+    tftpboot: https://github.com/simp/pupmod-simp-tftpboot
+    tuned: https://github.com/simp/pupmod-simp-tuned
+    useradd: https://github.com/simp/pupmod-simp-useradd
   symlinks:
     simp_nfs: "#{source_dir}"
