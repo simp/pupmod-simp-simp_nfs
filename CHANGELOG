@@ -1,2 +1,9 @@
+* Fri Apr 07 2017 Trevor Vaughan <tvaughan@onyxpoint.com> - 0.0.2
+- Added the ability to override ciphers in the create_home_directories script
+  for EL6 since the cipher order does not happen from strongest to weakest and
+  breaks secure LDAP connections
+- Added a check for create_home_directories to ensure that directories are not
+  archived if the server doesn't respond for TLS reasons.
+
 * Tue Jan 03 2017 Trevor Vaughan <tvaughan@onyxpoint.com> - 0.0.1
 - Initial release

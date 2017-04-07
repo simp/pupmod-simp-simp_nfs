@@ -55,22 +55,54 @@
 # @param syslog_severity
 #   The syslog severity at which to log, must be Ruby ``syslog`` compatible
 #
+# @param strip_128_bit_ciphers
+#   On EL6 systems, all 128-bit ciphers will be removed from ``tls_cipher_suite``
+#
+#   * This is due to a bug in the LDAP client libraries that does not appear to
+#     honor the order of the SSL ciphers and will attempt to connect with
+#     128-bit ciphers and not use stronger ciphers when those are present. This
+#     breaks connections to securely configured LDAP servers.
+#
+# @param tls_cipher_suite
+#   The TLS ciphers that should be used for the connection to LDAP
+#
+#   * Presently only affects EL6 systems
+#
 # @author Trevor Vaughan <mailto:tvaughan@onyxpoint.com>
 #
 class simp_nfs::create_home_dirs (
-  Array[Simplib::URI]            $uri             = simplib::lookup('simp_options::ldap::uri'),
-  String                         $base_dn         = simplib::lookup('simp_options::ldap::base_dn'),
-  String                         $bind_dn         = simplib::lookup('simp_options::ldap::bind_dn'),
-  String                         $bind_pw         = simplib::lookup('simp_options::ldap::bind_pw'),
-  Stdlib::Absolutepath           $export_dir      = '/var/nfs/home',
-  Stdlib::Absolutepath           $skel_dir        = '/etc/skel',
-  Enum['one','sub','base']       $ldap_scope      = 'one',
-  Simplib::Port                  $port            = 389,
-  Enum['ssl','start_tls','none'] $tls             = 'start_tls',
-  Boolean                        $quiet           = true,
-  Simplib::Syslog::CFacility     $syslog_facility = 'LOG_LOCAL6',
-  Simplib::Syslog::CSeverity     $syslog_severity = 'LOG_NOTICE',
+  Array[Simplib::URI]            $uri                   = simplib::lookup('simp_options::ldap::uri'),
+  String                         $base_dn               = simplib::lookup('simp_options::ldap::base_dn'),
+  String                         $bind_dn               = simplib::lookup('simp_options::ldap::bind_dn'),
+  String                         $bind_pw               = simplib::lookup('simp_options::ldap::bind_pw'),
+  Stdlib::Absolutepath           $export_dir            = '/var/nfs/home',
+  Stdlib::Absolutepath           $skel_dir              = '/etc/skel',
+  Enum['one','sub','base']       $ldap_scope            = 'one',
+  Simplib::Port                  $port                  = 389,
+  Enum['ssl','start_tls','none'] $tls                   = 'start_tls',
+  Boolean                        $quiet                 = true,
+  Simplib::Syslog::CFacility     $syslog_facility       = 'LOG_LOCAL6',
+  Simplib::Syslog::CSeverity     $syslog_severity       = 'LOG_NOTICE',
+  Boolean                        $strip_128_bit_ciphers = true,
+  Array[String[1]]               $tls_cipher_suite      = simplib::lookup('simp_options::openssl::cipher_suite', { 'default_value' => ['DEFAULT','!MEDIUM'] })
 ) {
+
+  if $strip_128_bit_ciphers {
+    # This is here due to a bug in the LDAP client library on EL6 that will set
+    # the SSF to 128 when connecting over StartTLS if there are *any* 128-bit
+    # ciphers in the list.
+    if $facts['os']['name'] in ['RedHat','CentOS'] and (versioncmp($facts['os']['release']['major'],'7') < 0) {
+      $_tmp_suite = flatten($tls_cipher_suite.map |$cipher| { split($cipher,':') })
+      $_tls_cipher_suite = $_tmp_suite.filter |$cipher| { $cipher !~ Pattern[/128/] }
+    }
+    else {
+      $_tls_cipher_suite = $tls_cipher_suite
+    }
+  }
+  else {
+    $_tls_cipher_suite = $tls_cipher_suite
+  }
+
   package { 'rubygem-net-ldap': ensure => 'latest' }
 
   file { '/etc/cron.hourly/create_home_directories.rb':
