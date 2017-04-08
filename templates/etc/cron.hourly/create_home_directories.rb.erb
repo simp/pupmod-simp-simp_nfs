@@ -15,6 +15,23 @@ require 'timeout'
 require 'socket'
 require 'syslog'
 
+# This monstrosity is here because the version of net/ldap that ships with EL6
+# does not have support for altering the ciphers and we need to make sure that
+# we have that ability
+if Gem::Version.new(RUBY_VERSION) < Gem::Version.new('1.9.0')
+  module OpenSSL
+    module SSL
+      class SSLContext
+        def initialize
+          super
+
+          self.ciphers = '<%= Array(@_tls_cipher_suite).join(':') %>'
+        end
+      end
+    end
+  end
+end
+
 File.umask(0122)
 
 ldap_params = Hash.new
@@ -73,11 +90,14 @@ servers.each do |svr|
         raise Exception
       end
 
-      # Attempt to bind with svr
-      # See https://github.com/ruby-ldap/ruby-net-ldap/ for configuration options.
-      # NOTE: Binding with the host will automatically cease once the code block
-      # is executed; only open() will create a persistent connection which requires
-      # closing.
+      # Attempt to bind with the server
+      #
+      # See https://github.com/ruby-ldap/ruby-net-ldap/ for configuration
+      # options.
+      #
+      # NOTE: Binding with the host will automatically cease once the code
+      # block is executed; only open() will create a persistent connection
+      # which requires closing.
       conn_opts = {:host => svr, :port => <%= @port %>, :auth => {:method => :simple, :username => dn, :password => pw}}
       if tls == 'ssl'
         conn_opts[:encryption] = :simple_tls
@@ -147,8 +167,7 @@ begin
   new_dirs = (results.keys.flatten - current_dirs.flatten)
   to_be_archived = (current_dirs.flatten - results.keys.flatten)
 
-  # Iterate through the new_dirs and create
-  # and copy skel
+  # Iterate through the new_dirs and create and copy skel
   new_dirs.each do |dir|
     puts "Creating: #{dir}" unless quiet
     Syslog.log(syslog_severity, "Creating: #{dir}")
@@ -157,8 +176,10 @@ begin
     FileUtils.chown_R "#{dir}", results[dir], "#{export_dir}/#{dir}"
   end
 
-# We only want to blow things away if the connection actually succeded.
-  if !conn.nil?
+  # We only want to blow things away if the connection actually succeded.
+  # We're assuming that if no results were returned something went wrong and we
+  # should not archive *everything*
+  unless (conn.nil? || (results && results.empty?))
     # Check to make sure archive directory exists
     unless File.directory?("#{export_dir}/ARCHIVED")
       FileUtils.mkdir "#{export_dir}/ARCHIVED", :mode => 0750
