@@ -41,7 +41,7 @@ describe 'simp_nfs::create_home_dirs' do
             :tls_cipher_suite => ['AES256','AES128']
           }}
           it_behaves_like "a structured module"
-          it { is_expected.to create_file('/etc/cron.hourly/create_home_directories.rb').with_content(%r(servers =.*"#{facts[:fqdn]}", "foo.bar.baz".*)) }
+          it { is_expected.to create_file('/etc/cron.hourly/create_home_directories.rb').with_content(%r(servers =.*'#{facts[:fqdn]}', 'foo.bar.baz'.*)) }
         end
       end
     end
