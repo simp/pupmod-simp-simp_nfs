@@ -1,3 +1,6 @@
+* Tue Apr 11 2017 Nick Markowski <nmarkowski@keywcorp.com> - 0.0.3
+- Updated create_home_directories to handle multiple URIs
+
 * Fri Apr 07 2017 Trevor Vaughan <tvaughan@onyxpoint.com> - 0.0.2
 - Added the ability to override ciphers in the create_home_directories script
   for EL6 since the cipher order does not happen from strongest to weakest and
