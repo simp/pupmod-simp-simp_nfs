@@ -1,3 +1,6 @@
+* Fri Sep 01 2017 Jeanne Greulich <jeannegreulich@onyxpoint.com> - 0.0.4
+- documented known bug and work around in CentOS 6.9 in the README file.
+
 * Tue Apr 11 2017 Nick Markowski <nmarkowski@keywcorp.com> - 0.0.3
 - Updated create_home_directories to handle multiple URIs
 - Update puppet requirement in metadata.json

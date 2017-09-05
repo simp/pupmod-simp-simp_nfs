@@ -7,8 +7,9 @@
     * [What simp_nfs affects](#what-simp_nfs-affects)
 3. [Usage - Configuration options and additional functionality](#usage)
 4. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
-5. [Limitations - OS compatibility, etc.](#limitations)
-6. [Development - Guide for contributing to the module](#development)
+5. [Known Issues](#known-issues)
+6. [Limitations - OS compatibility, etc.](#limitations)
+7. [Development - Guide for contributing to the module](#development)
     * [Acceptance Tests - Beaker env variables](#acceptance-tests)
 
 ## Description
@@ -76,6 +77,21 @@ simp_nfs::home_dir_server : <your NFS server IP or Hostname>
 ## Reference
 
 See the [API Documentation](https://github.com/simp/pupmod-simp-simp_nfs/tree/master/docs/index.html) for full details.
+
+## Known Issues
+
+The ``autofs package`` that was released with CentOS 6.8 (**autofs-5.0.5-122**) worked
+properly over a stunnel connection.
+
+The release shipped with CentOS 6.9 (**5.0.5-132**) prevents any connection from happening
+to the local ``stunnel`` process and breaks mounts to remote systems over stunnel connections.
+
+To use NFS over stunnel on CentOS 6.9 and automount directories the old package must be used.
+
+To determine what package is installed on the system, run ``automount -V``.
+
+This has been identified as a bug in autofs and is being publicly
+tracked at https://bugs.centos.org/view.php?id=13575.
 
 ## Limitations
 
