@@ -56,7 +56,7 @@ fixtures:
     swap: https://github.com/simp/pupmod-simp-swap
     svckill: https://github.com/simp/pupmod-simp-svckill
     timezone:
-      repo: https://github.com/simp/puppet-timezone
+      repo: https://github.com/simp/pupmod-simp-timezone
       branch: simp-master
     tcpwrappers: https://github.com/simp/pupmod-simp-tcpwrappers
     tftpboot: https://github.com/simp/pupmod-simp-tftpboot
