@@ -55,12 +55,12 @@ nfs::client::stunnel::nfs_server: #{nfs_server}
 
 # Options
 # Use fallback ciphers/macs to ensure ssh capability on any platform
-ssh::server::conf::ciphers:
-- 'aes256-cbc'
-- 'aes192-cbc'
-- 'aes128-cbc'
-ssh::server::conf::macs:
-- 'hmac-sha1'
+# ssh::server::conf::ciphers:
+# - 'aes256-cbc'
+# - 'aes192-cbc'
+# - 'aes128-cbc'
+# ssh::server::conf::macs:
+# - 'hmac-sha1'
 simp_options::clamav: false
 simp_options::dns::servers: ['8.8.8.8']
 simp_options::puppet::server: #{server}
@@ -103,6 +103,14 @@ sudo::user_specifications:
 ssh::server::conf::permitrootlogin: true
 ssh::server::conf::authorizedkeysfile: .ssh/authorized_keys
       EOM
+
+      if ENV['BEAKER_set_autofs_version'] == 'yes'
+        if fact_on(node, 'operatingsystemmajrelease') == '7'
+          hieradata += "\nautofs::autofs_package_ensure: '5.0.7-56.el7'\n"
+        else
+          hieradata += "\nautofs::autofs_package_ensure: '5.0.5-122.el6'\n"
+        end
+      end
 
       test_user_ldif = <<-EOM
 dn: cn=test.user,ou=Group,#{domains}
@@ -159,9 +167,11 @@ memberUid: test.user
 
           # Apply
           set_hieradata_on(node, server_hieradata, 'default')
+          on(node, 'cat /etc/puppetlabs/code/hieradata/*')
           on(node, 'mkdir -p /usr/local/sbin/simp')
-          apply_manifest_on(node, server_manifest, :catch_failures => true)
-          apply_manifest_on(node, server_manifest, :catch_failures => true)
+          apply_manifest_on(node, server_manifest, catch_failures: true)
+          apply_manifest_on(node, server_manifest, catch_failures: true)
+          apply_manifest_on(node, server_manifest, catch_changes: true)
 
           # Create test.user
           create_remote_file(node, '/root/user_ldif.ldif', test_user_ldif)
@@ -180,8 +190,11 @@ memberUid: test.user
       else
         it "should set up #{node}" do
           set_hieradata_on(node, hieradata, 'default')
+          on(node, 'cat /etc/puppetlabs/code/hieradata/*')
           on(node, 'mkdir -p /usr/local/sbin/simp')
-          apply_manifest_on(node, manifest, :catch_failures => true)
+          apply_manifest_on(node, manifest, catch_failures: true)
+          apply_manifest_on(node, manifest, catch_failures: true)
+          apply_manifest_on(node, manifest, catch_changes: true)
         end
       end
     end
