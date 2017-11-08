@@ -106,8 +106,10 @@ ssh::server::conf::authorizedkeysfile: .ssh/authorized_keys
 
       if ENV['BEAKER_set_autofs_version'] == 'yes'
         if fact_on(node, 'operatingsystemmajrelease') == '7'
+          on(node, 'yum install -y http://vault.centos.org/7.3.1611/os/x86_64/Packages/autofs-5.0.7-56.el7.x86_64.rpm')
           hieradata += "\nautofs::autofs_package_ensure: '5.0.7-56.el7'\n"
         else
+          on(node, 'yum install -y http://vault.centos.org/6.8/os/x86_64/Packages/autofs-5.0.5-122.el6.x86_64.rpm')
           hieradata += "\nautofs::autofs_package_ensure: '5.0.5-122.el6'\n"
         end
       end
