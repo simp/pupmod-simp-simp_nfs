@@ -109,7 +109,7 @@ servers.each do |svr|
       }
       if tls == 'ssl'
         conn_opts[:encryption] = :simple_tls
-      elsif tls ==  'start_tls'
+      elsif tls == 'start_tls'
         conn_opts[:encryption] = :start_tls
       end
       conn = Net::LDAP.new(conn_opts)
