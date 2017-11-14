@@ -99,12 +99,12 @@ servers.each do |svr|
       # block is executed; only open() will create a persistent connection
       # which requires closing.
       conn_opts = {
-        host: svr,
-        port: <%= @port %>,
-        auth: {
-          method:   :simple,
-          username: dn,
-          password: pw
+        :host => svr,
+        :port => <%= @port %>,
+        :auth => {
+          :method   => :simple,
+          :username => dn,
+          :password => pw
         }
       }
       if tls == 'ssl'
