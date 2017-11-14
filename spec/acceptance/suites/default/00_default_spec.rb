@@ -82,7 +82,7 @@ simp_options::ldap::sync_pw: 'foobarbaz'
 simp_options::ldap::sync_hash: '{SSHA}BNPDR0qqE6HyLTSlg13T0e/+yZnSgYQz'
 # simp_openldap::server::conf::rootpw: '{SSHA}BNPDR0qqE6HyLTSlg13T0e/+yZnSgYQz'
 # suP3rP@ssw0r!
-simp_openldap::server::conf::rootpw: "{SSHA}ZcqPNbcqQhDNF5jYTLGl+KAGcrHNW9oo"
+simp_openldap::server::conf::rootpw: "{SSHA}TghZyHW6r8/NL4fo0Q8BnihxVb7A7af5"
 sssd::domains:
   - LDAP
 simp::is_mail_server: false
@@ -95,6 +95,7 @@ pam::access::users:
       - ALL
     permission: '+'
   vagrant:
+  test.user:
 sudo::user_specifications:
   vagrant_all:
     user_list: ['vagrant']
@@ -137,13 +138,12 @@ shadowMax: 180
 shadowMin: 1
 shadowWarning: 7
 shadowLastChange: 10701
-sshPublicKey:
 loginShell: /bin/bash
 uidNumber: 10000
 gidNumber: 10000
 homeDirectory: /home/test.user
-#suP3rP@ssw0r!
-userPassword: {SSHA}r2GaizHFWY8pcHpIClU0ye7vsO4uHv/y
+# suP3rP@ssw0r!
+userPassword: {SSHA}yOdnVOQYXOEc0Gjv4RRY5BnnFfIKLI3/
 pwdReset: TRUE
       EOM
 
