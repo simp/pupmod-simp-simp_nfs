@@ -128,7 +128,7 @@ acceptance-old-autofs:
   <<: *cache_bundler
   <<: *setup_bundler_env
   variables:
-    - BEAKER_set_autofs_version: yes
+    BEAKER_set_autofs_version: yes
   script:
     - bundle exec rake beaker:suites
 
@@ -139,7 +139,7 @@ acceptance-fips:
   <<: *cache_bundler
   <<: *setup_bundler_env
   variables:
-    - BEAKER_set_autofs_version: yes
-    - BEAKER_fips: yes
+    BEAKER_set_autofs_version: yes
+    BEAKER_fips: yes
   script:
     - bundle exec rake beaker:suites
