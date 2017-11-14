@@ -98,18 +98,10 @@ servers.each do |svr|
       # NOTE: Binding with the host will automatically cease once the code
       # block is executed; only open() will create a persistent connection
       # which requires closing.
-      conn_opts = {
-        :host => svr,
-        :port => <%= @port %>,
-        :auth => {
-          :method   => :simple,
-          :username => dn,
-          :password => pw
-        }
-      }
+      conn_opts = {:host => svr, :port => <%= @port %>, :auth => {:method => :simple, :username => dn, :password => pw}}
       if tls == 'ssl'
         conn_opts[:encryption] = :simple_tls
-      elsif tls == 'start_tls'
+      elsif tls ==  'start_tls'
         conn_opts[:encryption] = :start_tls
       end
       conn = Net::LDAP.new(conn_opts)
