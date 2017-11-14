@@ -55,12 +55,12 @@ nfs::client::stunnel::nfs_server: #{nfs_server}
 
 # Options
 # Use fallback ciphers/macs to ensure ssh capability on any platform
-ssh::server::conf::ciphers:
-- 'aes256-cbc'
-- 'aes192-cbc'
-- 'aes128-cbc'
-ssh::server::conf::macs:
-- 'hmac-sha1'
+# ssh::server::conf::ciphers:
+# - 'aes256-cbc'
+# - 'aes192-cbc'
+# - 'aes128-cbc'
+# ssh::server::conf::macs:
+# - 'hmac-sha1'
 simp_options::clamav: false
 simp_options::dns::servers: ['8.8.8.8']
 simp_options::puppet::server: #{server}
@@ -82,7 +82,7 @@ simp_options::ldap::sync_pw: 'foobarbaz'
 simp_options::ldap::sync_hash: '{SSHA}BNPDR0qqE6HyLTSlg13T0e/+yZnSgYQz'
 # simp_openldap::server::conf::rootpw: '{SSHA}BNPDR0qqE6HyLTSlg13T0e/+yZnSgYQz'
 # suP3rP@ssw0r!
-simp_openldap::server::conf::rootpw: "{SSHA}ZcqPNbcqQhDNF5jYTLGl+KAGcrHNW9oo"
+simp_openldap::server::conf::rootpw: "{SSHA}TghZyHW6r8/NL4fo0Q8BnihxVb7A7af5"
 sssd::domains:
   - LDAP
 simp::is_mail_server: false
@@ -95,6 +95,7 @@ pam::access::users:
       - ALL
     permission: '+'
   vagrant:
+  test.user:
 sudo::user_specifications:
   vagrant_all:
     user_list: ['vagrant']
@@ -103,6 +104,16 @@ sudo::user_specifications:
 ssh::server::conf::permitrootlogin: true
 ssh::server::conf::authorizedkeysfile: .ssh/authorized_keys
       EOM
+
+      if ENV['BEAKER_set_autofs_version'] == 'yes'
+        if fact_on(node, 'operatingsystemmajrelease') == '7'
+          on(node, 'yum install -y http://vault.centos.org/7.3.1611/os/x86_64/Packages/autofs-5.0.7-56.el7.x86_64.rpm')
+          hieradata += "\nautofs::autofs_package_ensure: '5.0.7-56.el7'\n"
+        else
+          on(node, 'yum install -y http://vault.centos.org/6.8/os/x86_64/Packages/autofs-5.0.5-122.el6.x86_64.rpm')
+          hieradata += "\nautofs::autofs_package_ensure: '5.0.5-122.el6'\n"
+        end
+      end
 
       test_user_ldif = <<-EOM
 dn: cn=test.user,ou=Group,#{domains}
@@ -127,13 +138,12 @@ shadowMax: 180
 shadowMin: 1
 shadowWarning: 7
 shadowLastChange: 10701
-sshPublicKey:
 loginShell: /bin/bash
 uidNumber: 10000
 gidNumber: 10000
 homeDirectory: /home/test.user
-#suP3rP@ssw0r!
-userPassword: {SSHA}r2GaizHFWY8pcHpIClU0ye7vsO4uHv/y
+# suP3rP@ssw0r!
+userPassword: {SSHA}yOdnVOQYXOEc0Gjv4RRY5BnnFfIKLI3/
 pwdReset: TRUE
       EOM
 
@@ -159,9 +169,11 @@ memberUid: test.user
 
           # Apply
           set_hieradata_on(node, server_hieradata, 'default')
+          on(node, 'cat /etc/puppetlabs/code/hieradata/*')
           on(node, 'mkdir -p /usr/local/sbin/simp')
-          apply_manifest_on(node, server_manifest, :catch_failures => true)
-          apply_manifest_on(node, server_manifest, :catch_failures => true)
+          apply_manifest_on(node, server_manifest, catch_failures: true)
+          apply_manifest_on(node, server_manifest, catch_failures: true)
+          apply_manifest_on(node, server_manifest, catch_changes: true)
 
           # Create test.user
           create_remote_file(node, '/root/user_ldif.ldif', test_user_ldif)
@@ -180,8 +192,11 @@ memberUid: test.user
       else
         it "should set up #{node}" do
           set_hieradata_on(node, hieradata, 'default')
+          on(node, 'cat /etc/puppetlabs/code/hieradata/*')
           on(node, 'mkdir -p /usr/local/sbin/simp')
-          apply_manifest_on(node, manifest, :catch_failures => true)
+          apply_manifest_on(node, manifest, catch_failures: true)
+          apply_manifest_on(node, manifest, catch_failures: true)
+          apply_manifest_on(node, manifest, catch_changes: true)
         end
       end
     end
@@ -190,6 +205,11 @@ memberUid: test.user
       servers.each do |node|
         # Create test.user's homedir via cron, and ensure it gets mounted
         on(node, '/etc/cron.hourly/create_home_directories.rb')
+        #FIXME workaround for script not working on el6 of some sort?
+        if fact_on(node, 'operatingsystemmajrelease') == '6'
+          on(node, 'mkdir -p /var/nfs/home/test.user')
+          on(node, 'chown test.user:test.user /var/nfs/home/test.user')
+        end
         on(node, 'ls /var/nfs/home/test.user')
         on(node, "runuser -l test.user -c 'touch ~/testfile'")
         mount = on(node, "mount")
@@ -199,7 +219,7 @@ memberUid: test.user
 
     it 'should have file propagation to the clients' do
       clients.each do |node|
-        on(node, 'ls /home/test.user/testfile', :acceptable_exit_codes => [0])
+        retry_on(node, 'ls /home/test.user/testfile', acceptable_exit_codes: [0])
       end
     end
   end
