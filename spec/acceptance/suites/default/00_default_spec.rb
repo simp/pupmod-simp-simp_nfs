@@ -205,11 +205,6 @@ memberUid: test.user
       servers.each do |node|
         # Create test.user's homedir via cron, and ensure it gets mounted
         on(node, '/etc/cron.hourly/create_home_directories.rb')
-        #FIXME workaround for script not working on el6 of some sort?
-        if fact_on(node, 'operatingsystemmajrelease') == '6'
-          on(node, 'mkdir /var/nfs/home/test.user')
-          on(node, 'chown test.user:test.user /var/nfs/home/test.user')
-        end
         on(node, 'ls /var/nfs/home/test.user')
         on(node, "runuser -l test.user -c 'touch ~/testfile'")
         mount = on(node, "mount")
