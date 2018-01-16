@@ -12,9 +12,15 @@ HOSTS:
     vagrant_memsize: 2048
     yum_repos:
       simp:
-        baseurl: https://packagecloud.io/simp-project/6_X_Alpha_Dependencies/el/7/$basearch
+        baseurl: https://packagecloud.io/simp-project/6_X_Dependencies/el/$releasever/$basearch
         gpgkeys:
           - https://raw.githubusercontent.com/NationalSecurityAgency/SIMP/master/GPGKEYS/RPM-GPG-KEY-SIMP
+          - https://yum.puppet.com/RPM-GPG-KEY-puppetlabs
+          - https://yum.puppet.com/RPM-GPG-KEY-puppet
+          - https://apt.postgresql.org/pub/repos/yum/RPM-GPG-KEY-PGDG-96
+          - https://artifacts.elastic.co/GPG-KEY-elasticsearch
+          - https://grafanarel.s3.amazonaws.com/RPM-GPG-KEY-grafana
+          - https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-$releasever
       epel:
         mirrorlist: 'https://mirrors.fedoraproject.org/metalink?repo=epel-7&arch=$basearch'
         gpgkeys:
@@ -30,9 +36,15 @@ HOSTS:
     hypervisor: vagrant
     yum_repos:
       simp:
-        baseurl: https://packagecloud.io/simp-project/6_X_Alpha_Dependencies/el/7/$basearch
+        baseurl: https://packagecloud.io/simp-project/6_X_Dependencies/el/$releasever/$basearch
         gpgkeys:
           - https://raw.githubusercontent.com/NationalSecurityAgency/SIMP/master/GPGKEYS/RPM-GPG-KEY-SIMP
+          - https://yum.puppet.com/RPM-GPG-KEY-puppetlabs
+          - https://yum.puppet.com/RPM-GPG-KEY-puppet
+          - https://apt.postgresql.org/pub/repos/yum/RPM-GPG-KEY-PGDG-96
+          - https://artifacts.elastic.co/GPG-KEY-elasticsearch
+          - https://grafanarel.s3.amazonaws.com/RPM-GPG-KEY-grafana
+          - https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-$releasever
       epel:
         mirrorlist: 'https://mirrors.fedoraproject.org/metalink?repo=epel-7&arch=$basearch'
         gpgkeys:
@@ -49,9 +61,15 @@ HOSTS:
     vagrant_memsize: 2048
     yum_repos:
       simp:
-        baseurl: https://packagecloud.io/simp-project/4_X_Dependencies/el/6/$basearch
+        baseurl: https://packagecloud.io/simp-project/6_X_Dependencies/el/$releasever/$basearch
         gpgkeys:
           - https://raw.githubusercontent.com/NationalSecurityAgency/SIMP/master/GPGKEYS/RPM-GPG-KEY-SIMP
+          - https://yum.puppet.com/RPM-GPG-KEY-puppetlabs
+          - https://yum.puppet.com/RPM-GPG-KEY-puppet
+          - https://apt.postgresql.org/pub/repos/yum/RPM-GPG-KEY-PGDG-96
+          - https://artifacts.elastic.co/GPG-KEY-elasticsearch
+          - https://grafanarel.s3.amazonaws.com/RPM-GPG-KEY-grafana
+          - https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-$releasever
       epel:
         mirrorlist: 'https://mirrors.fedoraproject.org/metalink?repo=epel-6&arch=$basearch'
         gpgkeys:
@@ -67,9 +85,15 @@ HOSTS:
     hypervisor: vagrant
     yum_repos:
       simp:
-        baseurl: https://packagecloud.io/simp-project/4_X_Dependencies/el/6/$basearch
+        baseurl: https://packagecloud.io/simp-project/6_X_Dependencies/el/$releasever/$basearch
         gpgkeys:
           - https://raw.githubusercontent.com/NationalSecurityAgency/SIMP/master/GPGKEYS/RPM-GPG-KEY-SIMP
+          - https://yum.puppet.com/RPM-GPG-KEY-puppetlabs
+          - https://yum.puppet.com/RPM-GPG-KEY-puppet
+          - https://apt.postgresql.org/pub/repos/yum/RPM-GPG-KEY-PGDG-96
+          - https://artifacts.elastic.co/GPG-KEY-elasticsearch
+          - https://grafanarel.s3.amazonaws.com/RPM-GPG-KEY-grafana
+          - https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-$releasever
       epel:
         mirrorlist: 'https://mirrors.fedoraproject.org/metalink?repo=epel-6&arch=$basearch'
         gpgkeys:
@@ -81,4 +105,3 @@ CONFIG:
   vagrant_memsize: 256
   synced_folder: disabled
   # vb_gui: true
-
