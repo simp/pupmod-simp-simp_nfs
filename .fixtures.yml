@@ -10,7 +10,9 @@ fixtures:
     augeasproviders_sysctl: https://github.com/simp/augeasproviders_sysctl
     augeasproviders_ssh: https://github.com/simp/augeasproviders_ssh
     autofs: https://github.com/simp/pupmod-simp-autofs
-    concat: https://github.com/simp/puppetlabs-concat
+    concat:
+     repo: https://github.com/simp/puppetlabs-concat
+     ref: 3.0.0
     chkrootkit: https://github.com/simp/pupmod-simp-chkrootkit
     clamav: https://github.com/simp/pupmod-simp-clamav
     cron: https://github.com/simp/pupmod-simp-cron
@@ -35,8 +37,12 @@ fixtures:
     pki: https://github.com/simp/pupmod-simp-pki
     postfix: https://github.com/simp/pupmod-simp-postfix
     pupmod: https://github.com/simp/pupmod-simp-pupmod
-    puppetdb: https://github.com/simp/puppetlabs-puppetdb
-    postgresql: https://github.com/simp/puppetlabs-postgresql
+    postgresql:
+      repo: https://github.com/simp/puppetlabs-postgresql
+      ref: 5.2.1
+    puppetdb:
+      repo: https://github.com/simp/puppetlabs-puppetdb
+      ref: 6.0.2
     resolv: https://github.com/simp/pupmod-simp-resolv
     rsync: https://github.com/simp/pupmod-simp-rsync
     rsyslog: https://github.com/simp/pupmod-simp-rsyslog
