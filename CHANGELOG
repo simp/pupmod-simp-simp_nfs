@@ -1,3 +1,7 @@
+* Wed Apr 18 2017 Trevor Vaughan <tvaughan@onyxpoint.com> - 0.0.5
+- Allow users to properly disable autofs
+- Ensure that users can force the mounts to point to a remote host
+
 * Fri Sep 01 2017 Jeanne Greulich <jeannegreulich@onyxpoint.com> - 0.0.4
 - documented known bug and work around in CentOS 6.9 in the README file.
 
