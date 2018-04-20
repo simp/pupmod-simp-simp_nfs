@@ -1,4 +1,4 @@
-* Wed Apr 18 2017 Trevor Vaughan <tvaughan@onyxpoint.com> - 0.0.5
+* Wed Apr 18 2018 Trevor Vaughan <tvaughan@onyxpoint.com> - 0.0.5
 - Allow users to properly disable autofs
 - Added parameter, autodetect_remote, that allows users to disable the logic
   that determines if system is an NFS server and mounts directories locally.
