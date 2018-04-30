@@ -42,7 +42,7 @@ describe 'simp_nfs' do
 
         context 'when mounting home directories' do
           let(:params) {{
-            :home_dir_server  => facts[:fqdn]
+            :home_dir_server => facts[:fqdn]
           }}
 
           it_behaves_like "a structured module"
@@ -50,6 +50,23 @@ describe 'simp_nfs' do
           it { is_expected.to contain_class('nfs').with_is_server(false) }
           it { is_expected.to_not contain_class('simp_nfs::export::home') }
           it { is_expected.to contain_class('simp_nfs::mount::home').with_nfs_server(facts[:fqdn]) }
+
+          it {
+            is_expected.to contain_nfs__client__mount('wildcard-/home').with_nfs_server(facts[:fqdn])
+            is_expected.to contain_nfs__client__mount('wildcard-/home').with_autofs(true)
+          }
+
+          context 'without autofs' do
+            let(:params) {{
+              :home_dir_server => facts[:fqdn],
+              :use_autofs     => false
+            }}
+
+            it {
+              is_expected.to contain_nfs__client__mount('/home').with_nfs_server(facts[:fqdn])
+              is_expected.to contain_nfs__client__mount('/home').with_autofs(false)
+            }
+          end
         end
       end
     end

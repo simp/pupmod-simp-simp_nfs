@@ -74,6 +74,31 @@ simp_options::stunnel: true
 simp_nfs::home_dir_server : <your NFS server IP or Hostname>
 ```
 
+### Mount Home NFS Directories on another NFS server
+
+To mount home directories on another NFS server do not include the the simp_nfs
+class. This will try to call the nfs class a second time.  Instead
+create a site manifest and call the home class directly.  Note:Use the port 
+parameter if you are using stunnel and set it to a different port then the 
+one the local NFS server is using.
+
+```ruby
+class  mounthome {
+  
+  class { simp_nfs::mount::home :
+    nfs_server => $home_server,
+    port  => 12049,
+    autodetect_remote => false
+  }
+}
+```
+
+```yaml
+---
+classes:
+- site::mounthome
+```
+
 ## Reference
 
 See the [API Documentation](https://github.com/simp/pupmod-simp-simp_nfs/tree/master/docs/index.html) for full details.

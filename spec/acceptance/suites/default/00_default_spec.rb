@@ -103,9 +103,12 @@ sudo::user_specifications:
     passwd: false
 ssh::server::conf::permitrootlogin: true
 ssh::server::conf::authorizedkeysfile: .ssh/authorized_keys
+simp_nfs::mount::home::local_home: /mnt
       EOM
 
-      if ENV['BEAKER_set_autofs_version'] == 'yes'
+      unless ENV['BEAKER_set_autofs_version'] == 'no'
+        puts 'WARNING: PINNING AUTOFS TO WORK AROUND KNOWN BUGS!!!'
+
         if fact_on(node, 'operatingsystemmajrelease') == '7'
           on(node, 'yum install -y http://vault.centos.org/7.3.1611/os/x86_64/Packages/autofs-5.0.7-56.el7.x86_64.rpm')
           hieradata += "\nautofs::autofs_package_ensure: '5.0.7-56.el7'\n"
@@ -141,7 +144,7 @@ shadowLastChange: 10701
 loginShell: /bin/bash
 uidNumber: 10000
 gidNumber: 10000
-homeDirectory: /home/test.user
+homeDirectory: /mnt/test.user
 # suP3rP@ssw0r!
 userPassword: {SSHA}yOdnVOQYXOEc0Gjv4RRY5BnnFfIKLI3/
 pwdReset: TRUE
@@ -219,7 +222,7 @@ memberUid: test.user
 
     it 'should have file propagation to the clients' do
       clients.each do |node|
-        retry_on(node, 'ls /home/test.user/testfile', acceptable_exit_codes: [0])
+        retry_on(node, 'ls /mnt/test.user/testfile', acceptable_exit_codes: [0])
       end
     end
   end

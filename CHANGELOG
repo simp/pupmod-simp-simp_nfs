@@ -1,3 +1,9 @@
+* Wed Apr 18 2018 Trevor Vaughan <tvaughan@onyxpoint.com> - 0.0.5
+- Allow users to properly disable autofs
+- Added parameter, autodetect_remote, that allows users to disable the logic
+  that determines if system is an NFS server and mounts directories locally.
+  This allows the mounting of home directories to another NFS server.
+
 * Fri Sep 01 2017 Jeanne Greulich <jeannegreulich@onyxpoint.com> - 0.0.4
 - documented known bug and work around in CentOS 6.9 in the README file.
 

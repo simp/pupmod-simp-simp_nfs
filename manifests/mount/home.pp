@@ -38,6 +38,14 @@
 #
 #   * Has no effect if ``$use_autofs`` is set
 #
+# @param autodetect_remote
+#   Use inbuilt autodetection to determine if the local system is the server
+#   from which we should be mouting directories
+#
+#   * Generally, you should set this to ``false`` if you have issues with the
+#     system mounting to ``127.0.0.1`` when your home directories are actually
+#     on another system
+#
 # @param use_autofs
 #   Enable automounting with Autofs
 #
@@ -46,13 +54,14 @@
 #
 class simp_nfs::mount::home (
   Simplib::Host                      $nfs_server,
-  Stdlib::Absolutepath               $remote_path = '/home',
-  Stdlib::Absolutepath               $local_home  = '/home',
-  Optional[Simplib::Port]            $port        = undef,
-  Enum['sys','krb5','krb5i','krb5p'] $sec         = 'sys',
-  Optional[String]                   $options     = undef,
-  Boolean                            $at_boot     = true,
-  Boolean                            $use_autofs  = true
+  Stdlib::Absolutepath               $remote_path       = '/home',
+  Stdlib::Absolutepath               $local_home        = '/home',
+  Optional[Simplib::Port]            $port              = undef,
+  Enum['sys','krb5','krb5i','krb5p'] $sec               = 'sys',
+  Optional[String]                   $options           = undef,
+  Boolean                            $at_boot           = true,
+  Boolean                            $autodetect_remote = true,
+  Boolean                            $use_autofs        = true
 ) {
   if getvar('::nfs::client::is_server') {
     $_target = '127.0.0.1'
@@ -68,7 +77,14 @@ class simp_nfs::mount::home (
     }
   }
 
-  nfs::client::mount { "wildcard-${local_home}":
+  if $use_autofs {
+    $_local_home = "wildcard-${local_home}"
+  }
+  else {
+    $_local_home = $local_home
+  }
+
+  nfs::client::mount { $_local_home:
     nfs_server         => $nfs_server,
     remote_path        => $remote_path,
     port               => $port,
@@ -76,6 +92,7 @@ class simp_nfs::mount::home (
     sec                => $sec,
     options            => $options,
     at_boot            => $at_boot,
+    autodetect_remote  => $autodetect_remote,
     autofs             => $use_autofs,
     autofs_map_to_user => true
   }
