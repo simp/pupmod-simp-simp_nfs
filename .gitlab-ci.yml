@@ -184,22 +184,21 @@ pup5_latest-unit:
   <<: *spec_tests
   allow_failure: true
 
-
-
 # Acceptance tests
 # ==============================================================================
-default-latest:
+default-latest-autofs:
   stage: acceptance
   tags:
     - beaker
   <<: *cache_bundler
   <<: *setup_bundler_env
   script:
+    - bundle exec rake spec_clean
     - bundle exec rake beaker:suites[default]
   # FIXME This will fail until a new version of autofs is released that supports
   # our stunnel config
-  # - CentOS 6.9  https://bugs.centos.org/view.php?id=13575.
-  # - CentOS 7.4  https://bugs.centos.org/view.php?id=14080.
+  # - CentOS 6.9 https://bugs.centos.org/view.php?id=13575
+  # - CentOS 7.4 https://bugs.centos.org/view.php?id=14080
   allow_failure: true
 
 default-old-autofs:
@@ -211,6 +210,7 @@ default-old-autofs:
   variables:
     BEAKER_set_autofs_version: 'yes'
   script:
+    - bundle exec rake spec_clean
     - bundle exec rake beaker:suites[default]
 
 default-old-autofs-fips:
@@ -223,4 +223,5 @@ default-old-autofs-fips:
     BEAKER_set_autofs_version: 'yes'
     BEAKER_fips: 'yes'
   script:
+    - bundle exec rake spec_clean
     - bundle exec rake beaker:suites[default]
