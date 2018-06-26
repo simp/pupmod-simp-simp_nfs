@@ -184,6 +184,8 @@ pup5_latest-unit:
   <<: *spec_tests
   allow_failure: true
 
+
+
 # Acceptance tests
 # ==============================================================================
 default-latest-autofs:
