@@ -1,72 +1,33 @@
 ---
 fixtures:
   repositories:
-    aide: https://github.com/simp/pupmod-simp-aide
-    at: https://github.com/simp/pupmod-simp-at
-    auditd: https://github.com/simp/pupmod-simp-auditd
     augeasproviders_core: https://github.com/simp/augeasproviders_core
-    augeasproviders_grub: https://github.com/simp/augeasproviders_grub
-    augeasproviders_puppet: https://github.com/simp/augeasproviders_puppet
     augeasproviders_sysctl: https://github.com/simp/augeasproviders_sysctl
-    augeasproviders_ssh: https://github.com/simp/augeasproviders_ssh
     autofs: https://github.com/simp/pupmod-simp-autofs
     concat:
       # master is beyond 4.1.1, but has breaking changes to
       # how fragments are ordered (MODULES-6625)
       repo: https://github.com/simp/puppetlabs-concat
       ref: 4.1.1
-    chkrootkit: https://github.com/simp/pupmod-simp-chkrootkit
-    clamav: https://github.com/simp/pupmod-simp-clamav
-    cron: https://github.com/simp/pupmod-simp-cron
-    dhcp: https://github.com/simp/pupmod-simp-dhcp
-    haveged: https://github.com/simp/pupmod-simp-haveged
-    freeradius: https://github.com/simp/pupmod-simp-freeradius
-    iptables: https://github.com/simp/pupmod-simp-iptables
-    inifile: https://github.com/simp/puppetlabs-inifile
-    incron: https://github.com/simp/pupmod-simp-incron
-    issue: https://github.com/simp/pupmod-simp-issue
-    kmod: https://github.com/simp/puppet-kmod
-    krb5: https://github.com/simp/pupmod-simp-krb5
-    logrotate: https://github.com/simp/pupmod-simp-logrotate
-    named: https://github.com/simp/pupmod-simp-named
     nfs: https://github.com/simp/pupmod-simp-nfs
+    simplib: https://github.com/simp/pupmod-simp-simplib
+    stdlib: https://github.com/simp/puppetlabs-stdlib
+    svckill: https://github.com/simp/pupmod-simp-svckill
+
+    # Required for the acceptance test
+    augeasproviders_ssh: https://github.com/simp/augeasproviders_ssh
+    haveged: https://github.com/simp/pupmod-simp-haveged
+    iptables: https://github.com/simp/pupmod-simp-iptables
     nsswitch: https://github.com/simp/puppet-nsswitch
-    ntpd: https://github.com/simp/pupmod-simp-ntpd
-    oddjob: https://github.com/simp/pupmod-simp-oddjob
     pam: https://github.com/simp/pupmod-simp-pam
     pki: https://github.com/simp/pupmod-simp-pki
-    postfix: https://github.com/simp/pupmod-simp-postfix
-    pupmod: https://github.com/simp/pupmod-simp-pupmod
-    postgresql:
-      repo: https://github.com/simp/puppetlabs-postgresql
-      ref: 5.2.1
-    puppetdb:
-      repo: https://github.com/simp/puppetlabs-puppetdb
-      ref: 6.0.2
-    resolv: https://github.com/simp/pupmod-simp-resolv
-    rsync: https://github.com/simp/pupmod-simp-rsync
-    rsyslog: https://github.com/simp/pupmod-simp-rsyslog
-    selinux: https://github.com/simp/pupmod-simp-selinux
     simp: https://github.com/simp/pupmod-simp-simp
     simp_openldap: https://github.com/simp/pupmod-simp-simp_openldap
     simp_options: https://github.com/simp/pupmod-simp-simp_options
-    simp_rsyslog: https://github.com/simp/pupmod-simp-simp_rsyslog
-    simpcat: https://github.com/simp/pupmod-simp-simpcat
-    simplib: https://github.com/simp/pupmod-simp-simplib
     sssd: https://github.com/simp/pupmod-simp-sssd
     ssh: https://github.com/simp/pupmod-simp-ssh
-    stdlib: https://github.com/simp/puppetlabs-stdlib
     stunnel: https://github.com/simp/pupmod-simp-stunnel
     sudo: https://github.com/simp/pupmod-simp-sudo
-    sudosh: https://github.com/simp/pupmod-simp-sudosh
-    swap: https://github.com/simp/pupmod-simp-swap
-    svckill: https://github.com/simp/pupmod-simp-svckill
-    timezone:
-      repo: https://github.com/simp/pupmod-simp-timezone
-      branch: simp-master
     tcpwrappers: https://github.com/simp/pupmod-simp-tcpwrappers
-    tftpboot: https://github.com/simp/pupmod-simp-tftpboot
-    tuned: https://github.com/simp/pupmod-simp-tuned
-    useradd: https://github.com/simp/pupmod-simp-useradd
   symlinks:
     simp_nfs: "#{source_dir}"

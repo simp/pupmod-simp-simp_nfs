@@ -1,3 +1,6 @@
+* Thu Jun 14 2018 Nick Miller <nick.miller@onyxpoint.com> - 0.0.5
+- Update systemd fixtures and CI assets
+
 * Wed Apr 18 2018 Trevor Vaughan <tvaughan@onyxpoint.com> - 0.0.5
 - Allow users to properly disable autofs
 - Added parameter, autodetect_remote, that allows users to disable the logic
