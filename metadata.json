@@ -14,7 +14,7 @@
   "dependencies": [
     {
       "name": "simp/nfs",
-      "version_requirement": ">= 6.1.2 < 7.0.0"
+      "version_requirement": ">= 6.1.1 < 7.0.0"
     },
     {
       "name": "simp/simplib",
