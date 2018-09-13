@@ -14,10 +14,14 @@ HOSTS:
       - nfs_server
       - el7
     platform:   el-7-x86_64
-    box:        centos/7
+    box:        elastic/oel-7-x86_64
     hypervisor: <%= hypervisor %>
     vagrant_memsize: 2048
     yum_repos:
+      updates:
+        baseurl: 'https://public-yum.oracle.com/repo/OracleLinux/OL7/latest/$basearch'
+        gpgkeys:
+          - http://public-yum.oracle.com/RPM-GPG-KEY-oracle-ol7
       simp:
         baseurl: https://packagecloud.io/simp-project/6_X_Dependencies/el/$releasever/$basearch
         gpgkeys:
@@ -39,7 +43,7 @@ HOSTS:
       - agent
       - el7
     platform:   el-7-x86_64
-    box:        centos/7
+    box:        elastic/oel-7-x86_64
     hypervisor: <%= hypervisor %>
     yum_repos:
       simp:
@@ -63,10 +67,14 @@ HOSTS:
       - nfs_server
       - el6
     platform:   el-6-x86_64
-    box:        centos/6
+    box:        elastic/oel-6-x86_64
     hypervisor: <%= hypervisor %>
     vagrant_memsize: 2048
     yum_repos:
+      updates:
+        baseurl: 'https://public-yum.oracle.com/repo/OracleLinux/OL6/latest/$basearch'
+        gpgkeys:
+          - http://public-yum.oracle.com/RPM-GPG-KEY-oracle-ol6
       simp:
         baseurl: https://packagecloud.io/simp-project/6_X_Dependencies/el/$releasever/$basearch
         gpgkeys:
