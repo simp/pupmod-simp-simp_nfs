@@ -169,6 +169,25 @@ default-old-autofs:
     - bundle exec rake spec_clean
     - bundle exec rake beaker:suites[default]
 
+default-latest-autofs-puppet5:
+  stage: acceptance
+  tags:
+    - beaker
+  <<: *cache_bundler
+  <<: *setup_bundler_env
+  <<: *only_with_SIMP_FULL_MATRIX
+  variables:
+    PUPPET_VERSION: '~> 5.3'
+    BEAKER_PUPPET_COLLECTION: 'puppet5'
+  script:
+    - bundle exec rake spec_clean
+    - bundle exec rake beaker:suites[default]
+  # FIXME This will fail until a new version of autofs is released that supports
+  # our stunnel config
+  # - CentOS 6.9 https://bugs.centos.org/view.php?id=13575
+  # - CentOS 7.4 https://bugs.centos.org/view.php?id=14080
+  allow_failure: true
+
 default-old-autofs-puppet5:
   stage: acceptance
   tags:
@@ -203,7 +222,6 @@ default-old-autofs-oel:
     - beaker
   <<: *cache_bundler
   <<: *setup_bundler_env
-  <<: *only_with_SIMP_FULL_MATRIX
   variables:
     PUPPET_VERSION: '~> 4.10.0'
     BEAKER_set_autofs_version: 'yes'
