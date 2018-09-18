@@ -147,7 +147,7 @@ default-latest-autofs:
   <<: *setup_bundler_env
   <<: *only_with_SIMP_FULL_MATRIX
   variables:
-    PUPPET_VERSION: '~> 4.10.0'
+    PUPPET_VERSION: '~> 4.10'
   script:
     - bundle exec rake spec_clean
     - bundle exec rake beaker:suites[default]
@@ -177,7 +177,7 @@ default-latest-autofs-puppet5:
   <<: *setup_bundler_env
   <<: *only_with_SIMP_FULL_MATRIX
   variables:
-    PUPPET_VERSION: '~> 5.3'
+    PUPPET_VERSION: '~> 5.5'
     BEAKER_PUPPET_COLLECTION: 'puppet5'
   script:
     - bundle exec rake spec_clean
@@ -195,7 +195,7 @@ default-old-autofs-puppet5:
   <<: *cache_bundler
   <<: *setup_bundler_env
   variables:
-    PUPPET_VERSION: '~> 5.3'
+    PUPPET_VERSION: '~> 5.5'
     BEAKER_PUPPET_COLLECTION: 'puppet5'
     BEAKER_set_autofs_version: 'yes'
   script:
@@ -223,7 +223,7 @@ default-old-autofs-oel:
   <<: *cache_bundler
   <<: *setup_bundler_env
   variables:
-    PUPPET_VERSION: '~> 4.10.0'
+    PUPPET_VERSION: '~> 4.10'
     BEAKER_set_autofs_version: 'yes'
   script:
     - bundle exec rake spec_clean
@@ -237,9 +237,61 @@ default-old-autofs-oel-fips:
   <<: *setup_bundler_env
   <<: *only_with_SIMP_FULL_MATRIX
   variables:
-    PUPPET_VERSION: '~> 4.10.0'
+    PUPPET_VERSION: '~> 4.10'
     BEAKER_fips: 'yes'
     BEAKER_set_autofs_version: 'yes'
   script:
     - bundle exec rake spec_clean
     - bundle exec rake beaker:suites[default,oel]
+
+default-old-autofs-oel-fips-puppet5:
+  stage: acceptance
+  tags:
+    - beaker
+  <<: *cache_bundler
+  <<: *setup_bundler_env
+  <<: *only_with_SIMP_FULL_MATRIX
+  variables:
+    PUPPET_VERSION: '~> 5.5'
+    BEAKER_fips: 'yes'
+    BEAKER_set_autofs_version: 'yes'
+  script:
+    - bundle exec rake spec_clean
+    - bundle exec rake beaker:suites[default,oel]
+
+default-latest-autofs-oel-puppet5:
+  stage: acceptance
+  tags:
+    - beaker
+  <<: *cache_bundler
+  <<: *setup_bundler_env
+  <<: *only_with_SIMP_FULL_MATRIX
+  variables:
+    PUPPET_VERSION: '~> 5.5'
+    BEAKER_PUPPET_COLLECTION: 'puppet5'
+  script:
+    - bundle exec rake spec_clean
+    - bundle exec rake beaker:suites[default,oel]
+  # FIXME This will fail until a new version of autofs is released that supports
+  # our stunnel config
+  # - CentOS 6.9 https://bugs.centos.org/view.php?id=13575
+  # - CentOS 7.4 https://bugs.centos.org/view.php?id=14080
+  allow_failure: true
+
+default-latest-autofs-oel:
+  stage: acceptance
+  tags:
+    - beaker
+  <<: *cache_bundler
+  <<: *setup_bundler_env
+  <<: *only_with_SIMP_FULL_MATRIX
+  variables:
+    PUPPET_VERSION: '~> 4.10'
+  script:
+    - bundle exec rake spec_clean
+    - bundle exec rake beaker:suites[default,oel]
+  # FIXME This will fail until a new version of autofs is released that supports
+  # our stunnel config
+  # - CentOS 6.9 https://bugs.centos.org/view.php?id=13575
+  # - CentOS 7.4 https://bugs.centos.org/view.php?id=14080
+  allow_failure: true
