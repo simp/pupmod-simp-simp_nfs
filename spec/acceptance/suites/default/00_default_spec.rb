@@ -13,7 +13,7 @@ describe 'simp_nfs stock classes' do
 
       # Determine who your nfs server is
       os = fact_on(node, 'operatingsystem')
-      if os == 'CentOS'
+      if os =~ /CentOS|RedHat|OracleLinux/
         os_release = fact_on(node, 'operatingsystemmajrelease')
         if os_release == '6'
           server = el6_server
