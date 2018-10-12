@@ -68,6 +68,8 @@
 #
 #   * Presently only affects EL6 systems
 #
+# @param package_ensure The ensure status of the rubygem-net-ldap package
+#
 # @author Trevor Vaughan <mailto:tvaughan@onyxpoint.com>
 #
 class simp_nfs::create_home_dirs (
@@ -84,7 +86,8 @@ class simp_nfs::create_home_dirs (
   Simplib::Syslog::CFacility     $syslog_facility       = 'LOG_LOCAL6',
   Simplib::Syslog::CSeverity     $syslog_severity       = 'LOG_NOTICE',
   Boolean                        $strip_128_bit_ciphers = true,
-  Array[String[1]]               $tls_cipher_suite      = simplib::lookup('simp_options::openssl::cipher_suite', { 'default_value' => ['DEFAULT','!MEDIUM'] })
+  Array[String[1]]               $tls_cipher_suite      = simplib::lookup('simp_options::openssl::cipher_suite', { 'default_value' => ['DEFAULT','!MEDIUM'] }),
+  String                         $package_ensure        = simplib::lookup('simp_options::package_ensure', { 'default_value' => 'installed' }),
 ) {
 
   if $strip_128_bit_ciphers {
@@ -103,7 +106,9 @@ class simp_nfs::create_home_dirs (
     $_tls_cipher_suite = $tls_cipher_suite
   }
 
-  package { 'rubygem-net-ldap': ensure => 'latest' }
+  package { 'rubygem-net-ldap':
+    ensure => $package_ensure
+  }
 
   file { '/etc/cron.hourly/create_home_directories.rb':
     owner   => 'root',
