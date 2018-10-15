@@ -172,7 +172,6 @@ memberUid: test.user
 
           # Apply
           set_hieradata_on(node, server_hieradata, 'default')
-          on(node, 'cat /etc/puppetlabs/code/hieradata/*')
           on(node, 'mkdir -p /usr/local/sbin/simp')
           apply_manifest_on(node, server_manifest, catch_failures: true)
           apply_manifest_on(node, server_manifest, catch_failures: true)
@@ -195,7 +194,6 @@ memberUid: test.user
       else
         it "should set up #{node}" do
           set_hieradata_on(node, hieradata, 'default')
-          on(node, 'cat /etc/puppetlabs/code/hieradata/*')
           on(node, 'mkdir -p /usr/local/sbin/simp')
           apply_manifest_on(node, manifest, catch_failures: true)
           apply_manifest_on(node, manifest, catch_failures: true)
