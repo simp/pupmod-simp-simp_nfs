@@ -70,7 +70,7 @@
 #
 # @param package_ensure The ensure status of the rubygem-net-ldap package
 #
-# @author Trevor Vaughan <mailto:tvaughan@onyxpoint.com>
+# https://github.com/simp/pupmod-simp-simp_nfs/graphs/contributors
 #
 class simp_nfs::create_home_dirs (
   Array[Simplib::URI]            $uri                   = simplib::lookup('simp_options::ldap::uri'),
