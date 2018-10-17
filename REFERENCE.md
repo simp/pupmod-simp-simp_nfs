@@ -214,6 +214,14 @@ The TLS ciphers that should be used for the connection to LDAP
 
 Default value: simplib::lookup('simp_options::openssl::cipher_suite', { 'default_value' => ['DEFAULT','!MEDIUM'] })
 
+##### `package_ensure`
+
+Data type: `String`
+
+The ensure status of the rubygem-net-ldap package
+
+Default value: simplib::lookup('simp_options::package_ensure', { 'default_value' => 'installed' })
+
 ### simp_nfs::export::home
 
 It should be mounted as ``$nfs_server:/home`` from your clients.
