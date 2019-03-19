@@ -1,4 +1,5 @@
 * Mon Mar 04 2019 Liz Nemsick <lnemsick.simp@gmail.com> - 0.1.1
+- Use simplib::nets2cidr in lieu of deprecated Puppet 3 nets2cidr
 - Updated a URLs in the README.md
 
 * Mon Nov 05 2018 Liz Nemsick <lnemsick-simp@gmail.com> - 0.1.0
