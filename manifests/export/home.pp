@@ -30,8 +30,7 @@
 # @param create_home_dirs
 #   Automatically create user home directories from LDAP data
 #
-# @author Trevor Vaughan <tvaughan@onyxpoint.com>
-# @author Kendall Moore <kmoore@onyxpoint.com>
+# @author https://github.com/simp/pupmod-simp-simp_nfs/graphs/contributors
 #
 class simp_nfs::export::home (
   Stdlib::Absolutepath                             $data_dir         = '/var',
@@ -45,7 +44,7 @@ class simp_nfs::export::home (
 
   if !$::nfs::stunnel {
     nfs::server::export { 'nfs4_root':
-      clients     => nets2cidr($trusted_nets),
+      clients     => simplib::nets2cidr($trusted_nets),
       export_path => "${data_dir}/nfs/exports",
       sec         => $sec,
       fsid        => '0',
@@ -53,7 +52,7 @@ class simp_nfs::export::home (
     }
 
     nfs::server::export { 'home_dirs':
-      clients     => nets2cidr($trusted_nets),
+      clients     => simplib::nets2cidr($trusted_nets),
       export_path => "${data_dir}/nfs/exports/home",
       rw          => true,
       sec         => $sec
