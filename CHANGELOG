@@ -1,3 +1,7 @@
+* Tue Apr 09 2019 Joseph Sharkey <shark.bruhaha@gmail.com> - 0.1.1
+- Remove Elasticsearch and Grafana GPG Keys
+- Updated tests in support of puppet6, and removed puppet4 support
+
 * Mon Mar 04 2019 Liz Nemsick <lnemsick.simp@gmail.com> - 0.1.1
 - Use simplib::nets2cidr in lieu of deprecated Puppet 3 nets2cidr
 - Updated a URLs in the README.md
