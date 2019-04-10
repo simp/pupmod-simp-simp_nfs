@@ -20,6 +20,9 @@ fixtures:
     nsswitch: https://github.com/simp/puppet-nsswitch
     pam: https://github.com/simp/pupmod-simp-pam
     pki: https://github.com/simp/pupmod-simp-pki
+    selinux_core:
+      repo: https://github.com/simp/pupmod-puppetlabs-selinux_core.git
+      puppet_version: ">= 6.0.0"
     simp: https://github.com/simp/pupmod-simp-simp
     simp_openldap: https://github.com/simp/pupmod-simp-simp_openldap
     simp_options: https://github.com/simp/pupmod-simp-simp_options
