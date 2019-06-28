@@ -1,0 +1,23 @@
+---
+version: 2.0.0
+checks:
+  oval:com.puppet.forge.simp.simp_nfs.export.home.sec:
+    settings:
+      parameter: simp_nfs::export::home::sec
+      value:
+        - sys
+    type: puppet-class-parameter
+    controls:
+      nist_800_53:rev4: true
+      nist_800_53:rev4:IA-2: true
+      disa_stig: true
+      RHEL-07-021240: true
+      SRG-OS-000480-GPOS-00227: true
+      cci:CCI-000366: true
+    identifiers:
+      nist_800_53:rev4:
+      - IA-2
+      disa_stig:
+      - RHEL-07-021240
+      - SRG-OS-000480-GPOS-00227
+      - CCI-000366

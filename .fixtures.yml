@@ -1,10 +1,17 @@
 ---
 fixtures:
   repositories:
+    auditd: https://github.com/simp/pupmod-simp-auditd
+    augeas_core:
+      repo: https://github.com/simp/pupmod-puppetlabs-augeas_core.git
+      puppet_version: ">= 6.0.0"
     augeasproviders_core: https://github.com/simp/augeasproviders_core
+    augeasproviders_grub: https://github.com/simp/augeasproviders_grub
     augeasproviders_sysctl: https://github.com/simp/augeasproviders_sysctl
     autofs: https://github.com/simp/pupmod-simp-autofs
+    compliance_markup: https://github.com/simp/pupmod-simp-compliance_markup
     concat: https://github.com/simp/puppetlabs-concat
+    logrotate: https://github.com/simp/pupmod-simp-logrotate
     nfs: https://github.com/simp/pupmod-simp-nfs
     simplib: https://github.com/simp/pupmod-simp-simplib
     stdlib: https://github.com/simp/puppetlabs-stdlib
@@ -20,6 +27,7 @@ fixtures:
     nsswitch: https://github.com/simp/puppet-nsswitch
     pam: https://github.com/simp/pupmod-simp-pam
     pki: https://github.com/simp/pupmod-simp-pki
+    rsyslog: https://github.com/simp/pupmod-simp-rsyslog
     selinux_core:
       repo: https://github.com/simp/pupmod-puppetlabs-selinux_core.git
       puppet_version: ">= 6.0.0"
@@ -30,6 +38,7 @@ fixtures:
     ssh: https://github.com/simp/pupmod-simp-ssh
     stunnel: https://github.com/simp/pupmod-simp-stunnel
     sudo: https://github.com/simp/pupmod-simp-sudo
+    systemd:
+      repo: https://github.com/simp/puppet-systemd
+      branch: simp-master
     tcpwrappers: https://github.com/simp/pupmod-simp-tcpwrappers
-  symlinks:
-    simp_nfs: "#{source_dir}"

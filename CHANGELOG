@@ -1,3 +1,6 @@
+* Fri Jun 28 2019 Brandon Riden <brandon.riden@onyxpoint.com> - 0.2.0
+- Add Compliance Engine 2.0 compatible data and tests
+
 * Tue Apr 09 2019 Joseph Sharkey <shark.bruhaha@gmail.com> - 0.1.1
 - Remove Elasticsearch and Grafana GPG Keys
 - Updated tests in support of puppet6, and removed puppet4 support
