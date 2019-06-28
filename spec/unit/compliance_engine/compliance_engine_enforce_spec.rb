@@ -18,19 +18,18 @@ describe 'compliance_markup', type: :class do
   # This needs to be well defined since we can also manipulate defined type
   # defaults
   expected_classes = [
-    'simp_nfs',
+    'simp_nfs::export::home'
   ]
 
   allowed_failures = {
     'documented_missing_parameters' => [],
-    'documented_missing_resources' => [] 
+    'documented_missing_resources' => []
   }
 
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
       compliance_profiles.each do |target_profile|
         context "with compliance profile '#{target_profile}'" do
-          require 'pry'; require 'pry-byebug'; binding.pry
           let(:facts){
             os_facts.merge({
               :target_compliance_profile => target_profile

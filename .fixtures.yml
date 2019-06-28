@@ -4,6 +4,7 @@ fixtures:
     augeasproviders_core: https://github.com/simp/augeasproviders_core
     augeasproviders_sysctl: https://github.com/simp/augeasproviders_sysctl
     autofs: https://github.com/simp/pupmod-simp-autofs
+    compliance_markup: https://github.com/simp/pupmod-simp-compliance_markup
     concat: https://github.com/simp/puppetlabs-concat
     nfs: https://github.com/simp/pupmod-simp-nfs
     simplib: https://github.com/simp/pupmod-simp-simplib
@@ -31,5 +32,3 @@ fixtures:
     stunnel: https://github.com/simp/pupmod-simp-stunnel
     sudo: https://github.com/simp/pupmod-simp-sudo
     tcpwrappers: https://github.com/simp/pupmod-simp-tcpwrappers
-  symlinks:
-    simp_nfs: "#{source_dir}"

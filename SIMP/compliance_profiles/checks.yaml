@@ -4,7 +4,8 @@ checks:
   oval:com.puppet.forge.simp.simp_nfs.export.home.sec:
     settings:
       parameter: simp_nfs::export::home::sec
-      value: none:sys
+      value:
+        - sys
     type: puppet-class-parameter
     controls:
       nist_800_53:rev4: true
