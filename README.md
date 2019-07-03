@@ -118,8 +118,9 @@ See [REFERENCE.md](REFERENCE.md) for details.
 The ``autofs`` package that was released with CentOS 6.8 (**autofs-5.0.5-122**) worked
 properly over a stunnel connection.
 
-The releases shipped with CentOS 6.9 (**5.0.5-132**) prevent any connection from happening
-to the local ``stunnel`` process and break mounts to remote systems over ``stunnel`` connections.
+The releases shipped with CentOS 6.9 (**5.0.5-132**)  and with CentOS 7.4 (**5.0.7-69**)
+prevent any connection from happening to the local ``stunnel`` process and
+break mounts to remote systems over ``stunnel`` connections.
 
 The releases that ship with CentOS 6.10 (**5.0.5-139**) and CentOS 7.4
 (**5.0.7-99**) have fixed the issue.
