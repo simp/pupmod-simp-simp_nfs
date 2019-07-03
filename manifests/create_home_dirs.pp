@@ -1,4 +1,4 @@
-# Adds a script to create user home directories for directory server
+# @summary Adds a script to create user home directories for directory server
 # by pulling users from LDAP
 #
 # @param uri

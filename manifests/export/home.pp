@@ -1,4 +1,4 @@
-# Configures an NFS server to share centralized home directories via NFSv4
+# @summary Configures an NFS server to share centralized home directories via NFSv4
 #
 # Sets up the export root at ``${data_dir}/nfs/exports`` and then adds
 # ``${data_dir}/nfs/home`` and submounts it under ``${data_dir}/nfs/exports``.

@@ -6,15 +6,23 @@
 
 #### Table of Contents
 
-1. [Description](#description)
-2. [Setup - The basics of getting started with simp_nfs](#setup)
-    * [What simp_nfs affects](#what-simp_nfs-affects)
-3. [Usage - Configuration options and additional functionality](#usage)
-4. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
-5. [Known Issues](#known-issues)
-6. [Limitations - OS compatibility, etc.](#limitations)
-7. [Development - Guide for contributing to the module](#development)
-    * [Acceptance Tests - Beaker env variables](#acceptance-tests)
+<!-- vim-markdown-toc GFM -->
+
+* [Description](#description)
+  * [This is a SIMP module](#this-is-a-simp-module)
+* [Setup](#setup)
+  * [What simp_nfs affects](#what-simp_nfs-affects)
+* [Usage](#usage)
+  * [Serve NFS Home Directories over Stunnel](#serve-nfs-home-directories-over-stunnel)
+  * [Mount NFS Home Directories](#mount-nfs-home-directories)
+  * [Mount Home NFS Directories on another NFS server](#mount-home-nfs-directories-on-another-nfs-server)
+* [Reference](#reference)
+* [Known Issues](#known-issues)
+* [Limitations](#limitations)
+* [Development](#development)
+  * [Acceptance tests](#acceptance-tests)
+
+<!-- vim-markdown-toc -->
 
 ## Description
 
@@ -83,13 +91,12 @@ simp_nfs::home_dir_server : <your NFS server IP or Hostname>
 
 To mount home directories on another NFS server do not include the the simp_nfs
 class. This will try to call the nfs class a second time.  Instead
-create a site manifest and call the home class directly.  Note:Use the port 
-parameter if you are using stunnel and set it to a different port then the 
+create a site manifest and call the home class directly.  Note:Use the port
+parameter if you are using stunnel and set it to a different port then the
 one the local NFS server is using.
 
 ```ruby
 class  mounthome {
-  
   class { simp_nfs::mount::home :
     nfs_server => $home_server,
     port  => 12049,
@@ -98,30 +105,31 @@ class  mounthome {
 }
 ```
 
-```yaml
----
-classes:
-- site::mounthome
+```ruby
+include mounthome
 ```
 
 ## Reference
 
-See the [API Documentation](https://github.com/simp/pupmod-simp-simp_nfs/tree/master/docs/index.html) for full details.
+See [REFERENCE.md](REFERENCE.md) for details.
 
 ## Known Issues
 
-The ``autofs package`` that was released with CentOS 6.8 (**autofs-5.0.5-122**) worked
+The ``autofs`` package that was released with CentOS 6.8 (**autofs-5.0.5-122**) worked
 properly over a stunnel connection.
 
 The release shipped with CentOS 6.9 (**5.0.5-132**) prevents any connection from happening
-to the local ``stunnel`` process and breaks mounts to remote systems over stunnel connections.
+to the local ``stunnel`` process and breaks mounts to remote systems over ``stunnel`` connections.
 
-To use NFS over stunnel on CentOS 6.9 and automount directories the old package must be used.
+The release shipped with CentOS 6.10 (**5.0.5-139**) fixes the ``stunnel`` issue.
+
+To use NFS over ``stunnel`` on CentOS 6.9 and automount directories the old
+package must be used or you must update to the latest ``autofs`` package.
 
 To determine what package is installed on the system, run ``automount -V``.
 
-This has been identified as a bug in autofs and is being publicly
-tracked at https://bugs.centos.org/view.php?id=13575.
+This has been identified as a bug in ``autofs``. More information can be found
+at https://bugs.centos.org/view.php?id=13575.
 
 ## Limitations
 

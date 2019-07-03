@@ -1,4 +1,4 @@
-# Set up an ``NFS4`` client to point to mount your remote home directories
+# @summary Set up an ``NFS4`` client to point to mount your remote home directories
 #
 # If this system is also the NFS server, you need to set
 # ``nfs::client::is_server`` to ``true`` or set
