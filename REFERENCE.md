@@ -5,16 +5,16 @@
 
 **Classes**
 
-* [`simp_nfs`](#simp_nfs): This is a SIMP Profile for common NFS configurations
-* [`simp_nfs::create_home_dirs`](#simp_nfscreate_home_dirs): Adds a script to create user home directories for directory server by pulling users from LDAP
+* [`simp_nfs`](#simp_nfs): A SIMP Profile for common NFS configurations
+* [`simp_nfs::create_home_dirs`](#simp_nfscreate_home_dirs): Adds a script to create user home directories for directory server
 * [`simp_nfs::export::home`](#simp_nfsexporthome): It should be mounted as ``$nfs_server:/home`` from your clients.  The NFS clients must be provided with the hostname of the NFS server:
-* [`simp_nfs::mount::home`](#simp_nfsmounthome): Set up an ``NFS4`` client to point to mount your remote home directories  If this system is also the NFS server, you need to set ``nfs::clien
+* [`simp_nfs::mount::home`](#simp_nfsmounthome): Set up an ``NFS4`` client to point to mount your remote home directories
 
 ## Classes
 
 ### simp_nfs
 
-This is a SIMP Profile for common NFS configurations
+A SIMP Profile for common NFS configurations
 
 #### Parameters
 
@@ -70,8 +70,9 @@ Default value: `true`
 
 ### simp_nfs::create_home_dirs
 
-Adds a script to create user home directories for directory server
 by pulling users from LDAP
+
+https://github.com/simp/pupmod-simp-simp_nfs/graphs/contributors
 
 #### Parameters
 
@@ -285,8 +286,6 @@ Automatically create user home directories from LDAP data
 Default value: simplib::lookup('simp_options::ldap', { 'default_value' => false })
 
 ### simp_nfs::mount::home
-
-Set up an ``NFS4`` client to point to mount your remote home directories
 
 If this system is also the NFS server, you need to set
 ``nfs::client::is_server`` to ``true`` or set

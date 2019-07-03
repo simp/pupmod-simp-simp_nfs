@@ -1,4 +1,4 @@
-# This is a SIMP Profile for common NFS configurations
+# @summary A SIMP Profile for common NFS configurations
 #
 # @param export_home_dirs
 #   Set up home directory exports for this system
