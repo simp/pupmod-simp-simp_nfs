@@ -89,11 +89,11 @@ simp_nfs::home_dir_server : <your NFS server IP or Hostname>
 
 ### Mount Home NFS Directories on another NFS server
 
-To mount home directories on another NFS server do not include the the simp_nfs
-class. This will try to call the nfs class a second time.  Instead
-create a site manifest and call the home class directly.  Note:Use the port
-parameter if you are using stunnel and set it to a different port then the
-one the local NFS server is using.
+To mount home directories on another NFS server do not include the ``simp_nfs``
+class. This will try to call the ``nfs`` class a second time.  Instead
+create a site manifest and call the ``simp_nfs::mount::home`` class directly.
+Note: Use the port parameter if you are using stunnel and set it to a different
+port then the one the local NFS server is using.
 
 ```ruby
 class  mounthome {
@@ -118,18 +118,21 @@ See [REFERENCE.md](REFERENCE.md) for details.
 The ``autofs`` package that was released with CentOS 6.8 (**autofs-5.0.5-122**) worked
 properly over a stunnel connection.
 
-The release shipped with CentOS 6.9 (**5.0.5-132**) prevents any connection from happening
-to the local ``stunnel`` process and breaks mounts to remote systems over ``stunnel`` connections.
+The releases shipped with CentOS 6.9 (**5.0.5-132**) prevent any connection from happening
+to the local ``stunnel`` process and break mounts to remote systems over ``stunnel`` connections.
 
-The release shipped with CentOS 6.10 (**5.0.5-139**) fixes the ``stunnel`` issue.
+The releases that ship with CentOS 6.10 (**5.0.5-139**) and CentOS 7.4
+(**5.0.7-99**) have fixed the issue.
 
 To use NFS over ``stunnel`` on CentOS 6.9 and automount directories the old
 package must be used or you must update to the latest ``autofs`` package.
 
 To determine what package is installed on the system, run ``automount -V``.
 
-This has been identified as a bug in ``autofs``. More information can be found
-at https://bugs.centos.org/view.php?id=13575.
+The associated bug reports can be found at:
+
+- CentOS 6  https://bugs.centos.org/view.php?id=13575.
+- CentOS 7  https://bugs.centos.org/view.php?id=14080.
 
 ## Limitations
 
