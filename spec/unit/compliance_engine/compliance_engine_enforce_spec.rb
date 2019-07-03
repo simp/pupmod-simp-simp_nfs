@@ -22,10 +22,11 @@ describe 'compliance_markup', type: :class do
   ]
 
   allowed_failures = {
-    'documented_missing_parameters' => [],
+    'documented_missing_parameters' => [
+      Regexp.new('^(?!simp_nfs(::.*)?)')
+    ],
     'documented_missing_resources' => [
-      Regexp.new('^simp_options($|::.*)'),
-      Regexp.new('^svckill($|::.*)')
+      Regexp.new('^(?!simp_nfs(::.*)?)')
     ]
   }
 
