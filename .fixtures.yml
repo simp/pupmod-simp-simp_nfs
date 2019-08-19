@@ -38,7 +38,5 @@ fixtures:
     ssh: https://github.com/simp/pupmod-simp-ssh
     stunnel: https://github.com/simp/pupmod-simp-stunnel
     sudo: https://github.com/simp/pupmod-simp-sudo
-    systemd:
-      repo: https://github.com/simp/puppet-systemd
-      branch: simp-master
+    systemd: https://github.com/simp/puppet-systemd
     tcpwrappers: https://github.com/simp/pupmod-simp-tcpwrappers
