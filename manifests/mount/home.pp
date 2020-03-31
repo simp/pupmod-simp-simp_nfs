@@ -53,7 +53,7 @@
 # @author Kendall Moore <mailto:kmoore@keywcorp.com>
 #
 class simp_nfs::mount::home (
-  Simplib::Host                      $nfs_server,
+  Simplib::IP                        $nfs_server,
   Stdlib::Absolutepath               $remote_path       = '/home',
   Stdlib::Absolutepath               $local_home        = '/home',
   Optional[Simplib::Port]            $port              = undef,
@@ -77,23 +77,17 @@ class simp_nfs::mount::home (
     }
   }
 
-  if $use_autofs {
-    $_local_home = "wildcard-${local_home}"
-  }
-  else {
-    $_local_home = $local_home
-  }
-
-  nfs::client::mount { $_local_home:
-    nfs_server         => $nfs_server,
-    remote_path        => $remote_path,
-    port               => $port,
-    nfs_version        => 'nfs4',
-    sec                => $sec,
-    options            => $options,
-    at_boot            => $at_boot,
-    autodetect_remote  => $autodetect_remote,
-    autofs             => $use_autofs,
-    autofs_map_to_user => true
+  nfs::client::mount { $local_home:
+    nfs_server              => $nfs_server,
+    remote_path             => $remote_path,
+    nfsd_port               => $port,
+    nfs_version             => 4,
+    sec                     => $sec,
+    options                 => $options,
+    at_boot                 => $at_boot,
+    autodetect_remote       => $autodetect_remote,
+    autofs                  => $use_autofs,
+    autofs_indirect_map_key => '*',
+    autofs_add_key_subst    => true
   }
 }

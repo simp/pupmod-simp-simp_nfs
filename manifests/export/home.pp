@@ -38,44 +38,8 @@ class simp_nfs::export::home (
   Array[Enum['none','sys','krb5','krb5i','krb5p']] $sec              = ['sys'],
   Boolean                                          $create_home_dirs = simplib::lookup('simp_options::ldap', { 'default_value' => false })
 ) inherits simp_nfs {
-  include '::nfs::server'
 
-  if $create_home_dirs { include '::simp_nfs::create_home_dirs' }
-
-  if !$::nfs::stunnel {
-    nfs::server::export { 'nfs4_root':
-      clients     => simplib::nets2cidr($trusted_nets),
-      export_path => "${data_dir}/nfs/exports",
-      sec         => $sec,
-      fsid        => '0',
-      crossmnt    => true
-    }
-
-    nfs::server::export { 'home_dirs':
-      clients     => simplib::nets2cidr($trusted_nets),
-      export_path => "${data_dir}/nfs/exports/home",
-      rw          => true,
-      sec         => $sec
-    }
-  }
-  else {
-    nfs::server::export { 'nfs4_root':
-      clients     => ['127.0.0.1'],
-      export_path => "${data_dir}/nfs/exports",
-      sec         => $sec,
-      fsid        => '0',
-      crossmnt    => true,
-      insecure    => true
-    }
-
-    nfs::server::export { 'home_dirs':
-      clients     => ['127.0.0.1'],
-      export_path => "${data_dir}/nfs/exports/home",
-      rw          => true,
-      sec         => $sec,
-      insecure    => true
-    }
-  }
+  Class['simp_nfs::export::home'] -> Service['nfs-server.service']
 
   file {
     [ "${data_dir}/nfs",
@@ -89,20 +53,64 @@ class simp_nfs::export::home (
     mode   => '0755'
   }
 
+  $_export_data_dir = "${data_dir}/nfs/home"
+  $_nfs_root_path = "${data_dir}/nfs/exports"
+
   if $create_home_dirs {
-    File["${data_dir}/nfs/exports/home"] -> Class['simp_nfs::create_home_dirs']
-    File["${data_dir}/nfs/home"]         -> Class['simp_nfs::create_home_dirs']
+    class { 'simp_nfs::create_home_dirs': * => { export_dir => $_export_data_dir } }
+    File["${_nfs_root_path}/home"] -> Class['simp_nfs::create_home_dirs']
+    File[$_export_data_dir] -> Class['simp_nfs::create_home_dirs']
   }
 
-  mount { "${data_dir}/nfs/exports/home":
+  if !$::nfs::stunnel {
+    nfs::server::export { 'nfs4_root':
+      clients     => simplib::nets2cidr($trusted_nets),
+      export_path => $_nfs_root_path,
+      sec         => $sec,
+      fsid        => '0',
+      require     => File[$_nfs_root_path],
+      crossmnt    => true
+    }
+
+    nfs::server::export { 'home_dirs':
+      clients     => simplib::nets2cidr($trusted_nets),
+      export_path => "${_nfs_root_path}/home",
+      rw          => true,
+      require     => File["$_nfs_root_path/home"],
+      sec         => $sec
+    }
+  }
+  else {
+    nfs::server::export { 'nfs4_root':
+      clients     => ['127.0.0.1'],
+      export_path => $_nfs_root_path,
+      sec         => $sec,
+      fsid        => '0',
+      crossmnt    => true,
+      require     => File[$_nfs_root_path],
+      insecure    => true
+    }
+
+    nfs::server::export { 'home_dirs':
+      clients     => ['127.0.0.1'],
+      export_path => "${_nfs_root_path}/home",
+      rw          => true,
+      sec         => $sec,
+      require     => File["$_nfs_root_path/home"],
+      insecure    => true
+    }
+  }
+
+
+  mount { "${_nfs_root_path}/home":
     ensure   => 'mounted',
     fstype   => 'none',
-    device   => "${data_dir}/nfs/home",
+    device   => $_export_data_dir,
     remounts => true,
     options  => 'rw,bind',
     require  => [
-      File["${data_dir}/nfs/exports/home"],
-      File["${data_dir}/nfs/home"]
+      File["${_nfs_root_path}/home"],
+      File[$_export_data_dir]
     ]
   }
 }
