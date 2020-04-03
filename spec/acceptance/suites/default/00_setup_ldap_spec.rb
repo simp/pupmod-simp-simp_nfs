@@ -25,6 +25,13 @@ cn: test.user
 gidNumber: 10000
 description: 'Test user'
 
+dn: cn=monster.user,ou=Group,#{domains}
+objectClass: posixGroup
+objectClass: top
+cn: monster.user
+gidNumber: 11000
+description: 'Monster user'
+
 dn: uid=test.user,ou=People,#{domains}
 uid: test.user
 cn: test.user
@@ -47,6 +54,29 @@ homeDirectory: /mnt/test.user
 # suP3rP@ssw0r!
 userPassword: {SSHA}yOdnVOQYXOEc0Gjv4RRY5BnnFfIKLI3/
 pwdReset: TRUE
+
+dn: uid=monster.user,ou=People,#{domains}
+uid: monster.user
+cn: monster.user
+givenName: monster
+sn: User
+mail: monster.user@funurl.net
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: top
+objectClass: shadowAccount
+objectClass: ldapPublicKey
+shadowMax: 180
+shadowMin: 1
+shadowWarning: 7
+shadowLastChange: 10701
+loginShell: /bin/bash
+uidNumber: 11000
+gidNumber: 11000
+homeDirectory: /mnt1/monster.user
+# suP3rP@ssw0r!
+userPassword: {SSHA}yOdnVOQYXOEc0Gjv4RRY5BnnFfIKLI3/
+pwdReset: TRUE
     EOM
 
     test_group_ldif = <<-EOM
@@ -54,6 +84,7 @@ dn: cn=administrators,ou=Group,#{domains}
 changetype: modify
 add: memberUid
 memberUid: test.user
+memberUid: monster.user
     EOM
 
     it 'should install, openldap, and create test.user' do
@@ -89,6 +120,8 @@ memberUid: test.user
 
       user_info = on(ldap_server, 'id test.user', :acceptable_exit_codes => [0])
       expect(user_info.stdout).to match(/.*uid=10000\(test.user\).*gid=10000\(test.user\)/)
+      monster_info = on(ldap_server, 'id monster.user', :acceptable_exit_codes => [0])
+      expect(monster_info.stdout).to match(/.*uid=11000\(monster.user\).*gid=11000\(monster.user\)/)
     end
   end
 end

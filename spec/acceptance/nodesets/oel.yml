@@ -85,7 +85,7 @@ HOSTS:
     hypervisor: <%= hypervisor %>
     yum_repos:
       simp:
-        baseurl: https://download.simp-project.com/simp/yum/rolling/6/el/$releasever/$basearch/simp
+        baseurl: https://download.simp-project.com/simp/yum/unstable/6/el/$releasever/$basearch/simp
         gpgkeys:
           - https://download.simp-project.com/simp/GPGKEYS/RPM-GPG-KEY-SIMP
           - https://download.simp-project.com/simp/GPGKEYS/RPM-GPG-KEY-SIMP-6

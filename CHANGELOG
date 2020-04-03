@@ -1,7 +1,9 @@
 * Tue Mar 31 2020  <jeannegreulich@onyxpoint.com> - 0.3.0
 - Added support for EL8
 - Removed support for EL6
-- Updated to use pupmod-simp-nfs release 7.0.0.
+- Updated to use pupmod-simp-nfs release 7.0.0
+- Only accepts IP Adrresses for nfs server because firewalld
+  needs IP Address.
 
 * Wed Jul 03 2019 Trevor Vaughan <tvaughan@onyxpoint.com> - 0.2.0
 - Documentation update

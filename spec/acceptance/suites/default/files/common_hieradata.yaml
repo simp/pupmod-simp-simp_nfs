@@ -11,6 +11,7 @@ simp_options::tcpwrappers: true
 simp_options::pam: true
 simp_options::firewall: true
 simp_options::pki: true
+autofs::logging: 'debug'
 simp_options::pki::source: '/etc/pki/simp-testing/pki'
 simp_options::trusted_nets: ['ALL']
 simp_options::ldap: true

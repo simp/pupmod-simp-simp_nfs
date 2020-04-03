@@ -14,7 +14,7 @@ describe 'simp_nfs stock classes' do
   }
   domains = _domains.join(',')
   hiera_file = File.expand_path('./files/common_hieradata.yaml',File.dirname(__FILE__))
-  hieradata_common = File.read(hiera_file).gsub('SERVERNAME',ldap_fqdn).gsub('simp_options::stunnel: true','simp_options::stunnel: false')
+  hieradata_common = File.read(hiera_file).gsub('SERVERNAME',ldap_fqdn).gsub('simp_options::stunnel: false','simp_options::stunnel: true')
 
   el8_server_host =only_host_with_role(servers,'el8')
   el8_server = fact_on(el8_server_host, 'fqdn')
@@ -57,14 +57,22 @@ describe 'simp_nfs stock classes' do
         include 'simp_openldap::client'
         include 'simp::sssd::client'
         include 'simp_nfs'
+        file {  '/mnt1':
+          ensure => 'directory',
+          owner  => 'root',
+          group => 'root',
+          mode => '0755',
+          before => Class['simp_nfs']
+        }
       EOM
 
       hieradata_extra = <<-EOM
 
 simp_nfs::home_dir_server: #{nfs_server_ip}
 nfs::client::stunnel::nfs_server: #{nfs_server}
-#mount to /mnt so vagrant home directory is not overwritten
-simp_nfs::mount::home::local_home: /mnt
+#mount to /mnt1 so vagrant home directory is not overwritten
+#also to avoid stale mounts from previous test.
+simp_nfs::mount::home::local_home: /mnt1
       EOM
 
       if servers.include?(node)
@@ -100,8 +108,6 @@ simp_nfs::mount::home::local_home: /mnt
 
           # Apply
           set_hieradata_on(node, server_hieradata, 'default')
-          #remove stale mount point
-          on(node, 'umount /mnt/test.user')
           apply_manifest_on(node, server_manifest, catch_failures: true)
           apply_manifest_on(node, server_manifest, catch_failures: true)
           apply_manifest_on(node, server_manifest, catch_changes: true)
@@ -113,8 +119,6 @@ simp_nfs::mount::home::local_home: /mnt
         it "should set up #{node}" do
           client_hieradata = hieradata_common + hieradata_extra
           set_hieradata_on(node, client_hieradata, 'default')
-          #remove stale mount point from previous test
-          on(node, 'umount /mnt/test.user')
           apply_manifest_on(node, manifest, catch_failures: true)
           apply_manifest_on(node, manifest, catch_changes: true)
           #  LDAP server should be set up and the client should be able
@@ -127,16 +131,18 @@ simp_nfs::mount::home::local_home: /mnt
       servers.each do |node|
         # Create test.user's homedir via cron, and ensure it gets mounted
         on(node, '/etc/cron.hourly/create_home_directories.rb')
-        on(node, 'ls /var/nfs/home/test.user')
-        on(node, "runuser -l test.user -c 'touch ~/newtestfile'")
+        on(node, 'ls /var/nfs/home/monster.user')
+        on(node, "runuser -l monster.user -c 'touch ~/newtestfile'")
         mount = on(node, "mount")
-        expect(mount.stdout).to match(/127.0.0.1:\/home\/test.user.*nfs/)
+        expect(mount.stdout).to match(/127.0.0.1:\/home\/monster.user.*nfs/)
       end
     end
 
     it 'should have file propagation to the clients' do
       clients.each do |node|
-        retry_on(node, 'ls /mnt/test.user/newtestfile', acceptable_exit_codes: [0])
+        retry_on(node, 'ls /mnt1/monster.user/newtestfile', acceptable_exit_codes: [0])
+        #should be able to create new file
+        on(node, "runuser -l monster.user -c 'touch ~/difftestfile'")
       end
     end
   end
