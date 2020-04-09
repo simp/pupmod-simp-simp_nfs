@@ -1,4 +1,4 @@
-* Tue Mar 31 2020  <jeannegreulich@onyxpoint.com> - 0.3.0
+* Tue Mar 31 2020  <jeannegreulich@onyxpoint.com> - 1.0.0
 - Added support for EL8
 - Removed support for EL6
 - Updated to use pupmod-simp-nfs release 7.0.0
