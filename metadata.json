@@ -1,6 +1,6 @@
 {
   "name": "simp-simp_nfs",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "author": "SIMP Team",
   "summary": "A SIMP Puppet Profile for common NFS configurations",
   "license": "Apache-2.0",
@@ -14,11 +14,11 @@
   "dependencies": [
     {
       "name": "simp/nfs",
-      "version_requirement": ">= 6.1.1 < 7.0.0"
+      "version_requirement": ">= 7.0.0 < 8.0.0"
     },
     {
       "name": "simp/simplib",
-      "version_requirement": ">= 3.7.0 < 4.0.0"
+      "version_requirement": ">= 4.1.0 < 5.0.0"
     },
     {
       "name": "puppetlabs/stdlib",
@@ -29,22 +29,22 @@
     {
       "operatingsystem": "CentOS",
       "operatingsystemrelease": [
-        "6",
-        "7"
+        "7",
+        "8"
       ]
     },
     {
       "operatingsystem": "RedHat",
       "operatingsystemrelease": [
-        "6",
-        "7"
+        "7",
+        "8"
       ]
     },
     {
       "operatingsystem": "OracleLinux",
       "operatingsystemrelease": [
-        "6",
-        "7"
+        "7",
+        "8"
       ]
     }
   ],

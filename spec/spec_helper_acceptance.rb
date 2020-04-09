@@ -43,3 +43,17 @@ RSpec.configure do |c|
     end
   end
 end
+
+def get_private_network_interface(host)
+  interfaces = fact_on(host, 'interfaces').split(',')
+
+  # remove interfaces we know are not the private network interface
+  interfaces.delete_if do |ifc|
+    ifc == 'lo' or
+    ifc.include?('ip_') or # IPsec tunnel
+    ifc == 'enp0s3' or     # public interface for puppetlabs/centos-7.2-64-nocm virtual box
+    ifc == 'eth0'          # public interface for centos/7 virtual box
+  end
+  fail("Could not determine the interface for the #{host}'s private network") unless interfaces.size == 1
+  interfaces[0]
+end

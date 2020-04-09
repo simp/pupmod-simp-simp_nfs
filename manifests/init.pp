@@ -30,7 +30,7 @@
 #
 class simp_nfs (
   Boolean                 $export_home_dirs  = false,
-  Optional[Simplib::Host] $home_dir_server   = undef,
+  Optional[Simplib::Ip]   $home_dir_server   = undef,
   Boolean                 $autodetect_remote = true,
   Boolean                 $use_autofs        = true
 ) {

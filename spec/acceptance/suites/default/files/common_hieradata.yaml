@@ -1,0 +1,46 @@
+---
+simp_options::clamav: false
+simp_options::dns::servers: ['8.8.8.8']
+simp_options::puppet::server: 'SERVERNAME'
+simp_options::puppet::ca:  'SERVERNAME'
+simp::yum::servers: ['SERVERNAME']
+simp_options::ntpd::servers: ['time.nist.gov']
+simp_options::sssd: true
+simp_options::stunnel: true
+simp_options::tcpwrappers: true
+simp_options::pam: true
+simp_options::firewall: true
+simp_options::pki: true
+autofs::logging: 'debug'
+simp_options::pki::source: '/etc/pki/simp-testing/pki'
+simp_options::trusted_nets: ['ALL']
+simp_options::ldap: true
+simp_options::ldap::bind_pw: 'foobarbaz'
+simp_options::ldap::bind_hash: '{SSHA}BNPDR0qqE6HyLTSlg13T0e/+yZnSgYQz'
+simp_options::ldap::sync_pw: 'foobarbaz'
+simp_options::ldap::sync_hash: '{SSHA}BNPDR0qqE6HyLTSlg13T0e/+yZnSgYQz'
+simp_options::ldap::uri: [ "ldap://SERVERNAME"]
+simp_options::ldap::master: "ldap://SERVERNAME"
+# suP3rP@ssw0r!
+simp_openldap::server::conf::rootpw: "{SSHA}TghZyHW6r8/NL4fo0Q8BnihxVb7A7af5"
+sssd::domains:
+  - LDAP
+simp::is_mail_server: false
+pam::wheel_group: 'administrators'
+firewalld::firewall_backend: 'iptables'
+
+# Settings to make beaker happy
+pam::access::users:
+  defaults:
+    origins:
+      - ALL
+    permission: '+'
+  vagrant:
+  test.user:
+sudo::user_specifications:
+  vagrant_all:
+    user_list: ['vagrant']
+    cmnd: ['ALL']
+    passwd: false
+ssh::server::conf::permitrootlogin: true
+ssh::server::conf::authorizedkeysfile: .ssh/authorized_keys

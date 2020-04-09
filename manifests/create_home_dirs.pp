@@ -87,7 +87,7 @@ class simp_nfs::create_home_dirs (
   Simplib::Syslog::CSeverity     $syslog_severity       = 'LOG_NOTICE',
   Boolean                        $strip_128_bit_ciphers = true,
   Array[String[1]]               $tls_cipher_suite      = simplib::lookup('simp_options::openssl::cipher_suite', { 'default_value' => ['DEFAULT','!MEDIUM'] }),
-  String                         $package_ensure        = simplib::lookup('simp_options::package_ensure', { 'default_value' => 'installed' }),
+  String                         $package_ensure        = simplib::lookup('simp_options::package_ensure', { 'default_value' => 'installed' })
 ) {
 
   if $strip_128_bit_ciphers {
