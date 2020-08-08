@@ -23,7 +23,7 @@ fixtures:
     iptables: https://github.com/simp/pupmod-simp-iptables
     firewalld:
       repo: https://github.com/simp/pupmod-voxpupuli-firewalld
-      ref: v4.2.4
+      ref: v4.3.0
     mount_core:
       repo: https://github.com/simp/pupmod-puppetlabs-mount_core.git
       puppet_version: ">= 6.0.0"
@@ -35,6 +35,7 @@ fixtures:
       repo: https://github.com/simp/pupmod-puppetlabs-selinux_core.git
       puppet_version: ">= 6.0.0"
     simp: https://github.com/simp/pupmod-simp-simp
+    simp_firewalld: https://github.com/simp/pupmod-simp-simp_firewalld
     simp_openldap: https://github.com/simp/pupmod-simp-simp_openldap
     simp_options: https://github.com/simp/pupmod-simp-simp_options
     sssd: https://github.com/simp/pupmod-simp-sssd
