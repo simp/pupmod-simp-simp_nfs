@@ -2,21 +2,23 @@
 #
 # Sets up the export root at ``${data_dir}/nfs/exports`` and then adds
 # ``${data_dir}/nfs/home`` and submounts it under ``${data_dir}/nfs/exports``.
-
-# It should be mounted as ``$nfs_server:/home`` from your clients.
 #
-# The NFS clients must be provided with the hostname of the NFS server:
+# * The export root is the root NFS share directory for the NFSv4 pseudo
+#   filesystem. Each directory below that NFS share should be a bind mount
+#   to a directory on the NFS server.
+# * The exported home directory should be mounted as ``$nfs_server:/home`` from
+#   your clients, where ``$nfs_server`` is the IP address of the NFS server.
 #
 # @example NFS Server System Hieradata
 #   ---
 #   nfs::is_server : true
-#   classes :
+#   simp::classes :
 #     - simp_nfs::export::home
 #
 # @example NFS Client Home Mount
 #   ---
 #   simp_nfs::mount::home::nfs_server : <nfs_server_ip>
-#   classes :
+#   simp::classes :
 #     - simp_nfs::mount::home
 #
 # @param data_dir
