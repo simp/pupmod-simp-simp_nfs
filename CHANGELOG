@@ -1,4 +1,4 @@
-* Fri Oct 10 2020 Liz Nemsick <lnemsick.simp@gmail.com> - 1.0.1
+* Fri Oct 16 2020 Liz Nemsick <lnemsick.simp@gmail.com> - 1.0.1
 - Fixed:
   - Removed hostname as a possible entry for the NFS server in the
     sample code in the README. Specifying the NFS server as a
