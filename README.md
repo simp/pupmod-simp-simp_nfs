@@ -84,7 +84,7 @@ include 'simp_nfs'
 ```yaml
 ---
 simp_options::stunnel: true
-simp_nfs::home_dir_server : <your NFS server IP or Hostname>
+simp_nfs::home_dir_server : <your NFS server IP>
 ```
 
 ### Mount Home NFS Directories on another NFS server
@@ -97,9 +97,9 @@ port then the one the local NFS server is using.
 
 ```ruby
 class  mounthome {
-  class { simp_nfs::mount::home :
-    nfs_server => $home_server,
-    port  => 12049,
+  class { simp_nfs::mount::home:
+    nfs_server        => $home_server,
+    port              => 12049,
     autodetect_remote => false
   }
 }
@@ -115,24 +115,39 @@ See [REFERENCE.md](REFERENCE.md) for details.
 
 ## Known Issues
 
-The ``autofs`` package that was released with CentOS 6.8 (**autofs-5.0.5-122**) worked
-properly over a stunnel connection.
+The ``autofs`` package that was released with CentOS 7.3 (**5.0.7-56**)
+worked properly over a ``stunnel`` connection.
 
-The releases shipped with CentOS 6.9 (**5.0.5-132**)  and with CentOS 7.4 (**5.0.7-69**)
-prevent any connection from happening to the local ``stunnel`` process and
-break mounts to remote systems over ``stunnel`` connections.
+The release shipped with with CentOS 7.4 (**5.0.7-69**) prevents any connection
+from happening to the local ``stunnel`` process and breaks mounts to remote systems
+over ``stunnel`` connections.
 
-The releases that ship with CentOS 6.10 (**5.0.5-139**) and CentOS 7.6
-(**5.0.7-99**) have fixed the issue.
+The release that ship with CentOS 7.6 (**5.0.7-99**) has fixed the issue.
 
-To use NFS over ``stunnel`` on CentOS 6.9 and automount directories the old
-package must be used or you must update to the latest ``autofs`` package.
+To use NFS over ``stunnel`` and ``automount`` directories with old
+CentOS 7 releases, you must use the appropriate ``autofs`` package.
 
-To determine what package is installed on the system, run ``automount -V``.
+To determine what version of ``autofs`` is installed, run ``automount -V``.
+
+To force the package to the desired version:
+
+* Make sure the package is available via your package-management facility then
+  set the package version in Hiera data:
+
+``` yaml
+   autofs::autofs_package_ensure: '5.0.7-99'
+```
+
+* Alternatively, ensure that the latest packages are available and set the
+  following:
+
+``` yaml
+   autofs::autofs_package_ensure: 'latest'
+```
+
 
 The associated bug reports can be found at:
 
-- CentOS 6  https://bugs.centos.org/view.php?id=13575.
 - CentOS 7  https://bugs.centos.org/view.php?id=14080.
 
 ## Limitations
