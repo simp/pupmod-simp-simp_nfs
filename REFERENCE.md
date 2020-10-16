@@ -35,7 +35,7 @@ Default value: `false`
 
 ##### `home_dir_server`
 
-Data type: `Optional[Simplib::Host]`
+Data type: `Optional[Simplib::Ip]`
 
 If set, specifies the server from which you want to mount NFS home
 directories for your users
@@ -297,7 +297,7 @@ The following parameters are available in the `simp_nfs::mount::home` class.
 
 ##### `nfs_server`
 
-Data type: `Simplib::Host`
+Data type: `Simplib::IP`
 
 The NFS server to which you will be connecting
 

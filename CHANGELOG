@@ -1,4 +1,13 @@
-* Tue Mar 31 2020  <jeannegreulich@onyxpoint.com> - 1.0.0
+* Fri Oct 16 2020 Liz Nemsick <lnemsick.simp@gmail.com> - 1.0.1
+- Fixed:
+  - Removed hostname as a possible entry for the NFS server in the
+    sample code in the README. Specifying the NFS server as a
+    hostname is no longer supported due to limitations of firewalld.
+- Updated:
+  - In the README, removed EL6 from the autofs known issue discussion
+    and added more details on how to work around the problem.
+
+* Tue Mar 31 2020  Jeanne Greulich <jeannegreulich@onyxpoint.com> - 1.0.0
 - Added support for EL8
 - Removed support for EL6
 - Updated to use pupmod-simp-nfs release 7.0.0
