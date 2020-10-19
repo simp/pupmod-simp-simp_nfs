@@ -3,6 +3,8 @@
   - Removed hostname as a possible entry for the NFS server in the
     sample code in the README. Specifying the NFS server as a
     hostname is no longer supported due to limitations of firewalld.
+  - Replaced deprecated 'classes' with 'simp:classes' in manifest
+    documentation.
 - Updated:
   - In the README, removed EL6 from the autofs known issue discussion
     and added more details on how to work around the problem.
