@@ -8,6 +8,7 @@
 
 * [`simp_nfs`](#simp_nfs): A SIMP Profile for common NFS configurations
 * [`simp_nfs::create_home_dirs`](#simp_nfscreate_home_dirs): Adds a script to create user home directories for directory server
+by pulling users from LDAP
 * [`simp_nfs::export::home`](#simp_nfsexporthome): Configures an NFS server to share centralized home directories via NFSv4
 * [`simp_nfs::mount::home`](#simp_nfsmounthome): Set up an ``NFS4`` client to point to mount your remote home directories
 
@@ -71,8 +72,6 @@ Default value: ``true``
 
 ### `simp_nfs::create_home_dirs`
 
-by pulling users from LDAP
-
 https://github.com/simp/pupmod-simp-simp_nfs/graphs/contributors
 
 #### Parameters
@@ -117,8 +116,8 @@ Data type: `Stdlib::Absolutepath`
 
 The location of the home directories being exported
 
-* This location must be a puppet managed ``File`` resource
-* See the ``simp_nfs::export_home`` class for an example
+* This location must be a puppet managed `File` resource
+* See the `simp_nfs::export_home` class for an example
 
 Default value: `'/var/nfs/home'`
 
@@ -144,8 +143,8 @@ Data type: `Simplib::Port`
 
 The target port on the LDAP server
 
-* If none specified, defaults to ``389`` for regular and ``start_tls``
-  connections, and ``636`` for legacy SSL connections
+* If none specified, defaults to `389` for regular and `start_tls`
+  connections, and `636` for legacy SSL connections
 
 Default value: `389`
 
@@ -155,16 +154,16 @@ Data type: `Enum['ssl','start_tls','none']`
 
 Whether or not to enable SSL/TLS for the connection
 
-* ``ssl``
-    * ``LDAPS`` on port ``636`` unless  different ``port`` specified
-        * Uses ``simple_tls``; No validation of the LDAP server's SSL
+* `ssl`
+    * `LDAPS` on port `636` unless  different `port` specified
+        * Uses `simple_tls`; No validation of the LDAP server's SSL
           certificate is performed
 
-* ``start_tls``
-    * Start TLS on port ``389`` unless different ``port`` specified
+* `start_tls`
+    * Start TLS on port `389` unless different `port` specified
 
-* ``none``
-    * LDAP without encryption on port ``389`` unless different ``port``
+* `none`
+    * LDAP without encryption on port `389` unless different `port`
       specified
 
 Default value: `'start_tls'`
@@ -181,7 +180,7 @@ Default value: ``true``
 
 Data type: `Simplib::Syslog::CFacility`
 
-The syslog facility at which to log, must be Ruby ``syslog`` compatible
+The syslog facility at which to log, must be Ruby `syslog` compatible
 
 Default value: `'LOG_LOCAL6'`
 
@@ -189,7 +188,7 @@ Default value: `'LOG_LOCAL6'`
 
 Data type: `Simplib::Syslog::CSeverity`
 
-The syslog severity at which to log, must be Ruby ``syslog`` compatible
+The syslog severity at which to log, must be Ruby `syslog` compatible
 
 Default value: `'LOG_NOTICE'`
 
@@ -197,12 +196,7 @@ Default value: `'LOG_NOTICE'`
 
 Data type: `Boolean`
 
-On EL6 systems, all 128-bit ciphers will be removed from ``tls_cipher_suite``
-
-* This is due to a bug in the LDAP client libraries that does not appear to
-  honor the order of the SSL ciphers and will attempt to connect with
-  128-bit ciphers and not use stronger ciphers when those are present. This
-  breaks connections to securely configured LDAP servers.
+**Deprecated** This option does not affect any supported OSes
 
 Default value: ``true``
 
@@ -212,7 +206,8 @@ Data type: `Array[String[1]]`
 
 The TLS ciphers that should be used for the connection to LDAP
 
-* Presently only affects EL6 systems
+* This option was documented as only affectnig EL6 systems; it may be
+  deprecated in the future
 
 Default value: `simplib::lookup('simp_options::openssl::cipher_suite', { 'default_value' => ['DEFAULT','!MEDIUM'] })`
 
@@ -220,7 +215,7 @@ Default value: `simplib::lookup('simp_options::openssl::cipher_suite', { 'defaul
 
 Data type: `String`
 
-The ensure status of the rubygem-net-ldap package
+The ensure status of the `rubygem-net-ldap` package
 
 Default value: `simplib::lookup('simp_options::package_ensure', { 'default_value' => 'installed' })`
 
