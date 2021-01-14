@@ -1,3 +1,7 @@
+* Wed Jan 13 2021 Chris Tessmer <chris.tessmer@onyxpoint.com> - 1.0.2
+- Deprecated `simp_nfs::create_home_dirs::strip_128_bit_ciphers`.
+  This option no longer affects any supported OSes.
+
 * Fri Oct 16 2020 Liz Nemsick <lnemsick.simp@gmail.com> - 1.0.1
 - Fixed:
   - Removed hostname as a possible entry for the NFS server in the

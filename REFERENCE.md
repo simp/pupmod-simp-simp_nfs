@@ -206,7 +206,7 @@ Data type: `Array[String[1]]`
 
 The TLS ciphers that should be used for the connection to LDAP
 
-* This option was documented as only affectnig EL6 systems; it may be
+* This option was primarily provided for EL6 system support and may be
   deprecated in the future
 
 Default value: `simplib::lookup('simp_options::openssl::cipher_suite', { 'default_value' => ['DEFAULT','!MEDIUM'] })`

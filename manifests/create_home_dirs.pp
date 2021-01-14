@@ -61,7 +61,7 @@
 # @param tls_cipher_suite
 #   The TLS ciphers that should be used for the connection to LDAP
 #
-#   * This option was documented as only affectnig EL6 systems; it may be
+#   * This option was primarily provided for EL6 system support and may be
 #     deprecated in the future
 #
 # @param package_ensure The ensure status of the `rubygem-net-ldap` package
