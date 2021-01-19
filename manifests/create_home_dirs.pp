@@ -1,5 +1,5 @@
 # @summary Adds a script to create user home directories for directory server
-# by pulling users from LDAP
+#   by pulling users from LDAP
 #
 # @param uri
 #   The uri(s) of the LDAP servers
@@ -16,8 +16,8 @@
 # @param export_dir
 #   The location of the home directories being exported
 #
-#   * This location must be a puppet managed ``File`` resource
-#   * See the ``simp_nfs::export_home`` class for an example
+#   * This location must be a puppet managed `File` resource
+#   * See the `simp_nfs::export_home` class for an example
 #
 # @param skel_dir
 #   The location of sample skeleton files for user directories
@@ -28,47 +28,43 @@
 # @param port
 #   The target port on the LDAP server
 #
-#   * If none specified, defaults to ``389`` for regular and ``start_tls``
-#     connections, and ``636`` for legacy SSL connections
+#   * If none specified, defaults to `389` for regular and `start_tls`
+#     connections, and `636` for legacy SSL connections
 #
 # @param tls
 #   Whether or not to enable SSL/TLS for the connection
 #
-#   * ``ssl``
-#       * ``LDAPS`` on port ``636`` unless  different ``port`` specified
-#           * Uses ``simple_tls``; No validation of the LDAP server's SSL
+#   * `ssl`
+#       * `LDAPS` on port `636` unless  different `port` specified
+#           * Uses `simple_tls`; No validation of the LDAP server's SSL
 #             certificate is performed
 #
-#   * ``start_tls``
-#       * Start TLS on port ``389`` unless different ``port`` specified
+#   * `start_tls`
+#       * Start TLS on port `389` unless different `port` specified
 #
-#   * ``none``
-#       * LDAP without encryption on port ``389`` unless different ``port``
+#   * `none`
+#       * LDAP without encryption on port `389` unless different `port`
 #         specified
 #
 # @param quiet
 #   Whether or not to print potentially useful warnings
 #
 # @param syslog_facility
-#   The syslog facility at which to log, must be Ruby ``syslog`` compatible
+#   The syslog facility at which to log, must be Ruby `syslog` compatible
 #
 # @param syslog_severity
-#   The syslog severity at which to log, must be Ruby ``syslog`` compatible
+#   The syslog severity at which to log, must be Ruby `syslog` compatible
 #
 # @param strip_128_bit_ciphers
-#   On EL6 systems, all 128-bit ciphers will be removed from ``tls_cipher_suite``
-#
-#   * This is due to a bug in the LDAP client libraries that does not appear to
-#     honor the order of the SSL ciphers and will attempt to connect with
-#     128-bit ciphers and not use stronger ciphers when those are present. This
-#     breaks connections to securely configured LDAP servers.
+#   **Deprecated** This option does not affect any supported OSes
 #
 # @param tls_cipher_suite
 #   The TLS ciphers that should be used for the connection to LDAP
 #
-#   * Presently only affects EL6 systems
+#   * This option was primarily provided for EL6 system support and may be
+#     deprecated in the future
 #
-# @param package_ensure The ensure status of the rubygem-net-ldap package
+# @param package_ensure The ensure status of the `rubygem-net-ldap` package
 #
 # https://github.com/simp/pupmod-simp-simp_nfs/graphs/contributors
 #
@@ -90,21 +86,7 @@ class simp_nfs::create_home_dirs (
   String                         $package_ensure        = simplib::lookup('simp_options::package_ensure', { 'default_value' => 'installed' })
 ) {
 
-  if $strip_128_bit_ciphers {
-    # This is here due to a bug in the LDAP client library on EL6 that will set
-    # the SSF to 128 when connecting over StartTLS if there are *any* 128-bit
-    # ciphers in the list.
-    if $facts['os']['name'] in ['RedHat','CentOS','OracleLinux'] and (versioncmp($facts['os']['release']['major'],'7') < 0) {
-      $_tmp_suite = flatten($tls_cipher_suite.map |$cipher| { split($cipher,':') })
-      $_tls_cipher_suite = $_tmp_suite.filter |$cipher| { $cipher !~ Pattern[/128/] }
-    }
-    else {
-      $_tls_cipher_suite = $tls_cipher_suite
-    }
-  }
-  else {
-    $_tls_cipher_suite = $tls_cipher_suite
-  }
+  $_tls_cipher_suite = $tls_cipher_suite
 
   package { 'rubygem-net-ldap':
     ensure => $package_ensure
