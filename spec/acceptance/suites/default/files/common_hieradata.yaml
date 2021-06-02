@@ -5,6 +5,7 @@ simp_options::puppet::server: 'SERVERNAME'
 simp_options::puppet::ca:  'SERVERNAME'
 simp::yum::servers: ['SERVERNAME']
 simp_options::ntpd::servers: ['time.nist.gov']
+simp_options::haveged: true
 simp_options::sssd: true
 simp_options::stunnel: true
 simp_options::tcpwrappers: true
@@ -26,6 +27,7 @@ simp_openldap::server::conf::rootpw: "{SSHA}TghZyHW6r8/NL4fo0Q8BnihxVb7A7af5"
 sssd::domains:
   - LDAP
 simp::is_mail_server: false
+simp::sssd::client::ldap_server_type: plain
 pam::wheel_group: 'administrators'
 firewalld::firewall_backend: 'iptables'
 
