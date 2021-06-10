@@ -15,23 +15,6 @@ require 'timeout'
 require 'socket'
 require 'syslog'
 
-# This monstrosity is here because the version of net/ldap that ships with EL6
-# does not have support for altering the ciphers and we need to make sure that
-# we have that ability
-if Gem::Version.new(RUBY_VERSION) < Gem::Version.new('1.9.0')
-  module OpenSSL
-    module SSL
-      class SSLContext
-        def initialize
-          super
-
-          self.ciphers = '<%= Array(@_tls_cipher_suite).join(':') %>'
-        end
-      end
-    end
-  end
-end
-
 File.umask(0122)
 
 ldap_params = Hash.new
@@ -48,6 +31,9 @@ quiet = <%= @quiet %>
 syslog_facility = Syslog::<%= @syslog_facility %>
 syslog_severity = Syslog::<%= @syslog_severity %>
 tmout = 5
+
+ciphers_list = '<%= Array(@_tls_cipher_suite).join(':') %>'
+ca_path = '<%= @app_pki_ca_dir %>'
 
 begin
   Syslog.open('home_directories', Syslog::LOG_PID, syslog_facility)
@@ -100,9 +86,9 @@ servers.each do |svr|
       # which requires closing.
       conn_opts = {:host => svr, :port => <%= @port %>, :auth => {:method => :simple, :username => dn, :password => pw}}
       if tls == 'ssl'
-        conn_opts[:encryption] = :simple_tls
+        conn_opts[:encryption] = { :method => :simple_tls, :tls_options => { :ciphers => ciphers_list, :ca_path => ca_path }}
       elsif tls ==  'start_tls'
-        conn_opts[:encryption] = :start_tls
+        conn_opts[:encryption] = { :method => :start_tls, :tls_options => { :ciphers => ciphers_list, :ca_path => ca_path }}
       end
       conn = Net::LDAP.new(conn_opts)
       conn.bind

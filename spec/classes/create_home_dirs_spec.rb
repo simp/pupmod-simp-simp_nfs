@@ -23,8 +23,8 @@ describe 'simp_nfs::create_home_dirs' do
           }}
           it_behaves_like "a structured module"
           if ['RedHat','CentOS'].include?(facts[:os][:name])
-            it { is_expected.to create_file('/etc/cron.hourly/create_home_directories.rb').with_content(%r(self\.ciphers = '.*256.*)) }
-            it { is_expected.to create_file('/etc/cron.hourly/create_home_directories.rb').with_content(%r(self\.ciphers = '.*128.*)) }
+            it { is_expected.to create_file('/etc/cron.hourly/create_home_directories.rb').with_content(%r(ciphers_list = '.*256.*)) }
+            it { is_expected.to create_file('/etc/cron.hourly/create_home_directories.rb').with_content(%r(ciphers_list = '.*128.*)) }
           end
         end
         context 'with multiple URIs' do
