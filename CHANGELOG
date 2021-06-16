@@ -1,3 +1,11 @@
+* Wed Jun 16 2021 Jeanne Greulich <jeanne.greulich@onyxpoint.com> - 1.0.2
+- update create_home_directories to set tls params.
+  EL8 in FIPS mode could not talk to LDAP server on
+  EL7 because ciphers did not match.  The script was using
+  the default policies which only have TLS1_3 in them.
+  EL7 uses an older version of openssl which does not have
+  tls1_3.  Therefor had to set the ciphers in the script.
+
 * Wed Jan 13 2021 Chris Tessmer <chris.tessmer@onyxpoint.com> - 1.0.2
 - Deprecated `simp_nfs::create_home_dirs::strip_128_bit_ciphers`.
   This option no longer affects any supported OSes.
