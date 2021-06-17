@@ -2,9 +2,7 @@
 fixtures:
   repositories:
     auditd: https://github.com/simp/pupmod-simp-auditd.git
-    augeas_core:
-      repo: https://github.com/simp/pupmod-puppetlabs-augeas_core.git
-      puppet_version: ">= 6.0.0"
+    augeas_core: https://github.com/simp/pupmod-puppetlabs-augeas_core.git
     augeasproviders_core: https://github.com/simp/augeasproviders_core.git
     augeasproviders_grub: https://github.com/simp/augeasproviders_grub.git
     augeasproviders_sysctl: https://github.com/simp/augeasproviders_sysctl.git
@@ -22,16 +20,12 @@ fixtures:
     haveged: https://github.com/simp/pupmod-simp-haveged.git
     iptables: https://github.com/simp/pupmod-simp-iptables.git
     firewalld: https://github.com/simp/pupmod-voxpupuli-firewalld.git
-    mount_core:
-      repo: https://github.com/simp/pupmod-puppetlabs-mount_core.git
-      puppet_version: ">= 6.0.0"
+    mount_core: https://github.com/simp/pupmod-puppetlabs-mount_core.git
     nsswitch: https://github.com/simp/puppet-nsswitch.git
     pam: https://github.com/simp/pupmod-simp-pam.git
     pki: https://github.com/simp/pupmod-simp-pki.git
     rsyslog: https://github.com/simp/pupmod-simp-rsyslog.git
-    selinux_core:
-      repo: https://github.com/simp/pupmod-puppetlabs-selinux_core.git
-      puppet_version: ">= 6.0.0"
+    selinux_core: https://github.com/simp/pupmod-puppetlabs-selinux_core.git
     simp: https://github.com/simp/pupmod-simp-simp.git
     simp_firewalld: https://github.com/simp/pupmod-simp-simp_firewalld.git
     simp_openldap: https://github.com/simp/pupmod-simp-simp_openldap.git
