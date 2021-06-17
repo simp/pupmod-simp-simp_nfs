@@ -7,8 +7,7 @@
       ciphers did not match.  The script was using the default policies,
       which only have TLS1_3 in them. EL7 uses an older version of openssl
       which does not have TLS1_3. Therefore, had to set the ciphers and CA 
-      path in the script.
-      
+      path in the script.      
 - Added:
   - PKI parameters to `simp_nfs::create_home_directories`.
   - Management of PKI certificates in `simp_nfs::create_home_directories`.
