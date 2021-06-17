@@ -2,7 +2,7 @@
 - Removed support for Puppet 5
 - Ensured support for Puppet 7 in requirements and stdlib
 
-* Wed Jun 16 2021 Jeanne Greulich <jeanne.greulich@onyxpoint.com> - 1.1.2
+* Wed Jun 16 2021 Jeanne Greulich <jeanne.greulich@onyxpoint.com> - 1.1.0
 - Fixed:
   - Bug where EL8 LDAP clients were unable to communicate with an EL7 LDAP
     server in `/etc/cron.hourly/create_home_directories.rb`, when the servers
@@ -16,7 +16,7 @@
   - PKI parameters to `simp_nfs::create_home_directories`.
   - Management of PKI certificates in `simp_nfs::create_home_directories`.
 
-* Wed Jan 13 2021 Chris Tessmer <chris.tessmer@onyxpoint.com> - 1.1.2
+* Wed Jan 13 2021 Chris Tessmer <chris.tessmer@onyxpoint.com> - 1.1.0
 - Deprecated `simp_nfs::create_home_dirs::strip_128_bit_ciphers`.
   This option no longer affects any supported OSes.
 
