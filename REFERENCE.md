@@ -14,15 +14,20 @@ by pulling users from LDAP
 
 ## Classes
 
-### `simp_nfs`
+### <a name="simp_nfs"></a>`simp_nfs`
 
 A SIMP Profile for common NFS configurations
 
 #### Parameters
 
-The following parameters are available in the `simp_nfs` class.
+The following parameters are available in the `simp_nfs` class:
 
-##### `export_home_dirs`
+* [`export_home_dirs`](#export_home_dirs)
+* [`home_dir_server`](#home_dir_server)
+* [`autodetect_remote`](#autodetect_remote)
+* [`use_autofs`](#use_autofs)
+
+##### <a name="export_home_dirs"></a>`export_home_dirs`
 
 Data type: `Boolean`
 
@@ -35,7 +40,7 @@ Set up home directory exports for this system
 
 Default value: ``false``
 
-##### `home_dir_server`
+##### <a name="home_dir_server"></a>`home_dir_server`
 
 Data type: `Optional[Simplib::Ip]`
 
@@ -49,7 +54,7 @@ directories for your users
 
 Default value: ``undef``
 
-##### `autodetect_remote`
+##### <a name="autodetect_remote"></a>`autodetect_remote`
 
 Data type: `Boolean`
 
@@ -62,7 +67,7 @@ from which we should be mouting directories
 
 Default value: ``true``
 
-##### `use_autofs`
+##### <a name="use_autofs"></a>`use_autofs`
 
 Data type: `Boolean`
 
@@ -70,15 +75,35 @@ Use ``autofs`` for home directory mounts
 
 Default value: ``true``
 
-### `simp_nfs::create_home_dirs`
+### <a name="simp_nfscreate_home_dirs"></a>`simp_nfs::create_home_dirs`
 
 https://github.com/simp/pupmod-simp-simp_nfs/graphs/contributors
 
 #### Parameters
 
-The following parameters are available in the `simp_nfs::create_home_dirs` class.
+The following parameters are available in the `simp_nfs::create_home_dirs` class:
 
-##### `uri`
+* [`uri`](#uri)
+* [`base_dn`](#base_dn)
+* [`bind_dn`](#bind_dn)
+* [`bind_pw`](#bind_pw)
+* [`export_dir`](#export_dir)
+* [`skel_dir`](#skel_dir)
+* [`ldap_scope`](#ldap_scope)
+* [`port`](#port)
+* [`tls`](#tls)
+* [`quiet`](#quiet)
+* [`syslog_facility`](#syslog_facility)
+* [`syslog_severity`](#syslog_severity)
+* [`strip_128_bit_ciphers`](#strip_128_bit_ciphers)
+* [`tls_cipher_suite`](#tls_cipher_suite)
+* [`pki`](#pki)
+* [`app_pki_external_source`](#app_pki_external_source)
+* [`app_pki_dir`](#app_pki_dir)
+* [`app_pki_ca_dir`](#app_pki_ca_dir)
+* [`package_ensure`](#package_ensure)
+
+##### <a name="uri"></a>`uri`
 
 Data type: `Array[Simplib::URI]`
 
@@ -86,7 +111,7 @@ The uri(s) of the LDAP servers
 
 Default value: `simplib::lookup('simp_options::ldap::uri')`
 
-##### `base_dn`
+##### <a name="base_dn"></a>`base_dn`
 
 Data type: `String`
 
@@ -94,7 +119,7 @@ The root DN that should be used when searching for entries
 
 Default value: `simplib::lookup('simp_options::ldap::base_dn')`
 
-##### `bind_dn`
+##### <a name="bind_dn"></a>`bind_dn`
 
 Data type: `String`
 
@@ -102,7 +127,7 @@ The DN to use when binding to the LDAP server
 
 Default value: `simplib::lookup('simp_options::ldap::bind_dn')`
 
-##### `bind_pw`
+##### <a name="bind_pw"></a>`bind_pw`
 
 Data type: `String`
 
@@ -110,7 +135,7 @@ The password to use when binding to the LDAP server
 
 Default value: `simplib::lookup('simp_options::ldap::bind_pw')`
 
-##### `export_dir`
+##### <a name="export_dir"></a>`export_dir`
 
 Data type: `Stdlib::Absolutepath`
 
@@ -121,7 +146,7 @@ The location of the home directories being exported
 
 Default value: `'/var/nfs/home'`
 
-##### `skel_dir`
+##### <a name="skel_dir"></a>`skel_dir`
 
 Data type: `Stdlib::Absolutepath`
 
@@ -129,7 +154,7 @@ The location of sample skeleton files for user directories
 
 Default value: `'/etc/skel'`
 
-##### `ldap_scope`
+##### <a name="ldap_scope"></a>`ldap_scope`
 
 Data type: `Enum['one','sub','base']`
 
@@ -137,7 +162,7 @@ The search scope to use
 
 Default value: `'one'`
 
-##### `port`
+##### <a name="port"></a>`port`
 
 Data type: `Simplib::Port`
 
@@ -148,7 +173,7 @@ The target port on the LDAP server
 
 Default value: `389`
 
-##### `tls`
+##### <a name="tls"></a>`tls`
 
 Data type: `Enum['ssl','start_tls','none']`
 
@@ -168,7 +193,7 @@ Whether or not to enable SSL/TLS for the connection
 
 Default value: `'start_tls'`
 
-##### `quiet`
+##### <a name="quiet"></a>`quiet`
 
 Data type: `Boolean`
 
@@ -176,7 +201,7 @@ Whether or not to print potentially useful warnings
 
 Default value: ``true``
 
-##### `syslog_facility`
+##### <a name="syslog_facility"></a>`syslog_facility`
 
 Data type: `Simplib::Syslog::CFacility`
 
@@ -184,7 +209,7 @@ The syslog facility at which to log, must be Ruby `syslog` compatible
 
 Default value: `'LOG_LOCAL6'`
 
-##### `syslog_severity`
+##### <a name="syslog_severity"></a>`syslog_severity`
 
 Data type: `Simplib::Syslog::CSeverity`
 
@@ -192,7 +217,7 @@ The syslog severity at which to log, must be Ruby `syslog` compatible
 
 Default value: `'LOG_NOTICE'`
 
-##### `strip_128_bit_ciphers`
+##### <a name="strip_128_bit_ciphers"></a>`strip_128_bit_ciphers`
 
 Data type: `Boolean`
 
@@ -200,7 +225,7 @@ Data type: `Boolean`
 
 Default value: ``true``
 
-##### `tls_cipher_suite`
+##### <a name="tls_cipher_suite"></a>`tls_cipher_suite`
 
 Data type: `Array[String[1]]`
 
@@ -211,7 +236,54 @@ The TLS ciphers that should be used for the connection to LDAP
 
 Default value: `simplib::lookup('simp_options::openssl::cipher_suite', { 'default_value' => ['DEFAULT','!MEDIUM'] })`
 
-##### `package_ensure`
+##### <a name="pki"></a>`pki`
+
+Data type: `Variant[Enum['simp'],Boolean]`
+
+* If 'simp', include SIMP's pki module and use pki::copy to manage
+  application certs in /etc/pki/simp_apps/rsyslog/x509
+* If true, do *not* include SIMP's pki module, but still use pki::copy
+  to manage certs in /etc/pki/simp_apps/rsyslog/x509
+* If false, do not include SIMP's pki module and do not use pki::copy
+  to manage certs.  You will need to appropriately assign a subset of:
+  * app_pki_dir
+  * app_pki_key
+  * app_pki_cert
+  * app_pki_ca
+  * app_pki_ca_dir
+
+Default value: `simplib::lookup('simp_options::pki', { 'default_value' => false })`
+
+##### <a name="app_pki_external_source"></a>`app_pki_external_source`
+
+Data type: `String`
+
+* If pki = 'simp' or true, this is the directory from which certs will be
+  copied, via pki::copy.  Defaults to /etc/pki/simp/x509.
+
+* If pki = false, this variable has no effect.
+
+Default value: `simplib::lookup('simp_options::pki::source', { 'default_value' => '/etc/pki/simp/x509' })`
+
+##### <a name="app_pki_dir"></a>`app_pki_dir`
+
+Data type: `Stdlib::Absolutepath`
+
+This variable controls the basepath of $app_pki_key, $app_pki_cert,
+$app_pki_ca, $app_pki_ca_dir, and $app_pki_crl.
+It defaults to /etc/pki/simp_apps/<module_name>/pki.
+
+Default value: `'/etc/pki/simp_apps/nfs_home_server/x509'`
+
+##### <a name="app_pki_ca_dir"></a>`app_pki_ca_dir`
+
+Data type: `Stdlib::Absolutepath`
+
+Path to the CA certificates.
+
+Default value: `"${app_pki_dir}/cacerts"`
+
+##### <a name="package_ensure"></a>`package_ensure`
 
 Data type: `String`
 
@@ -219,7 +291,7 @@ The ensure status of the `rubygem-net-ldap` package
 
 Default value: `simplib::lookup('simp_options::package_ensure', { 'default_value' => 'installed' })`
 
-### `simp_nfs::export::home`
+### <a name="simp_nfsexporthome"></a>`simp_nfs::export::home`
 
 Sets up the export root at ``${data_dir}/nfs/exports`` and then adds
 ``${data_dir}/nfs/home`` and submounts it under ``${data_dir}/nfs/exports``.
@@ -252,9 +324,14 @@ simp::classes :
 
 #### Parameters
 
-The following parameters are available in the `simp_nfs::export::home` class.
+The following parameters are available in the `simp_nfs::export::home` class:
 
-##### `data_dir`
+* [`data_dir`](#data_dir)
+* [`trusted_nets`](#trusted_nets)
+* [`sec`](#sec)
+* [`create_home_dirs`](#create_home_dirs)
+
+##### <a name="data_dir"></a>`data_dir`
 
 Data type: `Stdlib::Absolutepath`
 
@@ -262,7 +339,7 @@ Data type: `Stdlib::Absolutepath`
 
 Default value: `'/var'`
 
-##### `trusted_nets`
+##### <a name="trusted_nets"></a>`trusted_nets`
 
 Data type: `Simplib::Netlist`
 
@@ -270,7 +347,7 @@ The networks that are allowed to mount this space
 
 Default value: `simplib::lookup('simp_options::trusted_nets', { 'default_value' => ['127.0.0.1'] })`
 
-##### `sec`
+##### <a name="sec"></a>`sec`
 
 Data type: `Array[Enum['none','sys','krb5','krb5i','krb5p']]`
 
@@ -278,7 +355,7 @@ An Array of sec modes for the export.
 
 Default value: `['sys']`
 
-##### `create_home_dirs`
+##### <a name="create_home_dirs"></a>`create_home_dirs`
 
 Data type: `Boolean`
 
@@ -286,7 +363,7 @@ Automatically create user home directories from LDAP data
 
 Default value: `simplib::lookup('simp_options::ldap', { 'default_value' => false })`
 
-### `simp_nfs::mount::home`
+### <a name="simp_nfsmounthome"></a>`simp_nfs::mount::home`
 
 If this system is also the NFS server, you need to set
 ``nfs::client::is_server`` to ``true`` or set
@@ -294,9 +371,19 @@ If this system is also the NFS server, you need to set
 
 #### Parameters
 
-The following parameters are available in the `simp_nfs::mount::home` class.
+The following parameters are available in the `simp_nfs::mount::home` class:
 
-##### `nfs_server`
+* [`nfs_server`](#nfs_server)
+* [`remote_path`](#remote_path)
+* [`local_home`](#local_home)
+* [`port`](#port)
+* [`sec`](#sec)
+* [`options`](#options)
+* [`at_boot`](#at_boot)
+* [`autodetect_remote`](#autodetect_remote)
+* [`use_autofs`](#use_autofs)
+
+##### <a name="nfs_server"></a>`nfs_server`
 
 Data type: `Simplib::IP`
 
@@ -304,7 +391,7 @@ The NFS server to which you will be connecting
 
 * If you are the server, please make sure that this is ``127.0.0.1``
 
-##### `remote_path`
+##### <a name="remote_path"></a>`remote_path`
 
 Data type: `Stdlib::Absolutepath`
 
@@ -312,7 +399,7 @@ The NFS share that you want to mount
 
 Default value: `'/home'`
 
-##### `local_home`
+##### <a name="local_home"></a>`local_home`
 
 Data type: `Stdlib::Absolutepath`
 
@@ -325,7 +412,7 @@ The local base for home directories
 
 Default value: `'/home'`
 
-##### `port`
+##### <a name="port"></a>`port`
 
 Data type: `Optional[Simplib::Port]`
 
@@ -333,7 +420,7 @@ The NFS port to which to connect
 
 Default value: ``undef``
 
-##### `sec`
+##### <a name="sec"></a>`sec`
 
 Data type: `Enum['sys','krb5','krb5i','krb5p']`
 
@@ -343,7 +430,7 @@ The sec mode for the mount
 
 Default value: `'sys'`
 
-##### `options`
+##### <a name="options"></a>`options`
 
 Data type: `Optional[String]`
 
@@ -353,7 +440,7 @@ The mount options string that should be used
 
 Default value: ``undef``
 
-##### `at_boot`
+##### <a name="at_boot"></a>`at_boot`
 
 Data type: `Boolean`
 
@@ -363,7 +450,7 @@ Ensure that this mount is mounted at boot time
 
 Default value: ``true``
 
-##### `autodetect_remote`
+##### <a name="autodetect_remote"></a>`autodetect_remote`
 
 Data type: `Boolean`
 
@@ -376,7 +463,7 @@ from which we should be mouting directories
 
 Default value: ``true``
 
-##### `use_autofs`
+##### <a name="use_autofs"></a>`use_autofs`
 
 Data type: `Boolean`
 

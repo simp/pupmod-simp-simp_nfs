@@ -64,26 +64,56 @@
 #   * This option was primarily provided for EL6 system support and may be
 #     deprecated in the future
 #
+# @param pki
+#   * If 'simp', include SIMP's pki module and use pki::copy to manage
+#     application certs in /etc/pki/simp_apps/rsyslog/x509
+#   * If true, do *not* include SIMP's pki module, but still use pki::copy
+#     to manage certs in /etc/pki/simp_apps/rsyslog/x509
+#   * If false, do not include SIMP's pki module and do not use pki::copy
+#     to manage certs.  You will need to appropriately assign a subset of:
+#     * app_pki_dir
+#     * app_pki_key
+#     * app_pki_cert
+#     * app_pki_ca
+#     * app_pki_ca_dir
+#
+# @param app_pki_external_source
+#   * If pki = 'simp' or true, this is the directory from which certs will be
+#     copied, via pki::copy.  Defaults to /etc/pki/simp/x509.
+#
+#   * If pki = false, this variable has no effect.
+# @param app_pki_dir
+#   This variable controls the basepath of $app_pki_key, $app_pki_cert,
+#   $app_pki_ca, $app_pki_ca_dir, and $app_pki_crl.
+#   It defaults to /etc/pki/simp_apps/<module_name>/pki.
+#
+# @param app_pki_ca_dir
+#   Path to the CA certificates.
+#
 # @param package_ensure The ensure status of the `rubygem-net-ldap` package
 #
 # https://github.com/simp/pupmod-simp-simp_nfs/graphs/contributors
 #
 class simp_nfs::create_home_dirs (
-  Array[Simplib::URI]            $uri                   = simplib::lookup('simp_options::ldap::uri'),
-  String                         $base_dn               = simplib::lookup('simp_options::ldap::base_dn'),
-  String                         $bind_dn               = simplib::lookup('simp_options::ldap::bind_dn'),
-  String                         $bind_pw               = simplib::lookup('simp_options::ldap::bind_pw'),
-  Stdlib::Absolutepath           $export_dir            = '/var/nfs/home',
-  Stdlib::Absolutepath           $skel_dir              = '/etc/skel',
-  Enum['one','sub','base']       $ldap_scope            = 'one',
-  Simplib::Port                  $port                  = 389,
-  Enum['ssl','start_tls','none'] $tls                   = 'start_tls',
-  Boolean                        $quiet                 = true,
-  Simplib::Syslog::CFacility     $syslog_facility       = 'LOG_LOCAL6',
-  Simplib::Syslog::CSeverity     $syslog_severity       = 'LOG_NOTICE',
-  Boolean                        $strip_128_bit_ciphers = true,
-  Array[String[1]]               $tls_cipher_suite      = simplib::lookup('simp_options::openssl::cipher_suite', { 'default_value' => ['DEFAULT','!MEDIUM'] }),
-  String                         $package_ensure        = simplib::lookup('simp_options::package_ensure', { 'default_value' => 'installed' })
+  Array[Simplib::URI]            $uri                     = simplib::lookup('simp_options::ldap::uri'),
+  String                         $base_dn                 = simplib::lookup('simp_options::ldap::base_dn'),
+  String                         $bind_dn                 = simplib::lookup('simp_options::ldap::bind_dn'),
+  String                         $bind_pw                 = simplib::lookup('simp_options::ldap::bind_pw'),
+  Variant[Enum['simp'],Boolean]  $pki                     = simplib::lookup('simp_options::pki', { 'default_value' => false }),
+  String                         $app_pki_external_source = simplib::lookup('simp_options::pki::source', { 'default_value' => '/etc/pki/simp/x509' }),
+  Stdlib::Absolutepath           $app_pki_dir             = '/etc/pki/simp_apps/nfs_home_server/x509',
+  Stdlib::Absolutepath           $app_pki_ca_dir          = "${app_pki_dir}/cacerts",
+  Stdlib::Absolutepath           $export_dir              = '/var/nfs/home',
+  Stdlib::Absolutepath           $skel_dir                = '/etc/skel',
+  Enum['one','sub','base']       $ldap_scope              = 'one',
+  Simplib::Port                  $port                    = 389,
+  Enum['ssl','start_tls','none'] $tls                     = 'start_tls',
+  Boolean                        $quiet                   = true,
+  Simplib::Syslog::CFacility     $syslog_facility         = 'LOG_LOCAL6',
+  Simplib::Syslog::CSeverity     $syslog_severity         = 'LOG_NOTICE',
+  Boolean                        $strip_128_bit_ciphers   = true,
+  Array[String[1]]               $tls_cipher_suite        = simplib::lookup('simp_options::openssl::cipher_suite', { 'default_value' => ['DEFAULT','!MEDIUM'] }),
+  String                         $package_ensure          = simplib::lookup('simp_options::package_ensure', { 'default_value' => 'installed' })
 ) {
 
   $_tls_cipher_suite = $tls_cipher_suite
@@ -99,6 +129,15 @@ class simp_nfs::create_home_dirs (
     content => template("${module_name}/etc/cron.hourly/create_home_directories.rb.erb"),
     notify  => [ Exec['/etc/cron.hourly/create_home_directories.rb'] ],
     require => Package['rubygem-net-ldap']
+  }
+
+  if $pki {
+    simplib::assert_optional_dependency($module_name, 'simp/pki')
+    pki::copy { 'nfs_home_server':
+      pki    => $pki,
+      source => $app_pki_external_source,
+      group  => 'root',
+    }
   }
 
   exec { '/etc/cron.hourly/create_home_directories.rb': refreshonly => true }
