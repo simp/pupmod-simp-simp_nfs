@@ -1,44 +1,44 @@
 ---
 fixtures:
   repositories:
-    auditd: https://github.com/simp/pupmod-simp-auditd
+    auditd: https://github.com/simp/pupmod-simp-auditd.git
     augeas_core:
       repo: https://github.com/simp/pupmod-puppetlabs-augeas_core.git
       puppet_version: ">= 6.0.0"
-    augeasproviders_core: https://github.com/simp/augeasproviders_core
-    augeasproviders_grub: https://github.com/simp/augeasproviders_grub
-    augeasproviders_sysctl: https://github.com/simp/augeasproviders_sysctl
-    autofs: https://github.com/simp/pupmod-simp-autofs
-    compliance_markup: https://github.com/simp/pupmod-simp-compliance_markup
-    concat: https://github.com/simp/puppetlabs-concat
-    logrotate: https://github.com/simp/pupmod-simp-logrotate
-    nfs: https://github.com/simp/pupmod-simp-nfs
-    simplib: https://github.com/simp/pupmod-simp-simplib
-    stdlib: https://github.com/simp/puppetlabs-stdlib
-    svckill: https://github.com/simp/pupmod-simp-svckill
+    augeasproviders_core: https://github.com/simp/augeasproviders_core.git
+    augeasproviders_grub: https://github.com/simp/augeasproviders_grub.git
+    augeasproviders_sysctl: https://github.com/simp/augeasproviders_sysctl.git
+    autofs: https://github.com/simp/pupmod-simp-autofs.git
+    compliance_markup: https://github.com/simp/pupmod-simp-compliance_markup.git
+    concat: https://github.com/simp/puppetlabs-concat.git
+    logrotate: https://github.com/simp/pupmod-simp-logrotate.git
+    nfs: https://github.com/simp/pupmod-simp-nfs.git
+    simplib: https://github.com/simp/pupmod-simp-simplib.git
+    stdlib: https://github.com/simp/puppetlabs-stdlib.git
+    svckill: https://github.com/simp/pupmod-simp-svckill.git
 
     # Required for the acceptance test
-    augeasproviders_ssh: https://github.com/simp/augeasproviders_ssh
-    haveged: https://github.com/simp/pupmod-simp-haveged
-    iptables: https://github.com/simp/pupmod-simp-iptables
-    firewalld: https://github.com/simp/pupmod-voxpupuli-firewalld
+    augeasproviders_ssh: https://github.com/simp/augeasproviders_ssh.git
+    haveged: https://github.com/simp/pupmod-simp-haveged.git
+    iptables: https://github.com/simp/pupmod-simp-iptables.git
+    firewalld: https://github.com/simp/pupmod-voxpupuli-firewalld.git
     mount_core:
       repo: https://github.com/simp/pupmod-puppetlabs-mount_core.git
       puppet_version: ">= 6.0.0"
-    nsswitch: https://github.com/simp/puppet-nsswitch
-    pam: https://github.com/simp/pupmod-simp-pam
-    pki: https://github.com/simp/pupmod-simp-pki
-    rsyslog: https://github.com/simp/pupmod-simp-rsyslog
+    nsswitch: https://github.com/simp/puppet-nsswitch.git
+    pam: https://github.com/simp/pupmod-simp-pam.git
+    pki: https://github.com/simp/pupmod-simp-pki.git
+    rsyslog: https://github.com/simp/pupmod-simp-rsyslog.git
     selinux_core:
       repo: https://github.com/simp/pupmod-puppetlabs-selinux_core.git
       puppet_version: ">= 6.0.0"
-    simp: https://github.com/simp/pupmod-simp-simp
-    simp_firewalld: https://github.com/simp/pupmod-simp-simp_firewalld
-    simp_openldap: https://github.com/simp/pupmod-simp-simp_openldap
-    simp_options: https://github.com/simp/pupmod-simp-simp_options
-    sssd: https://github.com/simp/pupmod-simp-sssd
-    ssh: https://github.com/simp/pupmod-simp-ssh
-    stunnel: https://github.com/simp/pupmod-simp-stunnel
-    sudo: https://github.com/simp/pupmod-simp-sudo
-    systemd: https://github.com/simp/puppet-systemd
-    tcpwrappers: https://github.com/simp/pupmod-simp-tcpwrappers
+    simp: https://github.com/simp/pupmod-simp-simp.git
+    simp_firewalld: https://github.com/simp/pupmod-simp-simp_firewalld.git
+    simp_openldap: https://github.com/simp/pupmod-simp-simp_openldap.git
+    simp_options: https://github.com/simp/pupmod-simp-simp_options.git
+    sssd: https://github.com/simp/pupmod-simp-sssd.git
+    ssh: https://github.com/simp/pupmod-simp-ssh.git
+    stunnel: https://github.com/simp/pupmod-simp-stunnel.git
+    sudo: https://github.com/simp/pupmod-simp-sudo.git
+    systemd: https://github.com/simp/puppet-systemd.git
+    tcpwrappers: https://github.com/simp/pupmod-simp-tcpwrappers.git

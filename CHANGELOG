@@ -1,3 +1,7 @@
+* Thu Jun 17 2021 Chris Tessmer <chris.tessmer@onyxpoint.com> - 1.1.0
+- Removed support for Puppet 5
+- Ensured support for Puppet 7 in requirements and stdlib
+
 * Wed Jun 16 2021 Jeanne Greulich <jeanne.greulich@onyxpoint.com> - 1.0.2
 - Fixed:
   - Bug where EL8 LDAP clients were unable to communicate with an EL7 LDAP
