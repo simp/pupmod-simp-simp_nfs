@@ -1,6 +1,6 @@
 {
   "name": "simp-simp_nfs",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "author": "SIMP Team",
   "summary": "A SIMP Puppet Profile for common NFS configurations",
   "license": "Apache-2.0",
@@ -22,7 +22,7 @@
     },
     {
       "name": "puppetlabs/stdlib",
-      "version_requirement": ">= 4.9.0 < 7.0.0"
+      "version_requirement": ">= 6.18.0 < 8.0.0"
     }
   ],
   "simp": {
@@ -59,7 +59,7 @@
   "requirements": [
     {
       "name": "puppet",
-      "version_requirement": ">= 6.0.0 < 8.0.0"
+      "version_requirement": ">= 6.22.1 < 8.0.0"
     }
   ]
 }
