@@ -15,7 +15,7 @@ HOSTS:
       - el7
       - ldap
     platform:   el-7-x86_64
-    box:        onyxpoint/oel-7-x86_64
+    box:        generic/oracle7
     hypervisor: <%= hypervisor %>
     vagrant_memsize: 2048
     yum_repos:
@@ -29,10 +29,6 @@ HOSTS:
           - https://download.simp-project.com/simp/GPGKEYS/RPM-GPG-KEY-SIMP
           - https://download.simp-project.com/simp/GPGKEYS/RPM-GPG-KEY-SIMP-6
           - https://download.simp-project.com/simp/GPGKEYS/RPM-GPG-KEY-SIMP-UNSTABLE
-      epel:
-        mirrorlist: 'https://mirrors.fedoraproject.org/metalink?repo=epel-$releasever&arch=$basearch'
-        gpgkeys:
-          - https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-$releasever
 
   client7:
     roles:
@@ -40,7 +36,7 @@ HOSTS:
       - agent
       - el7
     platform:   el-7-x86_64
-    box:        onyxpoint/oel-7-x86_64
+    box:        generic/oracle7
     hypervisor: <%= hypervisor %>
     yum_repos:
       simp:
@@ -49,16 +45,13 @@ HOSTS:
           - https://download.simp-project.com/simp/GPGKEYS/RPM-GPG-KEY-SIMP
           - https://download.simp-project.com/simp/GPGKEYS/RPM-GPG-KEY-SIMP-6
           - https://download.simp-project.com/simp/GPGKEYS/RPM-GPG-KEY-SIMP-UNSTABLE
-      epel:
-        mirrorlist: 'https://mirrors.fedoraproject.org/metalink?repo=epel-$releasever&arch=$basearch'
-        gpgkeys:
-          - https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-$releasever
 
   server8:
     roles:
       - simp_server
       - nfs_server
       - el8
+      - 389ds
     platform:   el-8-x86_64
     box:        generic/oracle8
     hypervisor: <%= hypervisor %>
@@ -70,10 +63,6 @@ HOSTS:
           - https://download.simp-project.com/simp/GPGKEYS/RPM-GPG-KEY-SIMP
           - https://download.simp-project.com/simp/GPGKEYS/RPM-GPG-KEY-SIMP-6
           - https://download.simp-project.com/simp/GPGKEYS/RPM-GPG-KEY-SIMP-UNSTABLE
-      epel:
-        mirrorlist: 'https://mirrors.fedoraproject.org/metalink?repo=epel-$releasever&arch=$basearch'
-        gpgkeys:
-          - https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-$releasever
 
   client8:
     roles:
@@ -90,10 +79,6 @@ HOSTS:
           - https://download.simp-project.com/simp/GPGKEYS/RPM-GPG-KEY-SIMP
           - https://download.simp-project.com/simp/GPGKEYS/RPM-GPG-KEY-SIMP-6
           - https://download.simp-project.com/simp/GPGKEYS/RPM-GPG-KEY-SIMP-UNSTABLE
-      epel:
-        mirrorlist: 'https://mirrors.fedoraproject.org/metalink?repo=epel-$releasever&arch=$basearch'
-        gpgkeys:
-          - https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-$releasever
 
 CONFIG:
   log_level: verbose

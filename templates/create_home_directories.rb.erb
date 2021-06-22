@@ -34,6 +34,8 @@ tmout = 5
 
 ciphers_list = '<%= Array(@_tls_cipher_suite).join(':') %>'
 ca_path = '<%= @app_pki_ca_dir %>'
+cert_file = '<%= @app_pki_cert %>'
+key_file = '<%= @app_pki_key %>'
 
 begin
   Syslog.open('home_directories', Syslog::LOG_PID, syslog_facility)
@@ -84,11 +86,21 @@ servers.each do |svr|
       # NOTE: Binding with the host will automatically cease once the code
       # block is executed; only open() will create a persistent connection
       # which requires closing.
+      if ['ssl', 'start_tls'].include?(tls)
+        cert = OpenSSL::X509::Certificate.new(File.read(cert_file))
+        key = OpenSSL::PKey::RSA.new(File.read(key_file))
+        tls_options = {
+          :ciphers => ciphers_list,
+          :ca_path => ca_path,
+          :cert => cert,
+          :key => key
+        }
+      end
       conn_opts = {:host => svr, :port => <%= @port %>, :auth => {:method => :simple, :username => dn, :password => pw}}
       if tls == 'ssl'
-        conn_opts[:encryption] = { :method => :simple_tls, :tls_options => { :ciphers => ciphers_list, :ca_path => ca_path }}
+        conn_opts[:encryption] = { :method => :simple_tls, :tls_options => tls_options }
       elsif tls ==  'start_tls'
-        conn_opts[:encryption] = { :method => :start_tls, :tls_options => { :ciphers => ciphers_list, :ca_path => ca_path }}
+        conn_opts[:encryption] = { :method => :start_tls, :tls_options => tls_options }
       end
       conn = Net::LDAP.new(conn_opts)
       conn.bind

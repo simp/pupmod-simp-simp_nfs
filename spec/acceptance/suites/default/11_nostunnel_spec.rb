@@ -2,148 +2,184 @@ require 'spec_helper_acceptance'
 
 test_name 'SIMP NFS profile'
 
-describe 'simp_nfs stock classes' do
+describe 'simp_nfs stock classes without stunnel' do
+  stunnel_setting = false
+  root_pw = 'suP3rP@ssw0r!'
   servers = hosts_with_role( hosts, 'nfs_server' )
   clients = hosts_with_role( hosts, 'client' )
-  ldap_server = only_host_with_role(hosts,'ldap')
-  ldap_fqdn = fact_on(ldap_server, 'fqdn')
+  manifest =  <<~EOM
+    include 'simp_options'
+    include 'pam::access'
+    include 'sudo'
+    include 'ssh'
+    include 'simp::nsswitch'
+    include 'simp_openldap::client'
+    include 'simp::sssd::client'
+    include 'simp_nfs'
+    file {  '/mnt1':
+       ensure => 'directory',
+       owner  => 'root',
+       group => 'root',
+       mode => '0755',
+       before => Class['simp_nfs']
+    }
+    # let vagrant get back in
+    simp_firewalld::rule { 'allow_all_ssh':
+      trusted_nets => ['all'],
+      protocol     => tcp,
+      dports       => 22
+    }
+    EOM
+  nfsserver_hieradata = <<~EOM
+    nfs::is_server: true
+    simp_nfs::export_home::create_home_dirs: true
+    EOM
+  nfsserver_manifest = <<~EOM
+    include 'simp_nfs::export::home'
+    Class['simp::sssd::client'] ->  Class['simp_nfs::export::home']
+    EOM
+  clear_sssd_cache = <<~EOM
+    #!/bin/bash
+    if [ -f /var/lib/sss/db/cache_LDAP.ldb ]; then
+      rm -f /var/lib/sss/db/cache_LDAP.ldb
+    fi
+    systemctl restart sssd
+    EOM
 
-  _domains = fact_on(ldap_server, 'domain').split('.')
-  _domains.map! { |d|
-    "dc=#{d}"
-  }
-  domains = _domains.join(',')
-  hiera_file = File.expand_path('./files/common_hieradata.yaml',File.dirname(__FILE__))
-  hieradata_common = File.read(hiera_file).gsub('SERVERNAME',ldap_fqdn).gsub('simp_options::stunnel: false','simp_options::stunnel: true')
+  ['389ds','plain'].each do  |ldaptype|
+     context "using ldap server type #{ldaptype} with no stunnel" do
+       let(:ldap_type) { ldaptype }
 
-  el8_server_host =only_host_with_role(servers,'el8')
-  el8_server = fact_on(el8_server_host, 'fqdn')
-  el8_server_ip = fact_on(el8_server_host,%(ipaddress_#{get_private_network_interface(el8_server_host)}))
-  el7_server_host =only_host_with_role(servers,'el7')
-  el7_server = fact_on(el7_server_host, 'fqdn')
-  el7_server_ip = fact_on(el7_server_host,%(ipaddress_#{get_private_network_interface(el7_server_host)}))
-
-  context 'with exported home directories with no stunnel on a non-default data_dir' do
-    hosts.each do |node|
-
-      # Determine who your nfs server is
-      os = fact_on(node, 'operatingsystem')
-      if os =~ /CentOS|RedHat|OracleLinux/
-        os_release = fact_on(node, 'operatingsystemmajrelease')
-        case  os_release
-        when '7'
-          server = el7_server
-          server_ip = el7_server_ip
-        when '8'
-          server = el8_server
-          server_ip = el8_server_ip
-        else
-          STDERR.puts "#{os_release} not a supported OS release"
-          next
-        end
-      else
-        STDERR.puts "OS #{os} not supported"
-        next
-      end
-      nfs_server = server
-      nfs_server_ip = server_ip
-
-      manifest = <<-EOM
-        include 'simp_options'
-        include 'pam::access'
-        include 'sudo'
-        include 'ssh'
-        include 'simp::nsswitch'
-        include 'simp_openldap::client'
-        include 'simp::sssd::client'
-        include 'simp_nfs'
-        file {  '/mnt1':
-          ensure => 'directory',
-          owner  => 'root',
-          group => 'root',
-          mode => '0755',
-          before => Class['simp_nfs']
-        }
-      EOM
-
-      hieradata_extra = <<-EOM
-
-simp_nfs::home_dir_server: #{nfs_server_ip}
-nfs::client::stunnel::nfs_server: #{nfs_server}
-#mount to /mnt1 so vagrant home directory is not overwritten
-#also to avoid stale mounts from previous test.
-simp_nfs::mount::home::local_home: /mnt1
-      EOM
-
-      if servers.include?(node)
-        it 'should install nfs using alternate data directory' do
-          # Construct server hieradata; export home directories.
-          server_hieradata = hieradata_common + hieradata_extra + <<-EOM.gsub(/^\s+/,'')
-            nfs::is_server: true
-            simp_nfs::create_home_dirs: true
-            simp_nfs::export::home::data_dir: '/var/newnfs'
+       if ldaptype == '389ds'
+         let(:ldap_server) {only_host_with_role(hosts,'389ds') }
+         let(:ldap_manifest){  <<-EOM
+            include 'simp_ds389::instances::accounts'
           EOM
-
-          _server_manifest = <<-EOM
-             include 'simp_nfs::export::home'
-              #make sure sssd is configured before running
-              #create_home_directories or it fails.
-              Class['simp::sssd::client'] ->  Class['simp_nfs::export::home']
-              file { '/var/newnfs':
-                ensure => 'directory',
-                owner  => 'root',
-                group => 'root',
-                mode => '0755',
-                before => Class['simp_nfs']
-              }
+         }
+       else
+         let(:ldap_server) {only_host_with_role(hosts,'ldap') }
+         let(:ldap_manifest){  <<-EOM
+            include 'simp::server::ldap'
           EOM
+         }
+       end
+       let(:ldap_server_fqdn) { fact_on(ldap_server, 'fqdn')}
 
-          if node == ldap_server
-            server_manifest = manifest + _server_manifest  + <<-EOM
-              include simp::server::ldap
-            EOM
-          else
-            server_manifest = manifest + _server_manifest
+       let(:_domains) { fact_on(ldap_server, 'domain').split('.')
+                         _domains.map! { |d|
+                       "dc=#{d}"
+                      }}
+       let(:domains) { _domains.join(',')}
+       let(:common_hieradata)  { File.read(File.expand_path('files/common_hieradata.yaml.erb', File.dirname(__FILE__))) }
+       let(:ldap_server_hieradata) { File.read(File.expand_path("files/#{ldap_type}/server_hieradata.yaml.erb", File.dirname(__FILE__))) }
+
+
+       it 'should install ldap server' do
+         # This server may have just been an NFS server in a previous test.
+         # We need run puppet again with the ldap manifest to make sure
+         # the firewall is configured correctly.
+         ldap_server_manifest=[manifest, ldap_manifest].join("\n")
+
+         set_hieradata_on(ldap_server, ERB.new(common_hieradata + ldap_server_hieradata).result(binding))
+         apply_manifest_on(ldap_server, ldap_server_manifest, catch_failures: true)
+         apply_manifest_on(ldap_server, ldap_server_manifest, catch_changes: true)
+       end
+
+           # Ensure the cache is built, don't wait for enum timeout
+
+       servers.each do |server|
+         context "On #{server} with #{ldaptype} ldap server export home directories wthout stunnel" do
+           let(:nfs_server) { server }
+           let(:nfs_server_ip) {  fact_on(nfs_server,%(ipaddress_#{get_private_network_interface(nfs_server)})) }
+
+           let(:hieradata_extra) {
+             <<~EOM
+             simp_nfs::home_dir_server: #{nfs_server_ip}
+             nfs::client::stunnel::nfs_server: #{nfs_server}
+             simp_nfs::mount::home::local_home: '/mnt1'
+             EOM
+           }
+
+           let(:server_hieradata) { [common_hieradata, ldap_server_hieradata,  hieradata_extra, nfsserver_hieradata].join("\n")}
+
+           it 'should clear the sssd cache' do
+             #since we are switching around ldap servers make sure the
+             #sssd cache is clear.  It might have users from
+             #the previous ldap server
+             create_remote_file(nfs_server, '/root/clear_sssd_cache.sh',clear_sssd_cache)
+             on(nfs_server, 'chmod +x /root/clear_sssd_cache.sh')
+             on(nfs_server, '/root/clear_sssd_cache.sh')
+           end
+
+           it 'should install nfs server' do
+             if server == ldap_server
+               # Don't want to disable the firewall for the ldap server
+               server_manifest=[manifest, nfsserver_manifest, ldap_manifest].join("\n")
+             else
+               server_manifest=[manifest, nfsserver_manifest].join("\n")
+             end
+
+             set_hieradata_on(nfs_server, ERB.new(server_hieradata).result(binding))
+             apply_manifest_on(nfs_server, server_manifest, catch_failures: true)
+             apply_manifest_on(nfs_server, server_manifest, catch_failures: true)
+             apply_manifest_on(nfs_server, server_manifest, catch_changes: true)
+           end
+
+           # Ensure the cache is built, don't wait for enum timeout
+           it 'should see the monster user' do
+             user_info = on(nfs_server, 'id monster.user', :acceptable_exit_codes => [0])
+             expect(user_info.stdout).to match(/.*uid=11000\(monster.user\).*gid=11000\(monster.user\)/)
           end
 
-          # Apply
-          set_hieradata_on(node, server_hieradata, 'default')
-          apply_manifest_on(node, server_manifest, catch_failures: true)
-          apply_manifest_on(node, server_manifest, catch_failures: true)
-          apply_manifest_on(node, server_manifest, catch_changes: true)
+          it ' should create home dirs and export them' do
+            # Create test.user's homedir via cron, and ensure it gets mounted
+            on(nfs_server, '/usr/local/bin/create_home_directories.rb')
+            on(nfs_server, 'ls /var/nfs/home/monster.user')
+            on(nfs_server, "runuser -l monster.user -c 'touch ~/monstertestfile'")
+            mount = on(nfs_server, "mount")
+            expect(mount.stdout).to match(/127.0.0.1:\/home\/monster.user.*nfs/)
+          end
 
-          # Ensure the cache is built, don't wait for enum timeout
-          on(node, 'service sssd restart')
+          clients.each do |client|
+            context "On #{client} using #{server} as nfs and #{ldaptype} ldap server without stunnel" do
+              let(:client_hieradata) { [common_hieradata, hieradata_extra].join("\n") }
+              it 'should clean up from any previous tests' do
+                create_remote_file(client, '/root/clear_sssd_cache.sh',clear_sssd_cache)
+                on(client, 'chmod +x /root/clear_sssd_cache.sh')
+                on(client, '/root/clear_sssd_cache.sh', :accept_all_exit_codes => true )
+                on(client,'umount -f /mnt1/monster.user', :accept_all_exit_codes => true)
+              end
+
+              it "should set without stunnel #{client}" do
+                set_hieradata_on(client, ERB.new(client_hieradata).result(binding))
+                apply_manifest_on(client, manifest, catch_failures: true)
+                apply_manifest_on(client, manifest, catch_failures: true)
+                apply_manifest_on(client, manifest, catch_changes: true)
+              end
+
+              it 'should see the  monster user' do
+                user_info = on(client, 'id monster.user', :acceptable_exit_codes => [0])
+                expect(user_info.stdout).to match(/.*uid=11000\(monster.user\).*gid=11000\(monster.user\)/)
+              end
+
+              it 'should see the file created on the server' do
+                retry_on(client, 'ls /mnt1/monster.user/monstertestfile', acceptable_exit_codes: [0])
+                #should be able to create new file
+                on(client, "runuser -l monster.user -c 'touch ~/difftestfile'")
+              end
+
+              it 'should remove mount to next test has no problems' do
+                on(client, 'umount -f /mnt1/monster.user')
+              end
+            # End client context
+
+            end
+          end
+        # End server context
         end
-      else
-        it "should set up #{node}" do
-          client_hieradata = hieradata_common + hieradata_extra
-          set_hieradata_on(node, client_hieradata, 'default')
-          apply_manifest_on(node, manifest, catch_failures: true)
-          apply_manifest_on(node, manifest, catch_changes: true)
-          #  LDAP server should be set up and the client should be able
-          #  to talk to it.
-        end
       end
-    end
-
-    it 'should create the test.user home directory mount on the servers using the cron job' do
-      servers.each do |node|
-        # Create test.user's homedir via cron, and ensure it gets mounted
-        on(node, '/etc/cron.hourly/create_home_directories.rb')
-        on(node, 'ls /var/nfs/home/monster.user')
-        on(node, "runuser -l monster.user -c 'touch ~/newtestfile'")
-        mount = on(node, "mount")
-        expect(mount.stdout).to match(/127.0.0.1:\/home\/monster.user.*nfs/)
-      end
-    end
-
-    it 'should have file propagation to the clients' do
-      clients.each do |node|
-        retry_on(node, 'ls /mnt1/monster.user/newtestfile', acceptable_exit_codes: [0])
-        #should be able to create new file
-        on(node, "runuser -l monster.user -c 'touch ~/difftestfile'")
-      end
+    #End Ldap server context
     end
   end
+#End it all
 end
