@@ -74,6 +74,7 @@ describe 'simp_nfs stock classes' do
 
          set_hieradata_on(ldap_server, ERB.new(common_hieradata + ldap_server_hieradata).result(binding))
          apply_manifest_on(ldap_server, ldap_server_manifest, catch_failures: true)
+         apply_manifest_on(ldap_server, ldap_server_manifest, catch_failures: true)
          apply_manifest_on(ldap_server, ldap_server_manifest, catch_changes: true)
        end
 
