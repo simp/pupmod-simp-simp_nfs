@@ -1,0 +1,19 @@
+# test user 1
+dsidm "<%= ds_root_name %>" -b "<%= domains %>" posixgroup create --cn <%= test_user1 %> --gidNumber 10000
+
+dsidm "<%= ds_root_name %>" -b "<%= domains %>" user create --cn <%= test_user1 %> --uid <%= test_user1 %> --displayName "Test User" --uidNumber 10000 --gidNumber 10000 --homeDirectory /mnt/<%= test_user1 %>
+
+#suP3rP@ssw0r!
+dsidm "<%= ds_root_name %>" -b "<%= domains %>" user modify <%= test_user1 %> add:userPassword:{SSHA}r2GaizHFWY8pcHpIClU0ye7vsO4uHv/y
+
+dsidm "<%= ds_root_name %>" -b "<%= domains %>" posixgroup modify administrators add:member:uid=<%= test_user1 %>,ou=People,<%= domains %>
+
+#testuser 2
+dsidm "<%= ds_root_name %>" -b "<%= domains %>" posixgroup create --cn <%= test_user2 %> --gidNumber 11000
+
+dsidm "<%= ds_root_name %>" -b "<%= domains %>" user create --cn <%= test_user2 %> --uid <%= test_user2 %> --displayName "Test User" --uidNumber 11000 --gidNumber 11000 --homeDirectory /mnt1/<%= test_user2 %>
+
+#suP3rP@ssw0r!
+dsidm "<%= ds_root_name %>" -b "<%= domains %>" user modify <%= test_user2 %> add:userPassword:{SSHA}r2GaizHFWY8pcHpIClU0ye7vsO4uHv/y
+
+dsidm "<%= ds_root_name %>" -b "<%= domains %>" posixgroup modify administrators add:member:uid=<%= test_user2 %>,ou=People,<%= domains %>

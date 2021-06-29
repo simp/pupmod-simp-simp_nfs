@@ -23,9 +23,18 @@ describe 'simp_nfs::create_home_dirs' do
           }}
           it_behaves_like "a structured module"
           if ['RedHat','CentOS'].include?(facts[:os][:name])
-            it { is_expected.to create_file('/etc/cron.hourly/create_home_directories.rb').with_content(%r(ciphers_list = '.*256.*)) }
-            it { is_expected.to create_file('/etc/cron.hourly/create_home_directories.rb').with_content(%r(ciphers_list = '.*128.*)) }
+            it { is_expected.to create_file('/usr/local/bin/create_home_directories.rb').with_content(%r(ciphers_list = '.*256.*)) }
+            it { is_expected.to create_file('/usr/local/bin/create_home_directories.rb').with_content(%r(ciphers_list = '.*128.*)) }
+            it { is_expected.to create_file('/usr/local/bin/create_home_directories.rb').with_content(%r(pw = 'my_password')) }
+            it { is_expected.to create_file('/usr/local/bin/create_home_directories.rb').with_content(%r(dn = 'dn=bind,ou=bar')) }
+            it { is_expected.to create_file('/usr/local/bin/create_home_directories.rb').with_content(%r(userou = 'ou=People,dn=foo,ou=bar')) }
           end
+          it { is_expected.to create_systemd__timer('nfs_create_home_dirs.timer')
+               .with_timer_content(/OnCalendar=\*-\*-\* \*:30:00/)
+               .with_service_content(%r{ExecStart=/usr/local/bin/create_home_directories.rb})
+               .with_service_content(/SuccessExitStatus=0/)
+               .that_requires('File[/usr/local/bin/create_home_directories.rb]')
+          }
         end
         context 'with multiple URIs' do
           let(:params) {{
@@ -36,7 +45,22 @@ describe 'simp_nfs::create_home_dirs' do
             :tls_cipher_suite => ['AES256','AES128']
           }}
           it_behaves_like "a structured module"
-          it { is_expected.to create_file('/etc/cron.hourly/create_home_directories.rb').with_content(%r(servers =.*'#{facts[:fqdn]}', 'foo.bar.baz'.*)) }
+          it { is_expected.to create_file('/usr/local/bin/create_home_directories.rb').with_content(%r(servers =.*'#{facts[:fqdn]}', 'foo.bar.baz'.*)) }
+        end
+        context 'with pki settings' do
+          let(:params) {{
+            :uri              => ["ldap://#{facts[:fqdn]}"],
+            :base_dn          => 'dn=foo,ou=bar',
+            :bind_dn          => 'dn=bind,ou=bar',
+            :bind_pw          => 'my_password',
+            :pki              => 'simp',
+            :tls_cipher_suite => ['AES256','AES128']
+          }}
+          it_behaves_like "a structured module"
+          it { is_expected.to create_pki__copy('nfs_home_server') }
+          it { is_expected.to create_file('/usr/local/bin/create_home_directories.rb').with_content(%r(ca_path = '/etc/pki/simp_apps/nfs_home_server/x509/cacerts'))}
+          it { is_expected.to create_file('/usr/local/bin/create_home_directories.rb').with_content(%r(cert_file = '/etc/pki/simp_apps/nfs_home_server/x509/public/#{facts[:fqdn]}.pub'))}
+          it { is_expected.to create_file('/usr/local/bin/create_home_directories.rb').with_content(%r(key_file = '/etc/pki/simp_apps/nfs_home_server/x509/private/#{facts[:fqdn]}.pem'))}
         end
       end
     end

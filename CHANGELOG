@@ -1,3 +1,11 @@
+* Tue Jun 22 2021 Jeanne Greulich <jeanne.greulich@onyxpoint.com> - 1.1.0
+- Add nfs server certificate information to create_home_directories
+  script.  389ds has client authentication set to require so the
+  certificate information must be sent in the Net::LDAP call.
+- Changes the cron to a systemd timer and remove the script from
+  /etc/cron.hourly.  The script is now located in /usr/local/bin.
+- Add tests with 389ds server
+
 * Thu Jun 17 2021 Chris Tessmer <chris.tessmer@onyxpoint.com> - 1.1.0
 - Removed support for Puppet 5
 - Ensured support for Puppet 7 in requirements and stdlib

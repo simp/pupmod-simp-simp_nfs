@@ -84,6 +84,9 @@ https://github.com/simp/pupmod-simp-simp_nfs/graphs/contributors
 The following parameters are available in the `simp_nfs::create_home_dirs` class:
 
 * [`uri`](#uri)
+* [`enable`](#enable)
+* [`create_home_script`](#create_home_script)
+* [`run_schedule`](#run_schedule)
 * [`base_dn`](#base_dn)
 * [`bind_dn`](#bind_dn)
 * [`bind_pw`](#bind_pw)
@@ -100,6 +103,8 @@ The following parameters are available in the `simp_nfs::create_home_dirs` class
 * [`pki`](#pki)
 * [`app_pki_external_source`](#app_pki_external_source)
 * [`app_pki_dir`](#app_pki_dir)
+* [`app_pki_key`](#app_pki_key)
+* [`app_pki_cert`](#app_pki_cert)
 * [`app_pki_ca_dir`](#app_pki_ca_dir)
 * [`package_ensure`](#package_ensure)
 
@@ -110,6 +115,32 @@ Data type: `Array[Simplib::URI]`
 The uri(s) of the LDAP servers
 
 Default value: `simplib::lookup('simp_options::ldap::uri')`
+
+##### <a name="enable"></a>`enable`
+
+Data type: `Boolean`
+
+Enable or disable the systemd timer that runs the script to create home
+directories for users.
+
+Default value: ``true``
+
+##### <a name="create_home_script"></a>`create_home_script`
+
+Data type: `Stdlib::AbsolutePath`
+
+The path where to place the script.
+
+Default value: `'/usr/local/bin/create_home_directories.rb'`
+
+##### <a name="run_schedule"></a>`run_schedule`
+
+Data type: `String`
+
+The time schedule for the systemd timer.  See systemd.timer man
+page for correct format.
+
+Default value: `'1 h'`
 
 ##### <a name="base_dn"></a>`base_dn`
 
@@ -241,9 +272,9 @@ Default value: `simplib::lookup('simp_options::openssl::cipher_suite', { 'defaul
 Data type: `Variant[Enum['simp'],Boolean]`
 
 * If 'simp', include SIMP's pki module and use pki::copy to manage
-  application certs in /etc/pki/simp_apps/rsyslog/x509
+  application certs in /etc/pki/simp_apps/nfs_home_server/x509
 * If true, do *not* include SIMP's pki module, but still use pki::copy
-  to manage certs in /etc/pki/simp_apps/rsyslog/x509
+  to manage certs in /etc/pki/simp_apps/nfs_home_server/x509
 * If false, do not include SIMP's pki module and do not use pki::copy
   to manage certs.  You will need to appropriately assign a subset of:
   * app_pki_dir
@@ -271,15 +302,31 @@ Data type: `Stdlib::Absolutepath`
 
 This variable controls the basepath of $app_pki_key, $app_pki_cert,
 $app_pki_ca, $app_pki_ca_dir, and $app_pki_crl.
-It defaults to /etc/pki/simp_apps/<module_name>/pki.
+It defaults to /etc/pki/simp_apps/nfs_home_server/pki.
 
 Default value: `'/etc/pki/simp_apps/nfs_home_server/x509'`
+
+##### <a name="app_pki_key"></a>`app_pki_key`
+
+Data type: `Stdlib::AbsolutePath`
+
+Path and name of the private SSL key file
+
+Default value: `"${app_pki_dir}/private/${facts['fqdn']}.pem"`
+
+##### <a name="app_pki_cert"></a>`app_pki_cert`
+
+Data type: `Stdlib::AbsolutePath`
+
+Path and name of the public SSL certificate
+
+Default value: `"${app_pki_dir}/public/${facts['fqdn']}.pub"`
 
 ##### <a name="app_pki_ca_dir"></a>`app_pki_ca_dir`
 
 Data type: `Stdlib::Absolutepath`
 
-Path to the CA certificates.
+Path to the CA.
 
 Default value: `"${app_pki_dir}/cacerts"`
 

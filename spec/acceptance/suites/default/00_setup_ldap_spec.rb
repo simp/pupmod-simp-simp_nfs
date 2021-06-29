@@ -3,8 +3,9 @@ require 'spec_helper_acceptance'
 test_name 'Set up ldap server '
 
 describe 'simp_nfs stock classes' do
+  stunnel_setting = true
   ldap_server = only_host_with_role(hosts,'ldap')
-  server = fact_on(ldap_server, 'fqdn')
+  ldap_server_fqdn = fact_on(ldap_server, 'fqdn')
 
   _domains = fact_on(ldap_server, 'domain').split('.')
   _domains.map! { |d|
@@ -12,10 +13,14 @@ describe 'simp_nfs stock classes' do
   }
   domains = _domains.join(',')
 
-  hiera_file = File.expand_path('./files/common_hieradata.yaml',File.dirname(__FILE__))
-  hiera_txt = File.read(hiera_file).gsub('SERVERNAME',server)
+  common_hieradata = File.read(File.expand_path('files/common_hieradata.yaml.erb', File.dirname(__FILE__)))
 
   context 'setup ldap server ' do
+
+    let(:ldap_type)        { 'plain' }
+    let(:server_hieradata) { File.read(File.expand_path("files/#{ldap_type}/server_hieradata.yaml.erb", File.dirname(__FILE__)))}
+    let (:hieradata){ "#{common_hieradata}" + "\n#{server_hieradata}"}
+
 
     test_user_ldif = <<-EOM
 dn: cn=test.user,ou=Group,#{domains}
@@ -102,7 +107,7 @@ memberUid: monster.user
       EOM
 
       # Apply
-      set_hieradata_on(ldap_server, hiera_txt, 'default')
+      set_hieradata_on(ldap_server, ERB.new(hieradata).result(binding), 'default')
       apply_manifest_on(ldap_server, server_manifest, catch_failures: true)
       apply_manifest_on(ldap_server, server_manifest, catch_failures: true)
       apply_manifest_on(ldap_server, server_manifest, catch_changes: true)

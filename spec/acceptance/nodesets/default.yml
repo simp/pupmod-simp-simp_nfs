@@ -26,10 +26,6 @@ HOSTS:
           - https://download.simp-project.com/simp/GPGKEYS/RPM-GPG-KEY-SIMP
           - https://download.simp-project.com/simp/GPGKEYS/RPM-GPG-KEY-SIMP-6
           - https://download.simp-project.com/simp/GPGKEYS/RPM-GPG-KEY-SIMP-UNSTABLE
-      epel:
-        mirrorlist: 'https://mirrors.fedoraproject.org/metalink?repo=epel-$releasever&arch=$basearch'
-        gpgkeys:
-          - https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-$releasever
 
   client7:
     roles:
@@ -46,15 +42,12 @@ HOSTS:
           - https://download.simp-project.com/simp/GPGKEYS/RPM-GPG-KEY-SIMP
           - https://download.simp-project.com/simp/GPGKEYS/RPM-GPG-KEY-SIMP-6
           - https://download.simp-project.com/simp/GPGKEYS/RPM-GPG-KEY-SIMP-UNSTABLE
-      epel:
-        mirrorlist: 'https://mirrors.fedoraproject.org/metalink?repo=epel-$releasever&arch=$basearch'
-        gpgkeys:
-          - https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-$releasever
 
   server8:
     roles:
       - server
       - nfs_server
+      - 389ds
       - el8
     platform:   el-8-x86_64
     box:        centos/8
@@ -67,10 +60,6 @@ HOSTS:
           - https://download.simp-project.com/simp/GPGKEYS/RPM-GPG-KEY-SIMP
           - https://download.simp-project.com/simp/GPGKEYS/RPM-GPG-KEY-SIMP-6
           - https://download.simp-project.com/simp/GPGKEYS/RPM-GPG-KEY-SIMP-UNSTABLE
-      epel:
-        mirrorlist: 'https://mirrors.fedoraproject.org/metalink?repo=epel-8&arch=$basearch'
-        gpgkeys:
-          - https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-$releasever
 
   client8:
     roles:
@@ -87,10 +76,6 @@ HOSTS:
           - https://download.simp-project.com/simp/GPGKEYS/RPM-GPG-KEY-SIMP
           - https://download.simp-project.com/simp/GPGKEYS/RPM-GPG-KEY-SIMP-6
           - https://download.simp-project.com/simp/GPGKEYS/RPM-GPG-KEY-SIMP-UNSTABLE
-      epel:
-        mirrorlist: 'https://mirrors.fedoraproject.org/metalink?repo=epel-8&arch=$basearch'
-        gpgkeys:
-          - https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-$releasever
 
 CONFIG:
   log_level: verbose
@@ -101,6 +86,7 @@ CONFIG:
 <% if ENV['BEAKER_PUPPET_ENVIRONMENT'] -%>
   puppet_environment: <%= ENV['BEAKER_PUPPET_ENVIRONMENT'] %>
 <% end -%>
+  # The following was added because ssh was timing out on gitlab servers
   ssh:
     keepalive: true
     keepalive_interval: 10
@@ -112,4 +98,3 @@ CONFIG:
       - <%= Net::SSH::Transport::Algorithms::ALGORITHMS[:encryption].join("\n#{' '*6}- ") %>
     hmac:
       - <%= Net::SSH::Transport::Algorithms::ALGORITHMS[:hmac].join("\n#{' '*6}- ") %>
-
