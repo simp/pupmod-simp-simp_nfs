@@ -50,7 +50,7 @@ HOSTS:
       - 389ds
       - el8
     platform:   el-8-x86_64
-    box:        centos/8
+    box:        generic/centos8
     hypervisor: <%= hypervisor %>
     vagrant_memsize: 2048
     yum_repos:
@@ -67,7 +67,7 @@ HOSTS:
       - agent
       - el8
     platform:   el-8-x86_64
-    box:        centos/8
+    box:        generic/centos8
     hypervisor: <%= hypervisor %>
     yum_repos:
       simp:
