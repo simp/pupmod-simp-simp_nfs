@@ -8,12 +8,9 @@
 HOSTS:
   server7:
     roles:
-      - server
       - default
-      - master
-      - nfs_server
-      - el7
       - ldap
+      - nfs_server
     platform:   el-7-x86_64
     box:        generic/oracle7
     hypervisor: <%= hypervisor %>
@@ -33,8 +30,6 @@ HOSTS:
   client7:
     roles:
       - client
-      - agent
-      - el7
     platform:   el-7-x86_64
     box:        generic/oracle7
     hypervisor: <%= hypervisor %>
@@ -48,9 +43,7 @@ HOSTS:
 
   server8:
     roles:
-      - simp_server
       - nfs_server
-      - el8
       - 389ds
     platform:   el-8-x86_64
     box:        generic/oracle8
@@ -89,3 +82,8 @@ CONFIG:
 <% if ENV['BEAKER_PUPPET_ENVIRONMENT'] -%>
   puppet_environment: <%= ENV['BEAKER_PUPPET_ENVIRONMENT'] %>
 <% end -%>
+  # The following was added because ssh was timing out on gitlab servers
+  ssh:
+    keepalive: true
+    keepalive_interval: 10
+    keepalive_maxcount: 60

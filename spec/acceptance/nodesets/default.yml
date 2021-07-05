@@ -9,12 +9,9 @@ HOSTS:
 
   server7:
     roles:
-      - server
       - default
-      - master
       - ldap
       - nfs_server
-      - el7
     platform:   el-7-x86_64
     box:        centos/7
     hypervisor: <%= hypervisor %>
@@ -30,8 +27,6 @@ HOSTS:
   client7:
     roles:
       - client
-      - agent
-      - el7
     platform:   el-7-x86_64
     box:        centos/7
     hypervisor: <%= hypervisor %>
@@ -45,12 +40,10 @@ HOSTS:
 
   server8:
     roles:
-      - server
       - nfs_server
       - 389ds
-      - el8
     platform:   el-8-x86_64
-    box:        centos/8
+    box:        generic/centos8
     hypervisor: <%= hypervisor %>
     vagrant_memsize: 2048
     yum_repos:
@@ -67,7 +60,7 @@ HOSTS:
       - agent
       - el8
     platform:   el-8-x86_64
-    box:        centos/8
+    box:        generic/centos8
     hypervisor: <%= hypervisor %>
     yum_repos:
       simp:
@@ -90,11 +83,4 @@ CONFIG:
   ssh:
     keepalive: true
     keepalive_interval: 10
-    host_key:
-      - <%= Net::SSH::Transport::Algorithms::ALGORITHMS[:host_key].join("\n#{' '*6}- ") %>
-    kex:
-      - <%= Net::SSH::Transport::Algorithms::ALGORITHMS[:kex].join("\n#{' '*6}- ") %>
-    encryption:
-      - <%= Net::SSH::Transport::Algorithms::ALGORITHMS[:encryption].join("\n#{' '*6}- ") %>
-    hmac:
-      - <%= Net::SSH::Transport::Algorithms::ALGORITHMS[:hmac].join("\n#{' '*6}- ") %>
+    keepalive_maxcount: 60
