@@ -36,7 +36,11 @@ describe 'compliance_markup', type: :class do
         context "with compliance profile '#{target_profile}'" do
           let(:facts){
             os_facts.merge({
-              :target_compliance_profile => target_profile
+              :target_compliance_profile => target_profile,
+
+              # to workaround service provider issues related to masking haveged
+              # when tests are run on GitLab runners which are docker containers
+              :haveged__rngd_enabled     => false
             })
           }
 
