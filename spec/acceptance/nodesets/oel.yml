@@ -1,89 +1,83 @@
-<%
-  if ENV['BEAKER_HYPERVISOR']
-    hypervisor = ENV['BEAKER_HYPERVISOR']
-  else
-    hypervisor = 'vagrant'
-  end
--%>
+---
 HOSTS:
   server7:
     roles:
-      - default
-      - ldap
-      - nfs_server
-    platform:   el-7-x86_64
-    box:        generic/oracle7
-    hypervisor: <%= hypervisor %>
+    - default
+    - ldap
+    - nfs_server
+    platform: el-7-x86_64
+    box: generic/oracle7
+    hypervisor: "<%= ENV.fetch('BEAKER_HYPERVISOR', 'vagrant') %>"
     vagrant_memsize: 2048
     yum_repos:
       updates:
-        baseurl: 'https://public-yum.oracle.com/repo/OracleLinux/OL7/latest/$basearch'
+        baseurl: https://public-yum.oracle.com/repo/OracleLinux/OL7/latest/$basearch
         gpgkeys:
-          - http://public-yum.oracle.com/RPM-GPG-KEY-oracle-ol7
+        - http://public-yum.oracle.com/RPM-GPG-KEY-oracle-ol7
       simp:
         baseurl: https://download.simp-project.com/simp/yum/rolling/6/el/$releasever/$basearch/simp
         gpgkeys:
-          - https://download.simp-project.com/simp/GPGKEYS/RPM-GPG-KEY-SIMP
-          - https://download.simp-project.com/simp/GPGKEYS/RPM-GPG-KEY-SIMP-6
-          - https://download.simp-project.com/simp/GPGKEYS/RPM-GPG-KEY-SIMP-UNSTABLE
-
+        - https://download.simp-project.com/simp/GPGKEYS/RPM-GPG-KEY-SIMP
+        - https://download.simp-project.com/simp/GPGKEYS/RPM-GPG-KEY-SIMP-6
+        - https://download.simp-project.com/simp/GPGKEYS/RPM-GPG-KEY-SIMP-UNSTABLE
+    family: sicura-image-build/oracle-linux-7
+    gce_machine_type: n1-standard-2
   client7:
     roles:
-      - client
-    platform:   el-7-x86_64
-    box:        generic/oracle7
-    hypervisor: <%= hypervisor %>
+    - client
+    platform: el-7-x86_64
+    box: generic/oracle7
+    hypervisor: "<%= ENV.fetch('BEAKER_HYPERVISOR', 'vagrant') %>"
     yum_repos:
       simp:
         baseurl: https://download.simp-project.com/simp/yum/rolling/6/el/$releasever/$basearch/simp
         gpgkeys:
-          - https://download.simp-project.com/simp/GPGKEYS/RPM-GPG-KEY-SIMP
-          - https://download.simp-project.com/simp/GPGKEYS/RPM-GPG-KEY-SIMP-6
-          - https://download.simp-project.com/simp/GPGKEYS/RPM-GPG-KEY-SIMP-UNSTABLE
-
+        - https://download.simp-project.com/simp/GPGKEYS/RPM-GPG-KEY-SIMP
+        - https://download.simp-project.com/simp/GPGKEYS/RPM-GPG-KEY-SIMP-6
+        - https://download.simp-project.com/simp/GPGKEYS/RPM-GPG-KEY-SIMP-UNSTABLE
+    family: sicura-image-build/oracle-linux-7
+    gce_machine_type: n1-standard-2
   server8:
     roles:
-      - nfs_server
-      - 389ds
-    platform:   el-8-x86_64
-    box:        generic/oracle8
-    hypervisor: <%= hypervisor %>
+    - nfs_server
+    - 389ds
+    platform: el-8-x86_64
+    box: generic/oracle8
+    hypervisor: "<%= ENV.fetch('BEAKER_HYPERVISOR', 'vagrant') %>"
     vagrant_memsize: 2048
     yum_repos:
       simp:
         baseurl: https://download.simp-project.com/simp/yum/unstable/6/el/$releasever/$basearch/simp
         gpgkeys:
-          - https://download.simp-project.com/simp/GPGKEYS/RPM-GPG-KEY-SIMP
-          - https://download.simp-project.com/simp/GPGKEYS/RPM-GPG-KEY-SIMP-6
-          - https://download.simp-project.com/simp/GPGKEYS/RPM-GPG-KEY-SIMP-UNSTABLE
-
+        - https://download.simp-project.com/simp/GPGKEYS/RPM-GPG-KEY-SIMP
+        - https://download.simp-project.com/simp/GPGKEYS/RPM-GPG-KEY-SIMP-6
+        - https://download.simp-project.com/simp/GPGKEYS/RPM-GPG-KEY-SIMP-UNSTABLE
+    family: sicura-image-build/oracle-linux-8
+    gce_machine_type: n1-standard-2
   client8:
     roles:
-      - client
-      - agent
-      - el8
-    platform:   el-8-x86_64
-    box:        generic/oracle8
-    hypervisor: <%= hypervisor %>
+    - client
+    - agent
+    - el8
+    platform: el-8-x86_64
+    box: generic/oracle8
+    hypervisor: "<%= ENV.fetch('BEAKER_HYPERVISOR', 'vagrant') %>"
     yum_repos:
       simp:
         baseurl: https://download.simp-project.com/simp/yum/unstable/6/el/$releasever/$basearch/simp
         gpgkeys:
-          - https://download.simp-project.com/simp/GPGKEYS/RPM-GPG-KEY-SIMP
-          - https://download.simp-project.com/simp/GPGKEYS/RPM-GPG-KEY-SIMP-6
-          - https://download.simp-project.com/simp/GPGKEYS/RPM-GPG-KEY-SIMP-UNSTABLE
-
+        - https://download.simp-project.com/simp/GPGKEYS/RPM-GPG-KEY-SIMP
+        - https://download.simp-project.com/simp/GPGKEYS/RPM-GPG-KEY-SIMP-6
+        - https://download.simp-project.com/simp/GPGKEYS/RPM-GPG-KEY-SIMP-UNSTABLE
+    family: sicura-image-build/oracle-linux-8
+    gce_machine_type: n1-standard-2
 CONFIG:
   log_level: verbose
   type: aio
   vagrant_memsize: 256
   synced_folder: disabled
-  # vb_gui: true
-<% if ENV['BEAKER_PUPPET_ENVIRONMENT'] -%>
-  puppet_environment: <%= ENV['BEAKER_PUPPET_ENVIRONMENT'] %>
-<% end -%>
-  # The following was added because ssh was timing out on gitlab servers
   ssh:
     keepalive: true
     keepalive_interval: 10
     keepalive_maxcount: 60
+  puppet_collection: "<%= ENV.fetch('BEAKER_PUPPET_COLLECTION', 'puppet7') %>"
