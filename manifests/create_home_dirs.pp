@@ -122,8 +122,8 @@ class simp_nfs::create_home_dirs (
   String                         $app_pki_external_source = simplib::lookup('simp_options::pki::source', { 'default_value' => '/etc/pki/simp/x509' }),
   Stdlib::Absolutepath           $app_pki_dir             = '/etc/pki/simp_apps/nfs_home_server/x509',
   Stdlib::Absolutepath           $app_pki_ca_dir          = "${app_pki_dir}/cacerts",
-  Stdlib::AbsolutePath           $app_pki_key             = "${app_pki_dir}/private/${facts['fqdn']}.pem",
-  Stdlib::AbsolutePath           $app_pki_cert            = "${app_pki_dir}/public/${facts['fqdn']}.pub",
+  Stdlib::AbsolutePath           $app_pki_key             = "${app_pki_dir}/private/${facts['networking']['fqdn']}.pem",
+  Stdlib::AbsolutePath           $app_pki_cert            = "${app_pki_dir}/public/${facts['networking']['fqdn']}.pub",
   Stdlib::Absolutepath           $export_dir              = '/var/nfs/home',
   Stdlib::Absolutepath           $skel_dir                = '/etc/skel',
   Stdlib::AbsolutePath           $create_home_script      = '/usr/local/bin/create_home_directories.rb',
@@ -161,14 +161,14 @@ class simp_nfs::create_home_dirs (
 
   $_timer = @("EOM")
   [Timer]
-  OnCalendar=$run_schedule
+  OnCalendar=${run_schedule}
   | EOM
 
   $_service = @("EOM")
   [Service]
   Type=oneshot
   SuccessExitStatus=0
-  ExecStart=$create_home_script
+  ExecStart=${create_home_script}
   | EOM
 
   systemd::timer { 'nfs_create_home_dirs.timer':

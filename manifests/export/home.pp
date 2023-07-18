@@ -78,7 +78,7 @@ class simp_nfs::export::home (
       clients     => simplib::nets2cidr($trusted_nets),
       export_path => "${_nfs_root_path}/home",
       rw          => true,
-      require     => File["$_nfs_root_path/home"],
+      require     => File["${_nfs_root_path}/home"],
       sec         => $sec
     }
   }
@@ -98,7 +98,7 @@ class simp_nfs::export::home (
       export_path => "${_nfs_root_path}/home",
       rw          => true,
       sec         => $sec,
-      require     => File["$_nfs_root_path/home"],
+      require     => File["${_nfs_root_path}/home"],
       insecure    => true
     }
   }
