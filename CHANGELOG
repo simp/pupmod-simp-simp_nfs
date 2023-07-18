@@ -1,3 +1,6 @@
+* Mon Jul 17 2023 Chris Tessmer <chris.tessmer@onyxpoint.com> - 1.2.0
+- Add RockyLinux 8 support
+
 * Tue Jun 22 2021 Jeanne Greulich <jeanne.greulich@onyxpoint.com> - 1.1.0
 - Add nfs server certificate information to create_home_directories
   script.  389ds has client authentication set to require so the

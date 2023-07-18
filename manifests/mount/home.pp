@@ -70,7 +70,7 @@ class simp_nfs::mount::home (
     $_target = $nfs_server
   }
 
-  if $facts['selinux_current_mode'] and ($facts['selinux_current_mode'] != 'disabled') {
+  if $facts['os']['selinux']['current_mode'] and ($facts['os']['selinux']['current_mode'] != 'disabled') {
     selboolean { 'use_nfs_home_dirs':
       persistent => true,
       value      => 'on'
