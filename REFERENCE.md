@@ -7,10 +7,10 @@
 ### Classes
 
 * [`simp_nfs`](#simp_nfs): A SIMP Profile for common NFS configurations
-* [`simp_nfs::create_home_dirs`](#simp_nfscreate_home_dirs): Adds a script to create user home directories for directory server
+* [`simp_nfs::create_home_dirs`](#simp_nfs--create_home_dirs): Adds a script to create user home directories for directory server
 by pulling users from LDAP
-* [`simp_nfs::export::home`](#simp_nfsexporthome): Configures an NFS server to share centralized home directories via NFSv4
-* [`simp_nfs::mount::home`](#simp_nfsmounthome): Set up an ``NFS4`` client to point to mount your remote home directories
+* [`simp_nfs::export::home`](#simp_nfs--export--home): Configures an NFS server to share centralized home directories via NFSv4
+* [`simp_nfs::mount::home`](#simp_nfs--mount--home): Set up an ``NFS4`` client to point to mount your remote home directories
 
 ## Classes
 
@@ -22,12 +22,12 @@ A SIMP Profile for common NFS configurations
 
 The following parameters are available in the `simp_nfs` class:
 
-* [`export_home_dirs`](#export_home_dirs)
-* [`home_dir_server`](#home_dir_server)
-* [`autodetect_remote`](#autodetect_remote)
-* [`use_autofs`](#use_autofs)
+* [`export_home_dirs`](#-simp_nfs--export_home_dirs)
+* [`home_dir_server`](#-simp_nfs--home_dir_server)
+* [`autodetect_remote`](#-simp_nfs--autodetect_remote)
+* [`use_autofs`](#-simp_nfs--use_autofs)
 
-##### <a name="export_home_dirs"></a>`export_home_dirs`
+##### <a name="-simp_nfs--export_home_dirs"></a>`export_home_dirs`
 
 Data type: `Boolean`
 
@@ -38,9 +38,9 @@ Set up home directory exports for this system
 * Further configuration for home directory exports can be tweaked via the
   parameters in ``simp_nfs::export_home``
 
-Default value: ``false``
+Default value: `false`
 
-##### <a name="home_dir_server"></a>`home_dir_server`
+##### <a name="-simp_nfs--home_dir_server"></a>`home_dir_server`
 
 Data type: `Optional[Simplib::Ip]`
 
@@ -52,9 +52,9 @@ directories for your users
 * Further configuration for the home directory mounts can be tweaked via
   the parameters in ``simp_nfs::mount::home``
 
-Default value: ``undef``
+Default value: `undef`
 
-##### <a name="autodetect_remote"></a>`autodetect_remote`
+##### <a name="-simp_nfs--autodetect_remote"></a>`autodetect_remote`
 
 Data type: `Boolean`
 
@@ -65,17 +65,17 @@ from which we should be mouting directories
   system mounting to ``127.0.0.1`` when your home directories are actually
   on another system
 
-Default value: ``true``
+Default value: `true`
 
-##### <a name="use_autofs"></a>`use_autofs`
+##### <a name="-simp_nfs--use_autofs"></a>`use_autofs`
 
 Data type: `Boolean`
 
 Use ``autofs`` for home directory mounts
 
-Default value: ``true``
+Default value: `true`
 
-### <a name="simp_nfscreate_home_dirs"></a>`simp_nfs::create_home_dirs`
+### <a name="simp_nfs--create_home_dirs"></a>`simp_nfs::create_home_dirs`
 
 https://github.com/simp/pupmod-simp-simp_nfs/graphs/contributors
 
@@ -83,32 +83,32 @@ https://github.com/simp/pupmod-simp-simp_nfs/graphs/contributors
 
 The following parameters are available in the `simp_nfs::create_home_dirs` class:
 
-* [`uri`](#uri)
-* [`enable`](#enable)
-* [`create_home_script`](#create_home_script)
-* [`run_schedule`](#run_schedule)
-* [`base_dn`](#base_dn)
-* [`bind_dn`](#bind_dn)
-* [`bind_pw`](#bind_pw)
-* [`export_dir`](#export_dir)
-* [`skel_dir`](#skel_dir)
-* [`ldap_scope`](#ldap_scope)
-* [`port`](#port)
-* [`tls`](#tls)
-* [`quiet`](#quiet)
-* [`syslog_facility`](#syslog_facility)
-* [`syslog_severity`](#syslog_severity)
-* [`strip_128_bit_ciphers`](#strip_128_bit_ciphers)
-* [`tls_cipher_suite`](#tls_cipher_suite)
-* [`pki`](#pki)
-* [`app_pki_external_source`](#app_pki_external_source)
-* [`app_pki_dir`](#app_pki_dir)
-* [`app_pki_key`](#app_pki_key)
-* [`app_pki_cert`](#app_pki_cert)
-* [`app_pki_ca_dir`](#app_pki_ca_dir)
-* [`package_ensure`](#package_ensure)
+* [`uri`](#-simp_nfs--create_home_dirs--uri)
+* [`enable`](#-simp_nfs--create_home_dirs--enable)
+* [`create_home_script`](#-simp_nfs--create_home_dirs--create_home_script)
+* [`run_schedule`](#-simp_nfs--create_home_dirs--run_schedule)
+* [`base_dn`](#-simp_nfs--create_home_dirs--base_dn)
+* [`bind_dn`](#-simp_nfs--create_home_dirs--bind_dn)
+* [`bind_pw`](#-simp_nfs--create_home_dirs--bind_pw)
+* [`export_dir`](#-simp_nfs--create_home_dirs--export_dir)
+* [`skel_dir`](#-simp_nfs--create_home_dirs--skel_dir)
+* [`ldap_scope`](#-simp_nfs--create_home_dirs--ldap_scope)
+* [`port`](#-simp_nfs--create_home_dirs--port)
+* [`tls`](#-simp_nfs--create_home_dirs--tls)
+* [`quiet`](#-simp_nfs--create_home_dirs--quiet)
+* [`syslog_facility`](#-simp_nfs--create_home_dirs--syslog_facility)
+* [`syslog_severity`](#-simp_nfs--create_home_dirs--syslog_severity)
+* [`strip_128_bit_ciphers`](#-simp_nfs--create_home_dirs--strip_128_bit_ciphers)
+* [`tls_cipher_suite`](#-simp_nfs--create_home_dirs--tls_cipher_suite)
+* [`pki`](#-simp_nfs--create_home_dirs--pki)
+* [`app_pki_external_source`](#-simp_nfs--create_home_dirs--app_pki_external_source)
+* [`app_pki_dir`](#-simp_nfs--create_home_dirs--app_pki_dir)
+* [`app_pki_key`](#-simp_nfs--create_home_dirs--app_pki_key)
+* [`app_pki_cert`](#-simp_nfs--create_home_dirs--app_pki_cert)
+* [`app_pki_ca_dir`](#-simp_nfs--create_home_dirs--app_pki_ca_dir)
+* [`package_ensure`](#-simp_nfs--create_home_dirs--package_ensure)
 
-##### <a name="uri"></a>`uri`
+##### <a name="-simp_nfs--create_home_dirs--uri"></a>`uri`
 
 Data type: `Array[Simplib::URI]`
 
@@ -116,16 +116,16 @@ The uri(s) of the LDAP servers
 
 Default value: `simplib::lookup('simp_options::ldap::uri')`
 
-##### <a name="enable"></a>`enable`
+##### <a name="-simp_nfs--create_home_dirs--enable"></a>`enable`
 
 Data type: `Boolean`
 
 Enable or disable the systemd timer that runs the script to create home
 directories for users.
 
-Default value: ``true``
+Default value: `true`
 
-##### <a name="create_home_script"></a>`create_home_script`
+##### <a name="-simp_nfs--create_home_dirs--create_home_script"></a>`create_home_script`
 
 Data type: `Stdlib::AbsolutePath`
 
@@ -133,16 +133,16 @@ The path where to place the script.
 
 Default value: `'/usr/local/bin/create_home_directories.rb'`
 
-##### <a name="run_schedule"></a>`run_schedule`
+##### <a name="-simp_nfs--create_home_dirs--run_schedule"></a>`run_schedule`
 
 Data type: `String`
 
 The time schedule for the systemd timer.  See systemd.timer man
 page for correct format.
 
-Default value: `'1 h'`
+Default value: `'*-*-* *:30:00'`
 
-##### <a name="base_dn"></a>`base_dn`
+##### <a name="-simp_nfs--create_home_dirs--base_dn"></a>`base_dn`
 
 Data type: `String`
 
@@ -150,7 +150,7 @@ The root DN that should be used when searching for entries
 
 Default value: `simplib::lookup('simp_options::ldap::base_dn')`
 
-##### <a name="bind_dn"></a>`bind_dn`
+##### <a name="-simp_nfs--create_home_dirs--bind_dn"></a>`bind_dn`
 
 Data type: `String`
 
@@ -158,7 +158,7 @@ The DN to use when binding to the LDAP server
 
 Default value: `simplib::lookup('simp_options::ldap::bind_dn')`
 
-##### <a name="bind_pw"></a>`bind_pw`
+##### <a name="-simp_nfs--create_home_dirs--bind_pw"></a>`bind_pw`
 
 Data type: `String`
 
@@ -166,7 +166,7 @@ The password to use when binding to the LDAP server
 
 Default value: `simplib::lookup('simp_options::ldap::bind_pw')`
 
-##### <a name="export_dir"></a>`export_dir`
+##### <a name="-simp_nfs--create_home_dirs--export_dir"></a>`export_dir`
 
 Data type: `Stdlib::Absolutepath`
 
@@ -177,7 +177,7 @@ The location of the home directories being exported
 
 Default value: `'/var/nfs/home'`
 
-##### <a name="skel_dir"></a>`skel_dir`
+##### <a name="-simp_nfs--create_home_dirs--skel_dir"></a>`skel_dir`
 
 Data type: `Stdlib::Absolutepath`
 
@@ -185,7 +185,7 @@ The location of sample skeleton files for user directories
 
 Default value: `'/etc/skel'`
 
-##### <a name="ldap_scope"></a>`ldap_scope`
+##### <a name="-simp_nfs--create_home_dirs--ldap_scope"></a>`ldap_scope`
 
 Data type: `Enum['one','sub','base']`
 
@@ -193,7 +193,7 @@ The search scope to use
 
 Default value: `'one'`
 
-##### <a name="port"></a>`port`
+##### <a name="-simp_nfs--create_home_dirs--port"></a>`port`
 
 Data type: `Simplib::Port`
 
@@ -204,7 +204,7 @@ The target port on the LDAP server
 
 Default value: `389`
 
-##### <a name="tls"></a>`tls`
+##### <a name="-simp_nfs--create_home_dirs--tls"></a>`tls`
 
 Data type: `Enum['ssl','start_tls','none']`
 
@@ -224,15 +224,15 @@ Whether or not to enable SSL/TLS for the connection
 
 Default value: `'start_tls'`
 
-##### <a name="quiet"></a>`quiet`
+##### <a name="-simp_nfs--create_home_dirs--quiet"></a>`quiet`
 
 Data type: `Boolean`
 
 Whether or not to print potentially useful warnings
 
-Default value: ``true``
+Default value: `true`
 
-##### <a name="syslog_facility"></a>`syslog_facility`
+##### <a name="-simp_nfs--create_home_dirs--syslog_facility"></a>`syslog_facility`
 
 Data type: `Simplib::Syslog::CFacility`
 
@@ -240,7 +240,7 @@ The syslog facility at which to log, must be Ruby `syslog` compatible
 
 Default value: `'LOG_LOCAL6'`
 
-##### <a name="syslog_severity"></a>`syslog_severity`
+##### <a name="-simp_nfs--create_home_dirs--syslog_severity"></a>`syslog_severity`
 
 Data type: `Simplib::Syslog::CSeverity`
 
@@ -248,15 +248,15 @@ The syslog severity at which to log, must be Ruby `syslog` compatible
 
 Default value: `'LOG_NOTICE'`
 
-##### <a name="strip_128_bit_ciphers"></a>`strip_128_bit_ciphers`
+##### <a name="-simp_nfs--create_home_dirs--strip_128_bit_ciphers"></a>`strip_128_bit_ciphers`
 
 Data type: `Boolean`
 
 **Deprecated** This option does not affect any supported OSes
 
-Default value: ``true``
+Default value: `true`
 
-##### <a name="tls_cipher_suite"></a>`tls_cipher_suite`
+##### <a name="-simp_nfs--create_home_dirs--tls_cipher_suite"></a>`tls_cipher_suite`
 
 Data type: `Array[String[1]]`
 
@@ -267,7 +267,7 @@ The TLS ciphers that should be used for the connection to LDAP
 
 Default value: `simplib::lookup('simp_options::openssl::cipher_suite', { 'default_value' => ['DEFAULT','!MEDIUM'] })`
 
-##### <a name="pki"></a>`pki`
+##### <a name="-simp_nfs--create_home_dirs--pki"></a>`pki`
 
 Data type: `Variant[Enum['simp'],Boolean]`
 
@@ -285,7 +285,7 @@ Data type: `Variant[Enum['simp'],Boolean]`
 
 Default value: `simplib::lookup('simp_options::pki', { 'default_value' => false })`
 
-##### <a name="app_pki_external_source"></a>`app_pki_external_source`
+##### <a name="-simp_nfs--create_home_dirs--app_pki_external_source"></a>`app_pki_external_source`
 
 Data type: `String`
 
@@ -296,7 +296,7 @@ Data type: `String`
 
 Default value: `simplib::lookup('simp_options::pki::source', { 'default_value' => '/etc/pki/simp/x509' })`
 
-##### <a name="app_pki_dir"></a>`app_pki_dir`
+##### <a name="-simp_nfs--create_home_dirs--app_pki_dir"></a>`app_pki_dir`
 
 Data type: `Stdlib::Absolutepath`
 
@@ -306,23 +306,23 @@ It defaults to /etc/pki/simp_apps/nfs_home_server/pki.
 
 Default value: `'/etc/pki/simp_apps/nfs_home_server/x509'`
 
-##### <a name="app_pki_key"></a>`app_pki_key`
+##### <a name="-simp_nfs--create_home_dirs--app_pki_key"></a>`app_pki_key`
 
 Data type: `Stdlib::AbsolutePath`
 
 Path and name of the private SSL key file
 
-Default value: `"${app_pki_dir}/private/${facts['fqdn']}.pem"`
+Default value: `"${app_pki_dir}/private/${facts['networking']['fqdn']}.pem"`
 
-##### <a name="app_pki_cert"></a>`app_pki_cert`
+##### <a name="-simp_nfs--create_home_dirs--app_pki_cert"></a>`app_pki_cert`
 
 Data type: `Stdlib::AbsolutePath`
 
 Path and name of the public SSL certificate
 
-Default value: `"${app_pki_dir}/public/${facts['fqdn']}.pub"`
+Default value: `"${app_pki_dir}/public/${facts['networking']['fqdn']}.pub"`
 
-##### <a name="app_pki_ca_dir"></a>`app_pki_ca_dir`
+##### <a name="-simp_nfs--create_home_dirs--app_pki_ca_dir"></a>`app_pki_ca_dir`
 
 Data type: `Stdlib::Absolutepath`
 
@@ -330,7 +330,7 @@ Path to the CA.
 
 Default value: `"${app_pki_dir}/cacerts"`
 
-##### <a name="package_ensure"></a>`package_ensure`
+##### <a name="-simp_nfs--create_home_dirs--package_ensure"></a>`package_ensure`
 
 Data type: `String`
 
@@ -338,7 +338,7 @@ The ensure status of the `rubygem-net-ldap` package
 
 Default value: `simplib::lookup('simp_options::package_ensure', { 'default_value' => 'installed' })`
 
-### <a name="simp_nfsexporthome"></a>`simp_nfs::export::home`
+### <a name="simp_nfs--export--home"></a>`simp_nfs::export::home`
 
 Sets up the export root at ``${data_dir}/nfs/exports`` and then adds
 ``${data_dir}/nfs/home`` and submounts it under ``${data_dir}/nfs/exports``.
@@ -373,12 +373,12 @@ simp::classes :
 
 The following parameters are available in the `simp_nfs::export::home` class:
 
-* [`data_dir`](#data_dir)
-* [`trusted_nets`](#trusted_nets)
-* [`sec`](#sec)
-* [`create_home_dirs`](#create_home_dirs)
+* [`data_dir`](#-simp_nfs--export--home--data_dir)
+* [`trusted_nets`](#-simp_nfs--export--home--trusted_nets)
+* [`sec`](#-simp_nfs--export--home--sec)
+* [`create_home_dirs`](#-simp_nfs--export--home--create_home_dirs)
 
-##### <a name="data_dir"></a>`data_dir`
+##### <a name="-simp_nfs--export--home--data_dir"></a>`data_dir`
 
 Data type: `Stdlib::Absolutepath`
 
@@ -386,7 +386,7 @@ Data type: `Stdlib::Absolutepath`
 
 Default value: `'/var'`
 
-##### <a name="trusted_nets"></a>`trusted_nets`
+##### <a name="-simp_nfs--export--home--trusted_nets"></a>`trusted_nets`
 
 Data type: `Simplib::Netlist`
 
@@ -394,7 +394,7 @@ The networks that are allowed to mount this space
 
 Default value: `simplib::lookup('simp_options::trusted_nets', { 'default_value' => ['127.0.0.1'] })`
 
-##### <a name="sec"></a>`sec`
+##### <a name="-simp_nfs--export--home--sec"></a>`sec`
 
 Data type: `Array[Enum['none','sys','krb5','krb5i','krb5p']]`
 
@@ -402,7 +402,7 @@ An Array of sec modes for the export.
 
 Default value: `['sys']`
 
-##### <a name="create_home_dirs"></a>`create_home_dirs`
+##### <a name="-simp_nfs--export--home--create_home_dirs"></a>`create_home_dirs`
 
 Data type: `Boolean`
 
@@ -410,7 +410,7 @@ Automatically create user home directories from LDAP data
 
 Default value: `simplib::lookup('simp_options::ldap', { 'default_value' => false })`
 
-### <a name="simp_nfsmounthome"></a>`simp_nfs::mount::home`
+### <a name="simp_nfs--mount--home"></a>`simp_nfs::mount::home`
 
 If this system is also the NFS server, you need to set
 ``nfs::client::is_server`` to ``true`` or set
@@ -420,17 +420,17 @@ If this system is also the NFS server, you need to set
 
 The following parameters are available in the `simp_nfs::mount::home` class:
 
-* [`nfs_server`](#nfs_server)
-* [`remote_path`](#remote_path)
-* [`local_home`](#local_home)
-* [`port`](#port)
-* [`sec`](#sec)
-* [`options`](#options)
-* [`at_boot`](#at_boot)
-* [`autodetect_remote`](#autodetect_remote)
-* [`use_autofs`](#use_autofs)
+* [`nfs_server`](#-simp_nfs--mount--home--nfs_server)
+* [`remote_path`](#-simp_nfs--mount--home--remote_path)
+* [`local_home`](#-simp_nfs--mount--home--local_home)
+* [`port`](#-simp_nfs--mount--home--port)
+* [`sec`](#-simp_nfs--mount--home--sec)
+* [`options`](#-simp_nfs--mount--home--options)
+* [`at_boot`](#-simp_nfs--mount--home--at_boot)
+* [`autodetect_remote`](#-simp_nfs--mount--home--autodetect_remote)
+* [`use_autofs`](#-simp_nfs--mount--home--use_autofs)
 
-##### <a name="nfs_server"></a>`nfs_server`
+##### <a name="-simp_nfs--mount--home--nfs_server"></a>`nfs_server`
 
 Data type: `Simplib::IP`
 
@@ -438,7 +438,7 @@ The NFS server to which you will be connecting
 
 * If you are the server, please make sure that this is ``127.0.0.1``
 
-##### <a name="remote_path"></a>`remote_path`
+##### <a name="-simp_nfs--mount--home--remote_path"></a>`remote_path`
 
 Data type: `Stdlib::Absolutepath`
 
@@ -446,7 +446,7 @@ The NFS share that you want to mount
 
 Default value: `'/home'`
 
-##### <a name="local_home"></a>`local_home`
+##### <a name="-simp_nfs--mount--home--local_home"></a>`local_home`
 
 Data type: `Stdlib::Absolutepath`
 
@@ -459,15 +459,15 @@ The local base for home directories
 
 Default value: `'/home'`
 
-##### <a name="port"></a>`port`
+##### <a name="-simp_nfs--mount--home--port"></a>`port`
 
 Data type: `Optional[Simplib::Port]`
 
 The NFS port to which to connect
 
-Default value: ``undef``
+Default value: `undef`
 
-##### <a name="sec"></a>`sec`
+##### <a name="-simp_nfs--mount--home--sec"></a>`sec`
 
 Data type: `Enum['sys','krb5','krb5i','krb5p']`
 
@@ -477,7 +477,7 @@ The sec mode for the mount
 
 Default value: `'sys'`
 
-##### <a name="options"></a>`options`
+##### <a name="-simp_nfs--mount--home--options"></a>`options`
 
 Data type: `Optional[String]`
 
@@ -485,9 +485,9 @@ The mount options string that should be used
 
 * fstype and port will already be set for you
 
-Default value: ``undef``
+Default value: `undef`
 
-##### <a name="at_boot"></a>`at_boot`
+##### <a name="-simp_nfs--mount--home--at_boot"></a>`at_boot`
 
 Data type: `Boolean`
 
@@ -495,9 +495,9 @@ Ensure that this mount is mounted at boot time
 
 * Has no effect if ``$use_autofs`` is set
 
-Default value: ``true``
+Default value: `true`
 
-##### <a name="autodetect_remote"></a>`autodetect_remote`
+##### <a name="-simp_nfs--mount--home--autodetect_remote"></a>`autodetect_remote`
 
 Data type: `Boolean`
 
@@ -508,13 +508,13 @@ from which we should be mouting directories
   system mounting to ``127.0.0.1`` when your home directories are actually
   on another system
 
-Default value: ``true``
+Default value: `true`
 
-##### <a name="use_autofs"></a>`use_autofs`
+##### <a name="-simp_nfs--mount--home--use_autofs"></a>`use_autofs`
 
 Data type: `Boolean`
 
 Enable automounting with Autofs
 
-Default value: ``true``
+Default value: `true`
 
