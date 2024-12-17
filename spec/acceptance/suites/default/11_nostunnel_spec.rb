@@ -5,9 +5,9 @@ test_name 'SIMP NFS profile'
 describe 'simp_nfs stock classes without stunnel' do
   stunnel_setting = false
   root_pw = 'suP3rP@ssw0r!'
-  servers = hosts_with_role( hosts, 'nfs_server' )
-  clients = hosts_with_role( hosts, 'client' )
-  manifest =  <<~EOM
+  servers = hosts_with_role(hosts, 'nfs_server')
+  clients = hosts_with_role(hosts, 'client')
+  manifest = <<~EOM
     include 'simp_options'
     include 'pam::access'
     include 'sudo'
@@ -46,90 +46,92 @@ describe 'simp_nfs stock classes without stunnel' do
     systemctl restart sssd
     EOM
 
-  ['389ds','plain'].each do  |ldaptype|
-     context "using ldap server type #{ldaptype} with no stunnel" do
-       let(:ldap_type) { ldaptype }
+  ['389ds', 'plain'].each do |ldaptype|
+    context "using ldap server type #{ldaptype} with no stunnel" do
+      let(:ldap_type) { ldaptype }
+      let(:ldap_server_fqdn) { fact_on(ldap_server, 'fqdn') }
+      let(:_domains) do
+        fact_on(ldap_server, 'domain').split('.')
+        _domains.map! do |d|
+          "dc=#{d}"
+        end
+      end
+      let(:domains) { _domains.join(',') }
+      let(:common_hieradata) { File.read(File.expand_path('files/common_hieradata.yaml.erb', File.dirname(__FILE__))) }
+      let(:ldap_server_hieradata) { File.read(File.expand_path("files/#{ldap_type}/server_hieradata.yaml.erb", File.dirname(__FILE__))) }
 
-       if ldaptype == '389ds'
-         let(:ldap_server) {only_host_with_role(hosts,'389ds') }
-         let(:ldap_manifest){  <<-EOM
+      if ldaptype == '389ds'
+        let(:ldap_server) { only_host_with_role(hosts, '389ds') }
+        let(:ldap_manifest) do
+          <<-EOM
             include 'simp_ds389::instances::accounts'
           EOM
-         }
-       else
-         let(:ldap_server) {only_host_with_role(hosts,'ldap') }
-         let(:ldap_manifest){  <<-EOM
+        end
+      else
+        let(:ldap_server) { only_host_with_role(hosts, 'ldap') }
+        let(:ldap_manifest) do
+          <<-EOM
             include 'simp::server::ldap'
           EOM
-         }
-       end
-       let(:ldap_server_fqdn) { fact_on(ldap_server, 'fqdn')}
+        end
+      end
 
-       let(:_domains) { fact_on(ldap_server, 'domain').split('.')
-                         _domains.map! { |d|
-                       "dc=#{d}"
-                      }}
-       let(:domains) { _domains.join(',')}
-       let(:common_hieradata)  { File.read(File.expand_path('files/common_hieradata.yaml.erb', File.dirname(__FILE__))) }
-       let(:ldap_server_hieradata) { File.read(File.expand_path("files/#{ldap_type}/server_hieradata.yaml.erb", File.dirname(__FILE__))) }
+      it 'installs ldap server' do
+        # This server may have just been an NFS server in a previous test.
+        # We need run puppet again with the ldap manifest to make sure
+        # the firewall is configured correctly.
+        ldap_server_manifest = [manifest, ldap_manifest].join("\n")
 
+        set_hieradata_on(ldap_server, ERB.new(common_hieradata + ldap_server_hieradata).result(binding))
+        apply_manifest_on(ldap_server, ldap_server_manifest, catch_failures: true)
+        apply_manifest_on(ldap_server, ldap_server_manifest, catch_failures: true)
+        apply_manifest_on(ldap_server, ldap_server_manifest, catch_changes: true)
+      end
 
-       it 'should install ldap server' do
-         # This server may have just been an NFS server in a previous test.
-         # We need run puppet again with the ldap manifest to make sure
-         # the firewall is configured correctly.
-         ldap_server_manifest=[manifest, ldap_manifest].join("\n")
+      # Ensure the cache is built, don't wait for enum timeout
 
-         set_hieradata_on(ldap_server, ERB.new(common_hieradata + ldap_server_hieradata).result(binding))
-         apply_manifest_on(ldap_server, ldap_server_manifest, catch_failures: true)
-         apply_manifest_on(ldap_server, ldap_server_manifest, catch_failures: true)
-         apply_manifest_on(ldap_server, ldap_server_manifest, catch_changes: true)
-       end
+      servers.each do |server|
+        context "On #{server} with #{ldaptype} ldap server export home directories wthout stunnel" do
+          let(:nfs_server) { server }
+          let(:nfs_server_ip) { fact_on(nfs_server, %(ipaddress_#{get_private_network_interface(nfs_server)})) }
 
-           # Ensure the cache is built, don't wait for enum timeout
-
-       servers.each do |server|
-         context "On #{server} with #{ldaptype} ldap server export home directories wthout stunnel" do
-           let(:nfs_server) { server }
-           let(:nfs_server_ip) {  fact_on(nfs_server,%(ipaddress_#{get_private_network_interface(nfs_server)})) }
-
-           let(:hieradata_extra) {
-             <<~EOM
+          let(:hieradata_extra) do
+            <<~EOM
              simp_nfs::home_dir_server: #{nfs_server_ip}
              nfs::client::stunnel::nfs_server: #{nfs_server}
              simp_nfs::mount::home::local_home: '/mnt1'
              EOM
-           }
+          end
 
-           let(:server_hieradata) { [common_hieradata, ldap_server_hieradata,  hieradata_extra, nfsserver_hieradata].join("\n")}
+          let(:server_hieradata) { [common_hieradata, ldap_server_hieradata, hieradata_extra, nfsserver_hieradata].join("\n") }
 
-           it 'should clear the sssd cache' do
-             #since we are switching around ldap servers make sure the
-             #sssd cache is clear.  It might have users from
-             #the previous ldap server
-             create_remote_file(nfs_server, '/root/clear_sssd_cache.sh',clear_sssd_cache)
-             on(nfs_server, 'chmod +x /root/clear_sssd_cache.sh')
-             on(nfs_server, '/root/clear_sssd_cache.sh')
-           end
+          it 'clears the sssd cache' do
+            # since we are switching around ldap servers make sure the
+            # sssd cache is clear.  It might have users from
+            # the previous ldap server
+            create_remote_file(nfs_server, '/root/clear_sssd_cache.sh', clear_sssd_cache)
+            on(nfs_server, 'chmod +x /root/clear_sssd_cache.sh')
+            on(nfs_server, '/root/clear_sssd_cache.sh')
+          end
 
-           it 'should install nfs server' do
-             if server == ldap_server
-               # Don't want to disable the firewall for the ldap server
-               server_manifest=[manifest, nfsserver_manifest, ldap_manifest].join("\n")
-             else
-               server_manifest=[manifest, nfsserver_manifest].join("\n")
-             end
+          it 'installs nfs server' do
+            server_manifest = if server == ldap_server
+                                # Don't want to disable the firewall for the ldap server
+                                [manifest, nfsserver_manifest, ldap_manifest].join("\n")
+                              else
+                                [manifest, nfsserver_manifest].join("\n")
+                              end
 
-             set_hieradata_on(nfs_server, ERB.new(server_hieradata).result(binding))
-             apply_manifest_on(nfs_server, server_manifest, catch_failures: true)
-             apply_manifest_on(nfs_server, server_manifest, catch_failures: true)
-             apply_manifest_on(nfs_server, server_manifest, catch_changes: true)
-           end
+            set_hieradata_on(nfs_server, ERB.new(server_hieradata).result(binding))
+            apply_manifest_on(nfs_server, server_manifest, catch_failures: true)
+            apply_manifest_on(nfs_server, server_manifest, catch_failures: true)
+            apply_manifest_on(nfs_server, server_manifest, catch_changes: true)
+          end
 
-           # Ensure the cache is built, don't wait for enum timeout
-           it 'should see the monster user' do
-             user_info = on(nfs_server, 'id monster.user', :acceptable_exit_codes => [0])
-             expect(user_info.stdout).to match(/.*uid=11000\(monster.user\).*gid=11000\(monster.user\)/)
+          # Ensure the cache is built, don't wait for enum timeout
+          it 'sees the monster user' do
+            user_info = on(nfs_server, 'id monster.user', acceptable_exit_codes: [0])
+            expect(user_info.stdout).to match(%r{.*uid=11000\(monster.user\).*gid=11000\(monster.user\)})
           end
 
           it ' should create home dirs and export them' do
@@ -137,50 +139,50 @@ describe 'simp_nfs stock classes without stunnel' do
             on(nfs_server, '/usr/local/bin/create_home_directories.rb')
             on(nfs_server, 'ls /var/nfs/home/monster.user')
             on(nfs_server, "runuser -l monster.user -c 'touch ~/monstertestfile'")
-            mount = on(nfs_server, "mount")
-            expect(mount.stdout).to match(/127.0.0.1:\/home\/monster.user.*nfs/)
+            mount = on(nfs_server, 'mount')
+            expect(mount.stdout).to match(%r{127.0.0.1:/home/monster.user.*nfs})
           end
 
           clients.each do |client|
             context "On #{client} using #{server} as nfs and #{ldaptype} ldap server without stunnel" do
               let(:client_hieradata) { [common_hieradata, hieradata_extra].join("\n") }
-              it 'should clean up from any previous tests' do
-                create_remote_file(client, '/root/clear_sssd_cache.sh',clear_sssd_cache)
+
+              it 'cleans up from any previous tests' do
+                create_remote_file(client, '/root/clear_sssd_cache.sh', clear_sssd_cache)
                 on(client, 'chmod +x /root/clear_sssd_cache.sh')
-                on(client, '/root/clear_sssd_cache.sh', :accept_all_exit_codes => true )
-                on(client,'umount -f /mnt1/monster.user', :accept_all_exit_codes => true)
+                on(client, '/root/clear_sssd_cache.sh', accept_all_exit_codes: true)
+                on(client, 'umount -f /mnt1/monster.user', accept_all_exit_codes: true)
               end
 
-              it "should set without stunnel #{client}" do
+              it "sets without stunnel #{client}" do
                 set_hieradata_on(client, ERB.new(client_hieradata).result(binding))
                 apply_manifest_on(client, manifest, catch_failures: true)
                 apply_manifest_on(client, manifest, catch_failures: true)
                 apply_manifest_on(client, manifest, catch_changes: true)
               end
 
-              it 'should see the  monster user' do
-                user_info = on(client, 'id monster.user', :acceptable_exit_codes => [0])
-                expect(user_info.stdout).to match(/.*uid=11000\(monster.user\).*gid=11000\(monster.user\)/)
+              it 'sees the monster user' do
+                user_info = on(client, 'id monster.user', acceptable_exit_codes: [0])
+                expect(user_info.stdout).to match(%r{.*uid=11000\(monster.user\).*gid=11000\(monster.user\)})
               end
 
-              it 'should see the file created on the server' do
+              it 'sees the file created on the server' do
                 retry_on(client, 'ls /mnt1/monster.user/monstertestfile', acceptable_exit_codes: [0])
-                #should be able to create new file
+                # should be able to create new file
                 on(client, "runuser -l monster.user -c 'touch ~/difftestfile'")
               end
 
-              it 'should remove mount to next test has no problems' do
+              it 'removes mount to next test has no problems' do
                 on(client, 'umount -f /mnt1/monster.user')
               end
-            # End client context
-
+              # End client context
             end
           end
-        # End server context
+          # End server context
         end
       end
-    #End Ldap server context
+      # End Ldap server context
     end
   end
-#End it all
+  # End it all
 end

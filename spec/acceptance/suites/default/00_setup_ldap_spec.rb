@@ -4,23 +4,21 @@ test_name 'Set up ldap server '
 
 describe 'simp_nfs stock classes' do
   stunnel_setting = true
-  ldap_server = only_host_with_role(hosts,'ldap')
+  ldap_server = only_host_with_role(hosts, 'ldap')
   ldap_server_fqdn = fact_on(ldap_server, 'fqdn')
 
   _domains = fact_on(ldap_server, 'domain').split('.')
-  _domains.map! { |d|
+  _domains.map! do |d|
     "dc=#{d}"
-  }
+  end
   domains = _domains.join(',')
 
   common_hieradata = File.read(File.expand_path('files/common_hieradata.yaml.erb', File.dirname(__FILE__)))
 
   context 'setup ldap server ' do
-
     let(:ldap_type)        { 'plain' }
-    let(:server_hieradata) { File.read(File.expand_path("files/#{ldap_type}/server_hieradata.yaml.erb", File.dirname(__FILE__)))}
-    let (:hieradata){ "#{common_hieradata}" + "\n#{server_hieradata}"}
-
+    let(:server_hieradata) { File.read(File.expand_path("files/#{ldap_type}/server_hieradata.yaml.erb", File.dirname(__FILE__))) }
+    let(:hieradata) { common_hieradata.to_s + "\n#{server_hieradata}" }
 
     test_user_ldif = <<-EOM
 dn: cn=test.user,ou=Group,#{domains}
@@ -92,9 +90,7 @@ memberUid: test.user
 memberUid: monster.user
     EOM
 
-    it 'should install, openldap, and create test.user' do
-
-
+    it 'install,s openldap, and create test.user' do
       server_manifest = <<-EOM
         include 'simp_options'
         include 'pam::access'
@@ -123,10 +119,10 @@ memberUid: monster.user
       # Ensure the cache is built, don't wait for enum timeout
       on(ldap_server, 'service sssd restart')
 
-      user_info = on(ldap_server, 'id test.user', :acceptable_exit_codes => [0])
-      expect(user_info.stdout).to match(/.*uid=10000\(test.user\).*gid=10000\(test.user\)/)
-      monster_info = on(ldap_server, 'id monster.user', :acceptable_exit_codes => [0])
-      expect(monster_info.stdout).to match(/.*uid=11000\(monster.user\).*gid=11000\(monster.user\)/)
+      user_info = on(ldap_server, 'id test.user', acceptable_exit_codes: [0])
+      expect(user_info.stdout).to match(%r{.*uid=10000\(test.user\).*gid=10000\(test.user\)})
+      monster_info = on(ldap_server, 'id monster.user', acceptable_exit_codes: [0])
+      expect(monster_info.stdout).to match(%r{.*uid=11000\(monster.user\).*gid=11000\(monster.user\)})
     end
   end
 end
