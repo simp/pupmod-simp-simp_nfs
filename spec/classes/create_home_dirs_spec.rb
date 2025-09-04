@@ -23,7 +23,7 @@ describe 'simp_nfs::create_home_dirs' do
           end
 
           it_behaves_like 'a structured module'
-          if ['RedHat', 'CentOS'].include?(facts[:os][:name])
+          if ['RedHat', 'CentOS'].include?(os_facts[:os][:name])
             it { is_expected.to create_file('/usr/local/bin/create_home_directories.rb').with_content(%r{ciphers_list = '.*256.*}) }
             it { is_expected.to create_file('/usr/local/bin/create_home_directories.rb').with_content(%r{ciphers_list = '.*128.*}) }
             it { is_expected.to create_file('/usr/local/bin/create_home_directories.rb').with_content(%r{pw = 'my_password'}) }
