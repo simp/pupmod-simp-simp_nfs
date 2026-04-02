@@ -19,7 +19,6 @@ describe 'simp_nfs stock classes' do
     include 'sudo'
     include 'ssh'
     include 'simp::nsswitch'
-    include 'simp_openldap::client'
     include 'simp::sssd::client'
     include 'simp_nfs'
   EOM
