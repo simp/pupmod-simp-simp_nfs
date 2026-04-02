@@ -13,7 +13,6 @@ describe 'simp_nfs stock classes without stunnel' do
     include 'sudo'
     include 'ssh'
     include 'simp::nsswitch'
-    include 'simp_openldap::client'
     include 'simp::sssd::client'
     include 'simp_nfs'
     file {  '/mnt1':
