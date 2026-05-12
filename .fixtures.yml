@@ -7,7 +7,6 @@ fixtures:
     augeasproviders_grub: https://github.com/simp/augeasproviders_grub.git
     augeasproviders_sysctl: https://github.com/simp/augeasproviders_sysctl.git
     autofs: https://github.com/simp/pupmod-simp-autofs.git
-    compliance_markup: https://github.com/simp/pupmod-simp-compliance_markup.git
     concat: https://github.com/simp/puppetlabs-concat.git
     ds389: https://github.com/simp/pupmod-simp-ds389.git
     logrotate: https://github.com/simp/pupmod-simp-logrotate.git
