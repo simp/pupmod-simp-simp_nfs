@@ -35,7 +35,6 @@ describe 'simp_nfs stock classes' do
         include 'ssh'
         include 'simp::nsswitch'
         include 'simp_ds389::instances::accounts'
-        include 'simp_openldap::client'
         include 'simp::sssd::client'
       EOM
 
