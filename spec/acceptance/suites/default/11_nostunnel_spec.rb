@@ -3,48 +3,54 @@ require 'spec_helper_acceptance'
 test_name 'SIMP NFS profile'
 
 describe 'simp_nfs stock classes without stunnel' do
-  stunnel_setting = false
-  root_pw = 'suP3rP@ssw0r!'
-  servers = hosts_with_role(hosts, 'nfs_server')
-  clients = hosts_with_role(hosts, 'client')
-  manifest = <<~EOM
-    include 'simp_options'
-    include 'pam::access'
-    include 'sudo'
-    include 'ssh'
-    include 'simp::nsswitch'
-    include 'simp_openldap::client'
-    include 'simp::sssd::client'
-    include 'simp_nfs'
-    file {  '/mnt1':
-       ensure => 'directory',
-       owner  => 'root',
-       group => 'root',
-       mode => '0755',
-       before => Class['simp_nfs']
-    }
-    # let vagrant get back in
-    simp_firewalld::rule { 'allow_all_ssh':
-      trusted_nets => ['all'],
-      protocol     => tcp,
-      dports       => 22
-    }
-  EOM
-  nfsserver_hieradata = <<~EOM
-    nfs::is_server: true
-    simp_nfs::export_home::create_home_dirs: true
-  EOM
-  nfsserver_manifest = <<~EOM
-    include 'simp_nfs::export::home'
-    Class['simp::sssd::client'] ->  Class['simp_nfs::export::home']
-  EOM
-  clear_sssd_cache = <<~EOM
-    #!/bin/bash
-    if [ -f /var/lib/sss/db/cache_LDAP.ldb ]; then
-      rm -f /var/lib/sss/db/cache_LDAP.ldb
-    fi
-    systemctl restart sssd
-  EOM
+  let(:stunnel_setting) { false }
+  let(:root_pw) { 'suP3rP@ssw0r!' }
+  let(:manifest) do
+    <<~EOM
+      include 'simp_options'
+      include 'pam::access'
+      include 'sudo'
+      include 'ssh'
+      include 'simp::nsswitch'
+      include 'simp_openldap::client'
+      include 'simp::sssd::client'
+      include 'simp_nfs'
+      file {  '/mnt1':
+         ensure => 'directory',
+         owner  => 'root',
+         group => 'root',
+         mode => '0755',
+         before => Class['simp_nfs']
+      }
+      # let vagrant get back in
+      simp_firewalld::rule { 'allow_all_ssh':
+        trusted_nets => ['all'],
+        protocol     => tcp,
+        dports       => 22
+      }
+    EOM
+  end
+  let(:nfsserver_hieradata) do
+    <<~EOM
+      nfs::is_server: true
+      simp_nfs::export_home::create_home_dirs: true
+    EOM
+  end
+  let(:nfsserver_manifest) do
+    <<~EOM
+      include 'simp_nfs::export::home'
+      Class['simp::sssd::client'] ->  Class['simp_nfs::export::home']
+    EOM
+  end
+  let(:clear_sssd_cache) do
+    <<~EOM
+      #!/bin/bash
+      if [ -f /var/lib/sss/db/cache_LDAP.ldb ]; then
+        rm -f /var/lib/sss/db/cache_LDAP.ldb
+      fi
+      systemctl restart sssd
+    EOM
+  end
 
   ['389ds', 'plain'].each do |ldaptype|
     context "using ldap server type #{ldaptype} with no stunnel" do
@@ -90,7 +96,7 @@ describe 'simp_nfs stock classes without stunnel' do
 
       # Ensure the cache is built, don't wait for enum timeout
 
-      servers.each do |server|
+      hosts_with_role(hosts, 'nfs_server').each do |server|
         context "On #{server} with #{ldaptype} ldap server export home directories wthout stunnel" do
           let(:nfs_server) { server }
           let(:nfs_server_ip) { fact_on(nfs_server, %(ipaddress_#{get_private_network_interface(nfs_server)})) }
@@ -143,7 +149,7 @@ describe 'simp_nfs stock classes without stunnel' do
             expect(mount.stdout).to match(%r{127.0.0.1:/home/monster.user.*nfs})
           end
 
-          clients.each do |client|
+          hosts_with_role(hosts, 'client').each do |client|
             context "On #{client} using #{server} as nfs and #{ldaptype} ldap server without stunnel" do
               let(:client_hieradata) { [common_hieradata, hieradata_extra].join("\n") }
 
