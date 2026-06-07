@@ -4,16 +4,18 @@ test_name 'Set up ds389 server '
 
 describe 'simp_nfs stock classes' do
   # stunnel just needs to be set, it does not effect this test
-  stunnel_setting = true
-  ldap_server = only_host_with_role(hosts, '389ds')
-  ldap_server_fqdn = fact_on(ldap_server, 'fqdn')
+  let(:stunnel_setting) { true }
+  let(:ldap_server) { only_host_with_role(hosts, '389ds') }
+  let(:ldap_server_fqdn) { fact_on(ldap_server, 'fqdn') }
 
-  domain_list = fact_on(ldap_server, 'domain').split('.')
-  domain_list.map! do |d|
-    "dc=#{d}"
+  let(:domain_list) do
+    list = fact_on(ldap_server, 'domain').split('.')
+    list.map! do |d|
+      "dc=#{d}"
+    end
   end
-  domains = domain_list.join(',')
-  common_hieradata = File.read(File.expand_path('files/common_hieradata.yaml.erb', File.dirname(__FILE__)))
+  let(:domains) { domain_list.join(',') }
+  let(:common_hieradata) { File.read(File.expand_path('files/common_hieradata.yaml.erb', File.dirname(__FILE__))) }
 
   context 'setup 389ds ldap server ' do
     # rubocop:disable RSpec/IndexedLet

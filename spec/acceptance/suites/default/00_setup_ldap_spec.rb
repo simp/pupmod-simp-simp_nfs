@@ -3,92 +3,98 @@ require 'spec_helper_acceptance'
 test_name 'Set up ldap server '
 
 describe 'simp_nfs stock classes' do
-  stunnel_setting = true
-  ldap_server = only_host_with_role(hosts, 'ldap')
-  ldap_server_fqdn = fact_on(ldap_server, 'fqdn')
+  let(:stunnel_setting) { true }
+  let(:ldap_server) { only_host_with_role(hosts, 'ldap') }
+  let(:ldap_server_fqdn) { fact_on(ldap_server, 'fqdn') }
 
-  domain_list = fact_on(ldap_server, 'domain').split('.')
-  domain_list.map! do |d|
-    "dc=#{d}"
+  let(:domain_list) do
+    list = fact_on(ldap_server, 'domain').split('.')
+    list.map! do |d|
+      "dc=#{d}"
+    end
   end
-  domains = domain_list.join(',')
+  let(:domains) { domain_list.join(',') }
 
-  common_hieradata = File.read(File.expand_path('files/common_hieradata.yaml.erb', File.dirname(__FILE__)))
+  let(:common_hieradata) { File.read(File.expand_path('files/common_hieradata.yaml.erb', File.dirname(__FILE__))) }
 
   context 'setup ldap server ' do
     let(:ldap_type)        { 'plain' }
     let(:server_hieradata) { File.read(File.expand_path("files/#{ldap_type}/server_hieradata.yaml.erb", File.dirname(__FILE__))) }
     let(:hieradata) { common_hieradata.to_s + "\n#{server_hieradata}" }
 
-    test_user_ldif = <<~EOM
-      dn: cn=test.user,ou=Group,#{domains}
-      objectClass: posixGroup
-      objectClass: top
-      cn: test.user
-      gidNumber: 10000
-      description: 'Test user'
+    let(:test_user_ldif) do
+      <<~EOM
+        dn: cn=test.user,ou=Group,#{domains}
+        objectClass: posixGroup
+        objectClass: top
+        cn: test.user
+        gidNumber: 10000
+        description: 'Test user'
 
-      dn: cn=monster.user,ou=Group,#{domains}
-      objectClass: posixGroup
-      objectClass: top
-      cn: monster.user
-      gidNumber: 11000
-      description: 'Monster user'
+        dn: cn=monster.user,ou=Group,#{domains}
+        objectClass: posixGroup
+        objectClass: top
+        cn: monster.user
+        gidNumber: 11000
+        description: 'Monster user'
 
-      dn: uid=test.user,ou=People,#{domains}
-      uid: test.user
-      cn: test.user
-      givenName: Test
-      sn: User
-      mail: test.user@funurl.net
-      objectClass: inetOrgPerson
-      objectClass: posixAccount
-      objectClass: top
-      objectClass: shadowAccount
-      objectClass: ldapPublicKey
-      shadowMax: 180
-      shadowMin: 1
-      shadowWarning: 7
-      shadowLastChange: 10701
-      loginShell: /bin/bash
-      uidNumber: 10000
-      gidNumber: 10000
-      homeDirectory: /mnt/test.user
-      # suP3rP@ssw0r!
-      userPassword: {SSHA}yOdnVOQYXOEc0Gjv4RRY5BnnFfIKLI3/
-      pwdReset: TRUE
+        dn: uid=test.user,ou=People,#{domains}
+        uid: test.user
+        cn: test.user
+        givenName: Test
+        sn: User
+        mail: test.user@funurl.net
+        objectClass: inetOrgPerson
+        objectClass: posixAccount
+        objectClass: top
+        objectClass: shadowAccount
+        objectClass: ldapPublicKey
+        shadowMax: 180
+        shadowMin: 1
+        shadowWarning: 7
+        shadowLastChange: 10701
+        loginShell: /bin/bash
+        uidNumber: 10000
+        gidNumber: 10000
+        homeDirectory: /mnt/test.user
+        # suP3rP@ssw0r!
+        userPassword: {SSHA}yOdnVOQYXOEc0Gjv4RRY5BnnFfIKLI3/
+        pwdReset: TRUE
 
-      dn: uid=monster.user,ou=People,#{domains}
-      uid: monster.user
-      cn: monster.user
-      givenName: monster
-      sn: User
-      mail: monster.user@funurl.net
-      objectClass: inetOrgPerson
-      objectClass: posixAccount
-      objectClass: top
-      objectClass: shadowAccount
-      objectClass: ldapPublicKey
-      shadowMax: 180
-      shadowMin: 1
-      shadowWarning: 7
-      shadowLastChange: 10701
-      loginShell: /bin/bash
-      uidNumber: 11000
-      gidNumber: 11000
-      homeDirectory: /mnt1/monster.user
-      # suP3rP@ssw0r!
-      userPassword: {SSHA}yOdnVOQYXOEc0Gjv4RRY5BnnFfIKLI3/
-      pwdReset: TRUE
-    EOM
+        dn: uid=monster.user,ou=People,#{domains}
+        uid: monster.user
+        cn: monster.user
+        givenName: monster
+        sn: User
+        mail: monster.user@funurl.net
+        objectClass: inetOrgPerson
+        objectClass: posixAccount
+        objectClass: top
+        objectClass: shadowAccount
+        objectClass: ldapPublicKey
+        shadowMax: 180
+        shadowMin: 1
+        shadowWarning: 7
+        shadowLastChange: 10701
+        loginShell: /bin/bash
+        uidNumber: 11000
+        gidNumber: 11000
+        homeDirectory: /mnt1/monster.user
+        # suP3rP@ssw0r!
+        userPassword: {SSHA}yOdnVOQYXOEc0Gjv4RRY5BnnFfIKLI3/
+        pwdReset: TRUE
+      EOM
+    end
 
-    test_group_ldif = <<~EOM
-      dn: cn=administrators,ou=Group,#{domains}
-      changetype: modify
-      add: memberUid
-      memberUid: test.user
-      memberUid: monster.user
-    EOM
+    let(:test_group_ldif) do
+      <<~EOM
+        dn: cn=administrators,ou=Group,#{domains}
+        changetype: modify
+        add: memberUid
+        memberUid: test.user
+        memberUid: monster.user
+      EOM
+    end
 
     it 'install,s openldap, and create test.user' do
       server_manifest = <<~EOM

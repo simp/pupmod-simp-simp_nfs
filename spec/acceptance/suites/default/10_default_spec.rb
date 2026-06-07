@@ -3,41 +3,47 @@ require 'spec_helper_acceptance'
 test_name 'SIMP NFS profile'
 
 describe 'simp_nfs stock classes' do
-  stunnel_setting = true
-  root_pw = 'suP3rP@ssw0r!'
-  servers = hosts_with_role(hosts, 'nfs_server')
-  clients = hosts_with_role(hosts, 'client')
-  manifest = <<~EOM
-    # Make sure vagrant can log back in
-    simp_firewalld::rule { 'allow_all_ssh':
-      trusted_nets => ['all'],
-      protocol     => tcp,
-      dports       => 22
-    }
-    include 'simp_options'
-    include 'pam::access'
-    include 'sudo'
-    include 'ssh'
-    include 'simp::nsswitch'
-    include 'simp_openldap::client'
-    include 'simp::sssd::client'
-    include 'simp_nfs'
-  EOM
-  nfsserver_hieradata = <<~EOM
-    nfs::is_server: true
-    simp_nfs::export_home::create_home_dirs: true
-  EOM
-  nfsserver_manifest = <<~EOM
-    include 'simp_nfs::export::home'
-    Class['simp::sssd::client'] ->  Class['simp_nfs::export::home']
-  EOM
-  clear_sssd_cache = <<~EOM
-    #!/bin/bash
-    if [ -f /var/lib/sss/db/cache_LDAP.ldb ]; then
-      rm -f /var/lib/sss/db/cache_LDAP.ldb
-    fi
-    systemctl restart sssd
-  EOM
+  let(:stunnel_setting) { true }
+  let(:root_pw) { 'suP3rP@ssw0r!' }
+  let(:manifest) do
+    <<~EOM
+      # Make sure vagrant can log back in
+      simp_firewalld::rule { 'allow_all_ssh':
+        trusted_nets => ['all'],
+        protocol     => tcp,
+        dports       => 22
+      }
+      include 'simp_options'
+      include 'pam::access'
+      include 'sudo'
+      include 'ssh'
+      include 'simp::nsswitch'
+      include 'simp_openldap::client'
+      include 'simp::sssd::client'
+      include 'simp_nfs'
+    EOM
+  end
+  let(:nfsserver_hieradata) do
+    <<~EOM
+      nfs::is_server: true
+      simp_nfs::export_home::create_home_dirs: true
+    EOM
+  end
+  let(:nfsserver_manifest) do
+    <<~EOM
+      include 'simp_nfs::export::home'
+      Class['simp::sssd::client'] ->  Class['simp_nfs::export::home']
+    EOM
+  end
+  let(:clear_sssd_cache) do
+    <<~EOM
+      #!/bin/bash
+      if [ -f /var/lib/sss/db/cache_LDAP.ldb ]; then
+        rm -f /var/lib/sss/db/cache_LDAP.ldb
+      fi
+      systemctl restart sssd
+    EOM
+  end
 
   ['389ds', 'plain'].each do |ldaptype|
     context "using ldap server type #{ldaptype}" do
@@ -81,7 +87,7 @@ describe 'simp_nfs stock classes' do
         apply_manifest_on(ldap_server, ldap_server_manifest, catch_changes: true)
       end
 
-      servers.each do |server|
+      hosts_with_role(hosts, 'nfs_server').each do |server|
         context "On #{server} with #{ldaptype} ldap server export home directories using stunnel" do
           let(:nfs_server) { server }
           let(:nfs_server_ip) { fact_on(nfs_server, %(ipaddress_#{get_private_network_interface(nfs_server)})) }
@@ -138,7 +144,7 @@ describe 'simp_nfs stock classes' do
             expect(results).to match(%r{nfs_create_home_dirs\.timer.*loaded.*active})
           end
 
-          clients.each do |client|
+          hosts_with_role(hosts, 'client').each do |client|
             context "On #{client} using #{server} as nfs and #{ldaptype} ldap server using stunnel" do
               let(:client_hieradata) { [common_hieradata, hieradata_extra].join("\n") }
 
