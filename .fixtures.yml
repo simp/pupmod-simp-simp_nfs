@@ -18,24 +18,12 @@ fixtures:
     # Required for the acceptance test
     augeasproviders_ssh: https://github.com/simp/augeasproviders_ssh.git
     haveged: https://github.com/simp/pupmod-simp-haveged.git
-    # Pinned: master is iptables 8.x, but every consuming module (nfs, ssh,
-    # rsyslog, simp, stunnel, simp_openldap) constrains simp/iptables to < 8.0.0,
-    # so simplib::assert_optional_dependency fails at apply time. 7.1.2 satisfies
-    # all consumers.
-    iptables:
-      repo: https://github.com/simp/pupmod-simp-iptables.git
-      ref: 7.1.2
+    iptables: https://github.com/simp/pupmod-simp-iptables.git
     firewalld: https://github.com/simp/pupmod-voxpupuli-firewalld.git
     mount_core: https://github.com/simp/pupmod-puppetlabs-mount_core.git
     nsswitch: https://github.com/simp/puppet-nsswitch.git
     pam: https://github.com/simp/pupmod-simp-pam.git
-    # Pinned: master is pki 7.x, but every consuming module (rsyslog, ssh, ds389,
-    # stunnel, sssd, simp_openldap) constrains simp/pki to < 7.0.0, so
-    # simplib::assert_optional_dependency fails at apply time. 6.8.2 satisfies
-    # all consumers.
-    pki:
-      repo: https://github.com/simp/pupmod-simp-pki.git
-      ref: 6.8.2
+    pki: https://github.com/simp/pupmod-simp-pki.git
     rsyslog: https://github.com/simp/pupmod-simp-rsyslog.git
     selinux_core: https://github.com/simp/pupmod-puppetlabs-selinux_core.git
     simp: https://github.com/simp/pupmod-simp-simp.git
