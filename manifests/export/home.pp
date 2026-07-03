@@ -40,19 +40,18 @@ class simp_nfs::export::home (
   Array[Enum['none','sys','krb5','krb5i','krb5p']] $sec              = ['sys'],
   Boolean                                          $create_home_dirs = simplib::lookup('simp_options::ldap', { 'default_value' => false })
 ) inherits simp_nfs {
-
   Class['simp_nfs::export::home'] -> Service['nfs-server.service']
 
   file {
-    [ "${data_dir}/nfs",
+    ["${data_dir}/nfs",
       "${data_dir}/nfs/exports",
       "${data_dir}/nfs/exports/home",
       "${data_dir}/nfs/home"
     ]:
-    ensure => 'directory',
-    owner  => 'root',
-    group  => 'root',
-    mode   => '0755'
+      ensure => 'directory',
+      owner  => 'root',
+      group  => 'root',
+      mode   => '0755'
   }
 
   $_export_data_dir = "${data_dir}/nfs/home"
@@ -64,7 +63,7 @@ class simp_nfs::export::home (
     File[$_export_data_dir] -> Class['simp_nfs::create_home_dirs']
   }
 
-  if !$::nfs::stunnel {
+  if !$nfs::stunnel {
     nfs::server::export { 'nfs4_root':
       clients     => simplib::nets2cidr($trusted_nets),
       export_path => $_nfs_root_path,
@@ -102,7 +101,6 @@ class simp_nfs::export::home (
       insecure    => true
     }
   }
-
 
   mount { "${_nfs_root_path}/home":
     ensure   => 'mounted',

@@ -37,7 +37,7 @@ class simp_nfs (
   if $export_home_dirs {
     class { 'nfs': * => { 'is_server' => true } }
 
-    include '::simp_nfs::export::home'
+    include 'simp_nfs::export::home'
 
     if $home_dir_server {
       class { 'simp_nfs::mount::home':
