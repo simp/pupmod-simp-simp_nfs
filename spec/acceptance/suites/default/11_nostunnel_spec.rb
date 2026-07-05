@@ -55,6 +55,15 @@ describe 'simp_nfs stock classes without stunnel' do
   ['389ds'].each do |ldaptype|
     context "using ldap server type #{ldaptype} with no stunnel" do
       let(:ldap_type) { ldaptype }
+      let(:domain_list) do
+        fact_on(ldap_server, 'domain').split('.')
+        domain_list.map! do |d|
+          "dc=#{d}"
+        end
+      end
+      let(:domains) { domain_list.join(',') }
+      let(:common_hieradata) { File.read(File.expand_path('files/common_hieradata.yaml.erb', File.dirname(__FILE__))) }
+      let(:ldap_server_hieradata) { File.read(File.expand_path("files/#{ldap_type}/server_hieradata.yaml.erb", File.dirname(__FILE__))) }
       let(:ldap_server_fqdn) { fact_on(ldap_server, 'fqdn') }
 
       # The LDAP-backed home-dir export flow depends on simp_nfs::create_home_dirs,
@@ -66,15 +75,6 @@ describe 'simp_nfs stock classes without stunnel' do
           skip('create_home_dirs needs net-ldap, unavailable on EL10 (simp_nfs#114)')
         end
       end
-      let(:domain_list) do
-        fact_on(ldap_server, 'domain').split('.')
-        domain_list.map! do |d|
-          "dc=#{d}"
-        end
-      end
-      let(:domains) { domain_list.join(',') }
-      let(:common_hieradata) { File.read(File.expand_path('files/common_hieradata.yaml.erb', File.dirname(__FILE__))) }
-      let(:ldap_server_hieradata) { File.read(File.expand_path("files/#{ldap_type}/server_hieradata.yaml.erb", File.dirname(__FILE__))) }
 
       if ldaptype == '389ds'
         let(:ldap_server) { only_host_with_role(hosts, '389ds') }
