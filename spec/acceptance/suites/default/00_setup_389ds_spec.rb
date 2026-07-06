@@ -59,7 +59,15 @@ describe 'simp_nfs stock classes' do
     end
 
     it 'is able to get user info through sssd' do
-      on(ldap_server, 'service sssd restart')
+      # WORKAROUND (simp/pupmod-simp-sssd#212): on EL10 sssd runs as the
+      # unprivileged 'sssd' user, but sssd::pki's pki::copy writes the client
+      # cert tree root-owned, so the daemon cannot read its key and StartTLS
+      # fails ("Backend is offline"). Grant the sssd group access until the
+      # sssd module makes the pki::copy group configurable. No-op on EL8/9
+      # where sssd runs as root.
+      on(ldap_server, 'chgrp -R sssd /etc/pki/simp_apps/sssd && chmod -R g+rX /etc/pki/simp_apps/sssd', accept_all_exit_codes: true)
+
+      on(ldap_server, 'systemctl restart sssd')
 
       user_info = on(ldap_server, "id #{test_user1}", acceptable_exit_codes: [0])
       expect(user_info.stdout).to match(%r{.*uid=10000\(#{test_user1}\).*gid=10000\(#{test_user1}\)})

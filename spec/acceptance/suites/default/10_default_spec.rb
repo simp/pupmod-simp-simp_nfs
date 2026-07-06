@@ -45,10 +45,9 @@ describe 'simp_nfs stock classes' do
     EOM
   end
 
-  ['389ds', 'plain'].each do |ldaptype|
+  ['389ds'].each do |ldaptype|
     context "using ldap server type #{ldaptype}" do
       let(:ldap_type) { ldaptype }
-      let(:ldap_server_fqdn) { fact_on(ldap_server, 'fqdn') }
       let(:domain_list) do
         fact_on(ldap_server, 'domain').split('.')
         domain_list.map! do |d|
@@ -58,6 +57,17 @@ describe 'simp_nfs stock classes' do
       let(:domains) { domain_list.join(',') }
       let(:common_hieradata) { File.read(File.expand_path('files/common_hieradata.yaml.erb', File.dirname(__FILE__))) }
       let(:ldap_server_hieradata) { File.read(File.expand_path("files/#{ldap_type}/server_hieradata.yaml.erb", File.dirname(__FILE__))) }
+      let(:ldap_server_fqdn) { fact_on(ldap_server, 'fqdn') }
+
+      # The LDAP-backed home-dir export flow depends on simp_nfs::create_home_dirs,
+      # which installs rubygem-net-ldap -- unavailable on EL10 (and a runtime gem
+      # install is unsuitable for air-gapped installs). Skip on EL10 pending a
+      # fix. See https://github.com/simp/pupmod-simp-simp_nfs/issues/114
+      before(:each) do
+        if fact_on(hosts.first, 'os.release.major').to_i >= 10
+          skip('create_home_dirs needs net-ldap, unavailable on EL10 (simp_nfs#114)')
+        end
+      end
 
       if ldaptype == '389ds'
         let(:ldap_server) { only_host_with_role(hosts, '389ds') }

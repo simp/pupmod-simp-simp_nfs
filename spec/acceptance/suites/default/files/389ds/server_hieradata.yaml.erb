@@ -1,1 +1,5 @@
 simp_ds389::instances::accounts::root_pw: <%= root_pw %>
+# ds389 takes the TLS cert source as a plain parameter (it does not read the
+# simp_options::pki::source catalyst); point it at this test environment's PKI.
+simp_ds389::instances::accounts::tls_params:
+  source: '/etc/pki/simp-testing/pki'

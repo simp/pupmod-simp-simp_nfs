@@ -21,7 +21,7 @@ fixtures:
     iptables: https://github.com/simp/pupmod-simp-iptables.git
     firewalld: https://github.com/simp/pupmod-voxpupuli-firewalld.git
     mount_core: https://github.com/simp/pupmod-puppetlabs-mount_core.git
-    nsswitch: https://github.com/simp/puppet-nsswitch.git
+    nsswitch: https://github.com/simp/pupmod-puppet-nsswitch.git
     pam: https://github.com/simp/pupmod-simp-pam.git
     pki: https://github.com/simp/pupmod-simp-pki.git
     rsyslog: https://github.com/simp/pupmod-simp-rsyslog.git

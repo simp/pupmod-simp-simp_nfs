@@ -138,7 +138,6 @@ class simp_nfs::create_home_dirs (
   Array[String[1]]               $tls_cipher_suite        = simplib::lookup('simp_options::openssl::cipher_suite', { 'default_value' => ['DEFAULT','!MEDIUM'] }),
   String                         $package_ensure          = simplib::lookup('simp_options::package_ensure', { 'default_value' => 'installed' })
 ) {
-
   $_tls_cipher_suite = $tls_cipher_suite
 
   package { 'rubygem-net-ldap':
@@ -155,21 +154,21 @@ class simp_nfs::create_home_dirs (
     group   => 'root',
     mode    => '0500',
     content => template("${module_name}/create_home_directories.rb.erb"),
-    notify  => [ Exec[$create_home_script] ],
+    notify  => [Exec[$create_home_script]],
     require => Package['rubygem-net-ldap']
   }
 
   $_timer = @("EOM")
-  [Timer]
-  OnCalendar=${run_schedule}
-  | EOM
+    [Timer]
+    OnCalendar=${run_schedule}
+    | EOM
 
   $_service = @("EOM")
-  [Service]
-  Type=oneshot
-  SuccessExitStatus=0
-  ExecStart=${create_home_script}
-  | EOM
+    [Service]
+    Type=oneshot
+    SuccessExitStatus=0
+    ExecStart=${create_home_script}
+    | EOM
 
   systemd::timer { 'nfs_create_home_dirs.timer':
     timer_content   => $_timer,
