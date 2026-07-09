@@ -89,8 +89,7 @@ Four manifests: the `simp_nfs` entry class plus three role/feature classes.
   `nfs::client::mount` with `nfs_version => 4` and autofs indirect mapping
   (`autofs_indirect_map_key => '*'`, `autofs_add_key_subst => true`,
   `mount/home.pp`).
-  - If `getvar('::nfs::client::is_server')` is true, `$_target` is forced to
-    `127.0.0.1` (`mount/home.pp`).
+  - If `getvar('::nfs::client::is_server')` is true, `$_target` is set to `127.0.0.1` — **but `$_target` is currently unused**: `nfs::client::mount` is called with `nfs_server => $nfs_server`, so this does not retarget the mount to loopback. To mount over loopback you must set `$nfs_server` to `127.0.0.1` explicitly (`mount/home.pp`).
   - **SELinux boolean** (`mount/home.pp`): when SELinux is in a non-`disabled`
     mode, sets `selboolean { 'use_nfs_home_dirs': value => 'on' }` persistently.
 
