@@ -18,7 +18,7 @@ node is a server or a client*, lays out the export directory tree, and layers
 LDAP home-dir creation and PKI on top.
 
 The main entry class picks one of two roles per node from a single boolean:
-`simp_nfs::export_home_dirs` (`manifests/init.pp:31-61`). When `true` the node
+`simp_nfs::export_home_dirs` (`manifests/init.pp`). When `true` the node
 becomes an NFS **server** (`class { 'nfs': is_server => true }`); when `false`
 it becomes an NFS **client** (`class { 'nfs': is_client => true }`).
 
@@ -26,72 +26,72 @@ it becomes an NFS **client** (`class { 'nfs': is_client => true }`).
 
 Four manifests: the `simp_nfs` entry class plus three role/feature classes.
 
-- **`simp_nfs` (`manifests/init.pp:31-61`)** — Public entry class (not
+- **`simp_nfs` (`manifests/init.pp`)** — Public entry class (not
   `assert_private()`'d; consumers `include simp_nfs`). Parameters
-  (`init.pp:31-36`):
+  (`init.pp`):
   - `$export_home_dirs` (`Boolean`, default `false`) — the role switch. `false`
-    → NFS client; `true` → NFS server (`init.pp:37-38,50-51`).
+    → NFS client; `true` → NFS server (`init.pp`).
   - `$home_dir_server` (`Optional[Simplib::Ip]`, default `undef`) — the server
     to mount home dirs from.
   - `$autodetect_remote` (`Boolean`, default `true`) — passed through to the
     mount class; set `false` if the node wrongly mounts `127.0.0.1`.
   - `$use_autofs` (`Boolean`, default `true`) — use `autofs` for the mounts.
 
-  Control flow (`init.pp:37-60`):
+  Control flow (`init.pp`):
   - **Server branch** (`$export_home_dirs` true): `include
     simp_nfs::export::home`, and *if* `$home_dir_server` is also set, mount from
     **`127.0.0.1`** — the code assumes a server that also sets
     `$home_dir_server` wants to mount its own export locally
-    (`init.pp:42-48`; see the docstring at `init.pp:15-16`).
+    (`init.pp`; see the docstring at `init.pp`).
   - **Client branch** (`$export_home_dirs` false): if `$home_dir_server` is set,
     `class { 'simp_nfs::mount::home': nfs_server => $home_dir_server, ... }`
-    (`init.pp:53-58`). With no `$home_dir_server` the node is just an NFS client
+    (`init.pp`). With no `$home_dir_server` the node is just an NFS client
     with nothing mounted by this profile.
 
-- **`simp_nfs::export::home` (`manifests/export/home.pp:37-118`)** — the NFS
-  **server** side; `inherits simp_nfs` (`export/home.pp:42`). Builds the NFSv4
+- **`simp_nfs::export::home` (`manifests/export/home.pp`)** — the NFS
+  **server** side; `inherits simp_nfs` (`export/home.pp`). Builds the NFSv4
   pseudo-filesystem export tree under `${data_dir}/nfs` (default `$data_dir` is
   `/var`): creates `nfs`, `nfs/exports`, `nfs/exports/home`, and `nfs/home`
-  (`export/home.pp:46-56`), then **bind-mounts** `nfs/home` under
+  (`export/home.pp`), then **bind-mounts** `nfs/home` under
   `nfs/exports/home` via a `mount` resource (`options => 'rw,bind'`,
-  `export/home.pp:107-117`). It orders itself before the NFS service:
+  `export/home.pp`). It orders itself before the NFS service:
   `Class['simp_nfs::export::home'] -> Service['nfs-server.service']`
-  (`export/home.pp:44`).
-  - **stunnel fork** (`export/home.pp:67-104`): if `!$::nfs::stunnel`, exports
+  (`export/home.pp`).
+  - **stunnel fork** (`export/home.pp`): if `!$::nfs::stunnel`, exports
     are opened to `simplib::nets2cidr($trusted_nets)`; **if `$::nfs::stunnel` is
     set, both exports are locked to `['127.0.0.1']` with `insecure => true`** —
     because with stunnel the real clients terminate at the local stunnel, not on
     the wire.
-  - **LDAP home-dir creation** (`export/home.pp:61-65`): if `$create_home_dirs`
+  - **LDAP home-dir creation** (`export/home.pp`): if `$create_home_dirs`
     (defaults to `simplib::lookup('simp_options::ldap', ...)`), it declares
     `simp_nfs::create_home_dirs` and threads `export_dir => ${data_dir}/nfs/home`
     into it, ordered after the export dirs exist.
 
-- **`simp_nfs::create_home_dirs` (`manifests/create_home_dirs.pp:115-192`)** —
-  installs `rubygem-net-ldap` (`create_home_dirs.pp:144-146`), renders the
+- **`simp_nfs::create_home_dirs` (`manifests/create_home_dirs.pp`)** —
+  installs `rubygem-net-ldap` (`create_home_dirs.pp`), renders the
   `create_home_directories.rb` script from
   `templates/create_home_directories.rb.erb`
-  (`create_home_dirs.pp:153-160`), and drives it on a **systemd timer**
+  (`create_home_dirs.pp`), and drives it on a **systemd timer**
   (`nfs_create_home_dirs.timer`, default schedule `*-*-* *:30:00`,
-  `create_home_dirs.pp:174-180`). The script binds to LDAP and creates missing
+  `create_home_dirs.pp`). The script binds to LDAP and creates missing
   home directories for users under `$export_dir` (default `/var/nfs/home`) from
   `$skel_dir`. It also removes the legacy cron drop-in
-  `/etc/cron.hourly/create_home_directories.rb` (`create_home_dirs.pp:149-151`).
-  - **PKI branch** (`create_home_dirs.pp:182-189`): only if `$pki` is truthy, it
+  `/etc/cron.hourly/create_home_directories.rb` (`create_home_dirs.pp`).
+  - **PKI branch** (`create_home_dirs.pp`): only if `$pki` is truthy, it
     calls **`simplib::assert_optional_dependency($module_name, 'simp/pki')`**
-    (`create_home_dirs.pp:183`) and then `pki::copy { 'nfs_home_server': }` to
+    (`create_home_dirs.pp`) and then `pki::copy { 'nfs_home_server': }` to
     stage app certs under `/etc/pki/simp_apps/nfs_home_server/x509`. This is the
     module's only optional dependency and the only place it is enforced.
 
-- **`simp_nfs::mount::home` (`manifests/mount/home.pp:55-93`)** — the NFS
+- **`simp_nfs::mount::home` (`manifests/mount/home.pp`)** — the NFS
   **client** side. Required parameter `$nfs_server` (`Simplib::IP`); mounts
   `$remote_path` (default `/home`) at `$local_home` (default `/home`) via
   `nfs::client::mount` with `nfs_version => 4` and autofs indirect mapping
   (`autofs_indirect_map_key => '*'`, `autofs_add_key_subst => true`,
-  `mount/home.pp:80-92`).
+  `mount/home.pp`).
   - If `getvar('::nfs::client::is_server')` is true, `$_target` is forced to
-    `127.0.0.1` (`mount/home.pp:66-71`).
-  - **SELinux boolean** (`mount/home.pp:73-78`): when SELinux is in a non-`disabled`
+    `127.0.0.1` (`mount/home.pp`).
+  - **SELinux boolean** (`mount/home.pp`): when SELinux is in a non-`disabled`
     mode, sets `selboolean { 'use_nfs_home_dirs': value => 'on' }` persistently.
 
 ### Gotchas / non-obvious details
@@ -101,23 +101,23 @@ Four manifests: the `simp_nfs` entry class plus three role/feature classes.
   `nfs`/`simp_nfs` parameters instead. `simp_nfs` only chooses server-vs-client
   and layers LDAP + PKI on top.
 - **A server that also sets `$home_dir_server` mounts itself over `127.0.0.1`,
-  not over the given IP** (`init.pp:42-48`). The `$home_dir_server` value in the
+  not over the given IP** (`init.pp`). The `$home_dir_server` value in the
   server branch is only used as a "yes, also mount" flag; the actual target is
   hard-coded to loopback.
 - **Four LDAP lookups have NO `default_value` and will hard-fail compilation if
   unset.** `simp_options::ldap::uri` / `::base_dn` / `::bind_dn` / `::bind_pw`
-  (`create_home_dirs.pp:117-120`) are looked up with a bare
+  (`create_home_dirs.pp`) are looked up with a bare
   `simplib::lookup(...)`. They only matter when LDAP home-dir creation is
-  enabled (`export/home.pp:41` / `create_home_dirs.pp`), but if that path runs
+  enabled (`export/home.pp` / `create_home_dirs.pp`), but if that path runs
   without LDAP hieradata, the catalog fails to compile. By contrast the `pki`,
   `pki::source`, `openssl::cipher_suite`, and `package_ensure` lookups **do**
   carry defaults.
 - **PKI is optional and only asserted when enabled.** `simp/pki` is *not* a hard
   dependency; `simplib::assert_optional_dependency` runs only inside `if $pki`
-  (`create_home_dirs.pp:182-183`). Don't hard-`include` `pki`.
+  (`create_home_dirs.pp`). Don't hard-`include` `pki`.
 - **stunnel flips the export ACLs to loopback-only.** When `$::nfs::stunnel` is
   set the exports are restricted to `127.0.0.1` with `insecure => true`
-  (`export/home.pp:85-104`); `$trusted_nets` is ignored in that mode. This is
+  (`export/home.pp`); `$trusted_nets` is ignored in that mode. This is
   intentional, not a bug.
 - **`simp/simp_options` is NOT a declared dependency** in `metadata.json`, yet
   every manifest consumes the `simp_options::*` seam via `simplib::lookup`
@@ -127,7 +127,7 @@ Four manifests: the `simp_nfs` entry class plus three role/feature classes.
   `create_home_dirs` are all technically includable directly, but the intended
   entry point is the `simp_nfs` class driving them via its parameters.
 - **`$strip_128_bit_ciphers` is deprecated** and affects no supported OS
-  (`create_home_dirs.pp:69-70,137`); leave it alone.
+  (`create_home_dirs.pp`); leave it alone.
 
 ## The `simp_options` / `simplib::lookup` seam
 
@@ -135,18 +135,18 @@ This is the module's real business-logic seam (the natural target for a
 lookup-path unit test). The four LDAP-credential keys have **no default** and
 hard-fail if unset; the rest carry explicit defaults:
 
-| Line | Key | `default_value` |
+| File | Key | `default_value` |
 |------|-----|-----------------|
-| `create_home_dirs.pp:117` | `simp_options::ldap::uri` | *(none — hard-fail)* |
-| `create_home_dirs.pp:118` | `simp_options::ldap::base_dn` | *(none — hard-fail)* |
-| `create_home_dirs.pp:119` | `simp_options::ldap::bind_dn` | *(none — hard-fail)* |
-| `create_home_dirs.pp:120` | `simp_options::ldap::bind_pw` | *(none — hard-fail)* |
-| `create_home_dirs.pp:121` | `simp_options::pki` | `false` |
-| `create_home_dirs.pp:122` | `simp_options::pki::source` | `'/etc/pki/simp/x509'` |
-| `create_home_dirs.pp:138` | `simp_options::openssl::cipher_suite` | `['DEFAULT','!MEDIUM']` |
-| `create_home_dirs.pp:139` | `simp_options::package_ensure` | `'installed'` |
-| `export/home.pp:39` | `simp_options::trusted_nets` | `['127.0.0.1']` |
-| `export/home.pp:41` | `simp_options::ldap` | `false` |
+| `create_home_dirs.pp` | `simp_options::ldap::uri` | *(none — hard-fail)* |
+| `create_home_dirs.pp` | `simp_options::ldap::base_dn` | *(none — hard-fail)* |
+| `create_home_dirs.pp` | `simp_options::ldap::bind_dn` | *(none — hard-fail)* |
+| `create_home_dirs.pp` | `simp_options::ldap::bind_pw` | *(none — hard-fail)* |
+| `create_home_dirs.pp` | `simp_options::pki` | `false` |
+| `create_home_dirs.pp` | `simp_options::pki::source` | `'/etc/pki/simp/x509'` |
+| `create_home_dirs.pp` | `simp_options::openssl::cipher_suite` | `['DEFAULT','!MEDIUM']` |
+| `create_home_dirs.pp` | `simp_options::package_ensure` | `'installed'` |
+| `export/home.pp` | `simp_options::trusted_nets` | `['127.0.0.1']` |
+| `export/home.pp` | `simp_options::ldap` | `false` |
 
 Keep routing SIMP feature toggles through `simplib::lookup('simp_options::*', {
 'default_value' => ... })` with an explicit default rather than assuming
@@ -171,7 +171,7 @@ Optional dependency (from `metadata.json` `simp.optional_dependencies`):
 
 - `simp/pki` `>= 6.2.0 < 7.0.0` — used **only** when `$pki` is truthy, asserted
   at runtime via `simplib::assert_optional_dependency($module_name, 'simp/pki')`
-  (`create_home_dirs.pp:183`). This is the module's only optional dependency.
+  (`create_home_dirs.pp`). This is the module's only optional dependency.
 
 Fixture-only repositories (from `.fixtures.yml`, checked out for test
 compilation, not runtime deps): the runtime and optional deps above plus a large
@@ -244,11 +244,11 @@ bundle exec rake beaker:suites[default]
 ```
 
 The `Gemfile` installs the **`puppet` gem only** (`gem 'puppet', puppet_version`,
-`Gemfile:29`), with `puppet_version` defaulting to `['>= 7', '< 9']`
-(`Gemfile:23`) — there is no `openvox` gem here. Relevant gem pins (from
-`Gemfile`): `rubocop ~> 1.88.0` (`Gemfile:16`), `puppetlabs_spec_helper ~> 8.0.0`
-(`Gemfile:30`), `simp-rake-helpers ~> 5.24.0` (`Gemfile:36`), and
-`simp-beaker-helpers ~> 2.0.0` (`Gemfile:52`). `spec/spec_helper.rb:11` requires
+`Gemfile`), with `puppet_version` defaulting to `['>= 7', '< 9']`
+(`Gemfile`) — there is no `openvox` gem here. Relevant gem pins (from
+`Gemfile`): `rubocop ~> 1.88.0` (`Gemfile`), `puppetlabs_spec_helper ~> 8.0.0`
+(`Gemfile`), `simp-rake-helpers ~> 5.24.0` (`Gemfile`), and
+`simp-beaker-helpers ~> 2.0.0` (`Gemfile`). `spec/spec_helper.rb` requires
 `puppetlabs_spec_helper/module_spec_helper`.
 
 ## Conventions
@@ -262,7 +262,7 @@ The `Gemfile` installs the **`puppet` gem only** (`gem 'puppet', puppet_version`
 - Continue routing SIMP feature toggles through
   `simplib::lookup('simp_options::*', { 'default_value' => ... })` rather than
   assuming `simp_options` is included. Preserve the deliberate no-default LDAP
-  credential lookups (`create_home_dirs.pp:117-120`).
+  credential lookups (`create_home_dirs.pp`).
 - Guard the optional PKI integration with
   `simplib::assert_optional_dependency` inside the `if $pki` branch, as
   `create_home_dirs` does — don't hard-`include` `simp/pki`.
