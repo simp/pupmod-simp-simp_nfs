@@ -517,4 +517,3 @@ Data type: `Boolean`
 Enable automounting with Autofs
 
 Default value: `true`
-
