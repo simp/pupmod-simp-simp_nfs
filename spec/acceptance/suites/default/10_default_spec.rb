@@ -57,6 +57,12 @@ describe 'simp_nfs stock classes' do
       let(:common_hieradata) { File.read(File.expand_path('files/common_hieradata.yaml.erb', File.dirname(__FILE__))) }
       let(:ldap_server_hieradata) { File.read(File.expand_path("files/#{ldap_type}/server_hieradata.yaml.erb", File.dirname(__FILE__))) }
       let(:ldap_server_fqdn) { fact_on(ldap_server, 'fqdn') }
+      let(:ldap_server) { only_host_with_role(hosts, '389ds') }
+      let(:ldap_manifest) do
+        <<~EOM
+          include 'simp_ds389::instances::accounts'
+        EOM
+      end
 
       # The LDAP-backed home-dir export flow depends on simp_nfs::create_home_dirs,
       # which installs rubygem-net-ldap -- unavailable on EL10 (and a runtime gem
@@ -65,22 +71,6 @@ describe 'simp_nfs stock classes' do
       before(:each) do
         if fact_on(hosts.first, 'os.release.major').to_i >= 10
           skip('create_home_dirs needs net-ldap, unavailable on EL10 (simp_nfs#114)')
-        end
-      end
-
-      if ldaptype == '389ds'
-        let(:ldap_server) { only_host_with_role(hosts, '389ds') }
-        let(:ldap_manifest) do
-          <<~EOM
-            include 'simp_ds389::instances::accounts'
-          EOM
-        end
-      else
-        let(:ldap_server) { only_host_with_role(hosts, 'ldap') }
-        let(:ldap_manifest) do
-          <<~EOM
-            include 'simp::server::ldap'
-          EOM
         end
       end
 

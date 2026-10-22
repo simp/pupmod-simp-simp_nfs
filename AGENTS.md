@@ -174,7 +174,7 @@ Optional dependency (from `metadata.json` `simp.optional_dependencies`):
 
 Fixture-only repositories (from `.fixtures.yml`, checked out for test
 compilation, not runtime deps): the runtime and optional deps above plus a large
-acceptance stack — `autofs`, `ds389`, `simp_ds389`, `simp_openldap`, `sssd`,
+acceptance stack — `autofs`, `ds389`, `simp_ds389`, `sssd`,
 `stunnel`, `simp_firewalld`/`firewalld`/`iptables`, `pam`, `ssh`, `svckill`,
 `systemd`, `simp_options`, and others.
 
