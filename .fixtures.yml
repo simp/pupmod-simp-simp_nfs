@@ -1,6 +1,11 @@
 ---
 fixtures:
   repositories:
+    # Only needed so acceptance tests can enforce the `simp:defaults`
+    # Compliance Engine profile. NOT a module dependency (see metadata.json).
+    compliance_engine:
+      repo: https://github.com/simp/rubygem-simp-compliance_engine.git
+      ref: '1.2.0'
     auditd: https://github.com/simp/pupmod-simp-auditd.git
     augeas_core: https://github.com/simp/pupmod-puppetlabs-augeas_core.git
     augeasproviders_core: https://github.com/simp/augeasproviders_core.git
@@ -18,7 +23,14 @@ fixtures:
     # Required for the acceptance test
     augeasproviders_ssh: https://github.com/simp/augeasproviders_ssh.git
     haveged: https://github.com/simp/pupmod-simp-haveged.git
-    iptables: https://github.com/simp/pupmod-simp-iptables.git
+    rngd: https://github.com/simp/pupmod-simp-rngd.git
+    inifile: https://github.com/simp/puppetlabs-inifile.git
+    # iptables master is the unreleased 10.0.0, and ssh, whose simp:defaults
+    # profile enables its firewall rules, requires iptables < 10.0.0. Unpin
+    # once ssh allows 10.x (simp/pupmod-simp-ssh#272).
+    iptables:
+      repo: https://github.com/simp/pupmod-simp-iptables.git
+      ref: '9.1.0'
     firewalld: https://github.com/simp/pupmod-voxpupuli-firewalld.git
     mount_core: https://github.com/simp/pupmod-puppetlabs-mount_core.git
     nsswitch: https://github.com/simp/pupmod-puppet-nsswitch.git
