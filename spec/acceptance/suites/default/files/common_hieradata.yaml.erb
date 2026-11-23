@@ -22,8 +22,17 @@ simp_options::ldap::sync_hash: '{SSHA}BNPDR0qqE6HyLTSlg13T0e/+yZnSgYQz'
 simp_options::ldap::uri: [ "ldap://<%= ldap_server_fqdn %>"]
 simp_options::ldap::master: "ldap://<%= ldap_server_fqdn %>"
 # suP3rP@ssw0r!
-sssd::domains:
-  - LDAP
+# sssd 11 configures only what is set. These restore what the tests need
+# from its pre-11 defaults (its simp:defaults compliance profile has the rest).
+sssd::domains_entries:
+  LDAP: {}
+sssd::service::ensure: running
+sssd::service::enable: true
+sssd::services_entries:
+  nss: {}
+  pam: {}
+  ssh: {}
+  sudo: {}
 simp::is_mail_server: false
 simp::sssd::client::ldap_server_type: <%= ldap_type %>
 pam::wheel_group: 'administrators'
