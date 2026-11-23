@@ -25,7 +25,11 @@ fixtures:
     haveged: https://github.com/simp/pupmod-simp-haveged.git
     rngd: https://github.com/simp/pupmod-simp-rngd.git
     inifile: https://github.com/simp/puppetlabs-inifile.git
-    iptables: https://github.com/simp/pupmod-simp-iptables.git
+    # iptables 10.0.0 (master) is held until its consumers allow it: ssh,
+    # with its simp:defaults firewall setting, requires iptables < 10.0.0
+    iptables:
+      repo: https://github.com/simp/pupmod-simp-iptables.git
+      ref: '9.1.0'
     firewalld: https://github.com/simp/pupmod-voxpupuli-firewalld.git
     mount_core: https://github.com/simp/pupmod-puppetlabs-mount_core.git
     nsswitch: https://github.com/simp/pupmod-puppet-nsswitch.git

@@ -24,6 +24,9 @@ simp_options::ldap::master: "ldap://<%= ldap_server_fqdn %>"
 # Configure the modules as SIMP sites do. Several, sssd among them, configure
 # only what is set and rely on their simp:defaults profiles for the rest.
 compliance_engine::enforcement: ['simp:defaults']
+# simp:defaults sets `simp`, which copies certificates from the puppetserver's
+# keydist. Use the test certificates in simp_options::pki::source instead.
+ssh::server::conf::pki: true
 # The LDAP domain simp::sssd::client configures (sssd::domains is deprecated)
 sssd::domains_entries:
   LDAP: {}
