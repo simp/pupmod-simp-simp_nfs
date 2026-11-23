@@ -1,6 +1,11 @@
 ---
 fixtures:
   repositories:
+    # Only needed so acceptance tests can enforce the `simp:defaults`
+    # Compliance Engine profile. NOT a module dependency (see metadata.json).
+    compliance_engine:
+      repo: https://github.com/simp/rubygem-simp-compliance_engine.git
+      ref: '1.2.0'
     auditd: https://github.com/simp/pupmod-simp-auditd.git
     augeas_core: https://github.com/simp/pupmod-puppetlabs-augeas_core.git
     augeasproviders_core: https://github.com/simp/augeasproviders_core.git
