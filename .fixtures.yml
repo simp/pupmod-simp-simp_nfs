@@ -25,8 +25,9 @@ fixtures:
     haveged: https://github.com/simp/pupmod-simp-haveged.git
     rngd: https://github.com/simp/pupmod-simp-rngd.git
     inifile: https://github.com/simp/puppetlabs-inifile.git
-    # iptables 10.0.0 (master) is held until its consumers allow it: ssh,
-    # with its simp:defaults firewall setting, requires iptables < 10.0.0
+    # iptables master is the unreleased 10.0.0, and ssh, whose simp:defaults
+    # profile enables its firewall rules, requires iptables < 10.0.0. Unpin
+    # once ssh allows 10.x (simp/pupmod-simp-ssh#272).
     iptables:
       repo: https://github.com/simp/pupmod-simp-iptables.git
       ref: '9.1.0'
