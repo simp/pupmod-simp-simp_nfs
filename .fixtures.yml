@@ -23,6 +23,7 @@ fixtures:
     # Required for the acceptance test
     augeasproviders_ssh: https://github.com/simp/augeasproviders_ssh.git
     haveged: https://github.com/simp/pupmod-simp-haveged.git
+    rngd: https://github.com/simp/pupmod-simp-rngd.git
     inifile: https://github.com/simp/puppetlabs-inifile.git
     iptables: https://github.com/simp/pupmod-simp-iptables.git
     firewalld: https://github.com/simp/pupmod-voxpupuli-firewalld.git
