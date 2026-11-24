@@ -21,9 +21,18 @@ simp_options::ldap::sync_pw: 'foobarbaz'
 simp_options::ldap::sync_hash: '{SSHA}BNPDR0qqE6HyLTSlg13T0e/+yZnSgYQz'
 simp_options::ldap::uri: [ "ldap://<%= ldap_server_fqdn %>"]
 simp_options::ldap::master: "ldap://<%= ldap_server_fqdn %>"
-# suP3rP@ssw0r!
-sssd::domains:
-  - LDAP
+# Configure the modules as SIMP sites do. Several, sssd among them, configure
+# only what is set and rely on their simp:defaults profiles for the rest.
+compliance_engine::enforcement: ['simp:defaults']
+# ssh's simp:defaults sets `pki: simp` (copy from the puppetserver's keydist)
+# and ignores simp_options::pki::source, instead of following the
+# simp_options keys above. Use the test certificates until it follows them
+# (simp/pupmod-simp-ssh#273).
+ssh::server::conf::pki: true
+ssh::server::conf::app_pki_external_source: '/etc/pki/simp-testing/pki'
+# The LDAP domain simp::sssd::client configures (sssd::domains is deprecated)
+sssd::domains_entries:
+  LDAP: {}
 simp::is_mail_server: false
 simp::sssd::client::ldap_server_type: <%= ldap_type %>
 pam::wheel_group: 'administrators'

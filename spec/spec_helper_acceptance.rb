@@ -31,6 +31,18 @@ RSpec.configure do |c|
     # Install modules and dependencies from spec/fixtures/modules
     copy_fixture_modules_to(hosts)
 
+    # Add the Compliance Engine layer to each host's hiera.yaml, last, so it
+    # has the lowest priority, as it does at a real site. The common
+    # hieradata enforces `simp:defaults` through it, so the suite runs the
+    # modules the way SIMP sites do.
+    hosts.each do |sut|
+      config = YAML.safe_load(get_hiera_config_on(sut))
+      next if config['hierarchy'].any? { |level| level['lookup_key'] == 'compliance_engine::enforcement' }
+
+      config['hierarchy'] << { 'name' => 'Compliance Engine', 'lookup_key' => 'compliance_engine::enforcement' }
+      set_hiera_config_on(sut, config)
+    end
+
     # Generate and install PKI certificates on each SUT
     Dir.mktmpdir do |cert_dir|
       run_fake_pki_ca_on(default, hosts, cert_dir)
